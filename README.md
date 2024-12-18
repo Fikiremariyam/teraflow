@@ -38,12 +38,18 @@ using bash
 2.**Install dependencies:**
 using bash 
   flutter pub get 
+  
 3. ** Run the app:**
-using bash 
+using bash
+
 For Android:
+
   flutter run -d android
+
 For iOS:
+
   flutter run -d ios
+
 4 . **Dependencies**
 Here are some of the major dependencies used in this app:
 
