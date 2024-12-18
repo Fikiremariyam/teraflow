@@ -54,7 +54,9 @@ For iOS:
 Here are some of the major dependencies used in this app:
 
 flutter_bloc: State management.
+
 http: For API requests.
+
 firebase_core: Firebase integration.
 
 
