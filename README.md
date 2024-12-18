@@ -54,7 +54,9 @@ firebase_core: Firebase integration.
 
 ##
 🛠️ Development Tools
+
 Flutter SDK Version: 3.x.x
+
 Dart SDK Version: >=2.17.
 
 ##  How to Contribute
@@ -76,5 +78,7 @@ This project is licensed under the MIT License. See the LICENSE file for more in
 For any inquiries or feedback, feel free to contact:
 
 Name: fikiremariyam Babu
+
 Email: fikerbdu#@gmail.com
+
 GitHub: github.com/fikiremariyam
