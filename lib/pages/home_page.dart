@@ -1,0 +1,308 @@
+import 'package:flutter/material.dart';
+import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:teraflow/util/category_card.dart';
+import 'package:teraflow/util/therapist_card.dart';
+import 'package:teraflow/pages/calendar_page.dart';
+import 'package:teraflow/pages/chat_page.dart';
+import 'package:teraflow/pages/selfhelp_page.dart';
+
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  int _selectedIndex = 0;
+
+  
+  // ignore: unused_field
+  final List<Widget> _pages = [
+    ChatPage(),
+    CalendarPage(),
+    SelfHelpPage(),
+  ];
+
+  void _onNavBarTap(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.grey[300],
+      body: SafeArea(
+        child: IndexedStack(
+          index: _selectedIndex,
+          children: [
+            // Home Screen content
+            SingleChildScrollView(
+              child: Column(
+                children: [
+                  // Header Section
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Hello,',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                ),
+                              ),
+                              SizedBox(height: 4),
+                              Text(
+                                'Kalkidan',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 24,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          padding: EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: Colors.deepPurple[100],
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                          child: Icon(Icons.person),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 25),
+
+                  // Questionnaire Section
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                    child: Container(
+                      padding: EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: const Color.fromARGB(255, 221, 182, 138),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Row(
+                        children: [
+                          Container(
+                            height: 120,
+                            width: 120,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage('lib/images/home_page.png'),
+                                fit: BoxFit.cover,
+                              ),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          SizedBox(width: 20),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'How do you feel?',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                SizedBox(height: 12),
+                                Text(
+                                  'Fill out your questionnaire card right now',
+                                  style: TextStyle(fontSize: 14),
+                                ),
+                                SizedBox(height: 12),
+                                Container(
+                                  padding: EdgeInsets.all(12),
+                                  decoration: BoxDecoration(
+                                    color: Colors.deepPurple[300],
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      'Get Started',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 20),
+
+                  // Search Section
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 12),
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: Colors.deepPurple[100],
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: TextField(
+                        decoration: InputDecoration(
+                          prefixIcon: Icon(Icons.search, size: 18),
+                          border: InputBorder.none,
+                          hintText: 'How can we help you?',
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 20),
+
+                  // Categories Section
+                  Container(
+                    height: 100,
+                    child: ListView(
+                      scrollDirection: Axis.horizontal,
+                      children: [
+                        CategoryCard(
+                          categoryName: 'Meditation',
+                          iconImagePath: 'lib/icons/meditation.png',
+                        ),
+                        CategoryCard(
+                          categoryName: 'Community',
+                          iconImagePath: 'lib/icons/community.png',
+                        ),
+                        CategoryCard(
+                          categoryName: 'Exercise',
+                          iconImagePath: 'lib/icons/exercise.png',
+                        ),
+                        CategoryCard(
+                          categoryName: 'Journaling',
+                          iconImagePath: 'lib/icons/journaling.png',
+                        ),
+                        CategoryCard(
+                          categoryName: 'Time',
+                          iconImagePath: 'lib/icons/time.png',
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 25),
+
+                  // Therapist Section
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Therapist list',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          'see all',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.grey[500],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  SizedBox(
+                    height: 200,
+                    child: ListView(
+                      scrollDirection: Axis.horizontal,
+                      children: [
+                        TherapistCard(
+                          therapistImagePath: 'lib/images/doctor1.jpg',
+                          rating: '4.9',
+                          therapistName: 'Dr. Amla Douge',
+                          therapistProfession: 'Therapist',
+                        ),
+                        SizedBox(width: 10),
+                        TherapistCard(
+                          therapistImagePath: 'lib/images/doctor2.jpg',
+                          rating: '4.8',
+                          therapistName: 'Dr. John Smith',
+                          therapistProfession: 'Psychologist',
+                        ),
+                        SizedBox(width: 10),
+                        TherapistCard(
+                          therapistImagePath: 'lib/images/doctor2.jpg',
+                          rating: '4.8',
+                          therapistName: 'Dr. John Smith',
+                          therapistProfession: 'Psychologist',
+                        ),
+                        SizedBox(width: 10),
+                        TherapistCard(
+                          therapistImagePath: 'lib/images/doctor2.jpg',
+                          rating: '4.8',
+                          therapistName: 'Dr. John Smith',
+                          therapistProfession: 'Psychologist',
+                        ),
+                        SizedBox(width: 10),
+                        TherapistCard(
+                          therapistImagePath: 'lib/images/doctor1.jpg',
+                          rating: '4.7',
+                          therapistName: 'Dr. Jane Doe',
+                          therapistProfession: 'Counselor',
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            // Other Pages
+            ChatPage(),
+            CalendarPage(),
+            SelfHelpPage(),
+          ],
+        ),
+      ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 20.0),
+        child: GNav(
+          backgroundColor: Colors.grey.shade300,
+          color: const Color.fromARGB(255, 97, 97, 97),
+          activeColor: Colors.deepPurple.shade500,
+          tabBackgroundColor: Colors.deepPurple.shade100,
+          duration: Duration(milliseconds: 900),
+          gap: 8,
+          padding: EdgeInsets.all(16),
+          selectedIndex: _selectedIndex,
+          onTabChange: _onNavBarTap,
+          tabs: const [
+            GButton(
+              icon: Icons.home,
+              text: 'Home',
+            ),
+            GButton(
+              icon: Icons.chat,
+              text: 'Chat',
+            ),
+            GButton(
+              icon: Icons.calendar_month,
+              text: 'Calendar',
+            ),
+            GButton(
+              icon: Icons.mediation,
+              text: 'Self-help',
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
