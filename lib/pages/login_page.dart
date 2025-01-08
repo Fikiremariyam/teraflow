@@ -9,21 +9,6 @@ class LoginPage extends StatelessWidget {
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
 
-  void signUserIn(BuildContext context) {
-    String username = usernameController.text;
-    String password = passwordController.text;
-
-    if (username.isEmpty || password.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please fill in both fields'),
-        ),
-      );
-    } else {
-      // Navigate to home page on successful login
-      Navigator.pushReplacementNamed(context, '/home');
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,8 +70,22 @@ class LoginPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 25),
                 // Sign in button
-                MyButton(
-                  onTab: () => signUserIn(context),
+                MyButton(onTab: ()  { 
+                        String username = usernameController.text;
+                        String password = passwordController.text;
+
+                        if (username.isEmpty || password.isEmpty) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Please fill in both fields'),
+                            ),
+                          );
+                        } else {
+                          // Navigate to home page on successful login
+                          Navigator.pushReplacementNamed(context, '/home');
+                        }
+  
+                  }
                 ),
                 const SizedBox(height: 50),
                 // Or continue with section
