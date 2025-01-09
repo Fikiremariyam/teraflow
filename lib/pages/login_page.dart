@@ -2,19 +2,71 @@ import 'package:flutter/material.dart';
 import 'package:teraflow/components/my_button.dart';
 import 'package:teraflow/components/my_textfield.dart';
 import 'package:teraflow/components/square_tile.dart';
+import 'package:form_validator/form_validator.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-class LoginPage extends StatelessWidget {
+bool showAuthResult(BuildContext context, String? errorMessage)  {
+  if (errorMessage != null) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Error'),
+          content: Text(errorMessage),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+    return true;
+  } else {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Success'),
+          content: Text('Authentication Successful'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  
+  return false;
+  }
+}
+
+class LoginPage extends StatefulWidget {
   LoginPage({super.key});
-
-  final usernameController = TextEditingController();
-  final passwordController = TextEditingController();
 
 
   @override
+  State <LoginPage> createState() => _LogInPageState();
+}
+class _LogInPageState extends State <LoginPage>{
+  
+  final usernameController = TextEditingController();
+  final passwordController = TextEditingController();
+@override 
+
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[300],
       body: SafeArea(
+        
         child: Center(
           child: SingleChildScrollView(
             child: Column(
@@ -70,22 +122,44 @@ class LoginPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 25),
                 // Sign in button
-                MyButton(onTab: ()  { 
-                        String username = usernameController.text;
-                        String password = passwordController.text;
+                MyButton(
+                  onTab: ()  
+                        async {
+                    try {
+                        await FirebaseAuth.instance.signInWithEmailAndPassword(email: usernameController!.toString(), password: passwordController!.toString());
+                        
+                        showAuthResult(context, null);
+                        if (mounted){
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=> const Homepage()));
+                    
+                          }
 
-                        if (username.isEmpty || password.isEmpty) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Please fill in both fields'),
-                            ),
-                          );
-                        } else {
-                          // Navigate to home page on successful login
-                          Navigator.pushReplacementNamed(context, '/home');
+                        } on FirebaseAuthException catch (
+                          error) {
+                          // Authentication failed
+                          if (error is FirebaseAuthException) {
+                            if (error.code == 'wrong-password') 
+                            {
+                              showAuthResult(context, 'wrong password.');
+                            } else if (error.code == 'invalid-email') 
+                            {
+                              showAuthResult(context, 'there is no account registerd with this email ');
+                            } else if (error.code == 'invalid-credential')
+                            {
+                              showAuthResult(context, 'wrong emai or password .');
+
+                            }else
+                             {
+                            
+                              showAuthResult(context, 'An unexpected error occurred.');
+                            }
+                          } 
+                          else {
+                            showAuthResult(context, 'An unexpected exeption  occurred.');
+                          }
+                        };
                         }
   
-                  }
                 ),
                 const SizedBox(height: 50),
                 // Or continue with section
