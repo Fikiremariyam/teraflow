@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:teraflow/components/my_button.dart';
 import 'package:teraflow/components/my_textfield.dart';
 import 'package:teraflow/components/square_tile.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:form_validator/form_validator.dart';
+
 
 class SignupPage extends StatefulWidget {
   @override
@@ -16,12 +20,76 @@ class _SignupPageState extends State<SignupPage> {
   String _role = 'Customer'; // Default role
   List<String> _roles = ['Customer', 'Therapist']; // Role options
 
+// to shwo the sucees message
+void showSuccessMessage(BuildContext context, String? successMessage) {
+  
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Success'),
+          content: Text('You have logged in successfully!'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+}
+// to show error message
+
+void showAuthResult(BuildContext context, String? errorMessage) {
+  if (errorMessage != null) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Error'),
+          content: Text(errorMessage),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  } else {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Success'),
+          content: Text('Authentication Successful'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
   // Registration logic
-  void registerUser(BuildContext context) {
+  void registerUser(BuildContext context)async  {
     String email = emailController.text.trim();
     String password = passwordController.text.trim();
     String confirmPassword = confirmPasswordController.text.trim();
-
+    String role = _role;
+    
     if (email.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please fill in all fields')),
@@ -40,12 +108,52 @@ class _SignupPageState extends State<SignupPage> {
         SnackBar(content: Text('Registration successful as $_role!')),
       );
 
-      // Navigate to the respective home page based on the selected role
-      if (_role == 'Customer') {
-        Navigator.pushReplacementNamed(context, '/home_customer');
-      } else {
-        Navigator.pushReplacementNamed(context, '/home_therapist');
-      }
+
+      
+      try{
+          UserCredential usercred =  await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email!, password: password!);
+          // Authentication successful
+        
+        
+        if (usercred.user != null) {
+          print("storing  the user");
+          // adding to database 
+
+          var data ={
+            'email' : email,
+            'password':password,
+            'role':role,
+            'created_at' : DateTime.now()
+          };
+
+
+        await FirebaseFirestore.instance.collection('users').doc(email).set(data);
+        showSuccessMessage(context, null);
+        
+        if (mounted){
+            Navigator.pushReplacementNamed(context,"/home_customer");
+        }
+        
+        }
+      
+        }on FirebaseAuthException catch  (
+        error) {
+        // Authentication failed
+        if (error is FirebaseAuthException) {
+          if (error.code == 'weak-password') {
+            showAuthResult(context, 'Password is too weak.');
+          } else if (error.code == 'email-already-in-use') {
+            showAuthResult(context, 'Email is already in use.');
+          } else {
+            showAuthResult(context, 'An unexpected error occurred.');
+          }
+        } else {
+          showAuthResult(context, 'An unexpected error occurred.');
+        }
+      };
+
+
+
     }
   }
 
@@ -103,8 +211,10 @@ class _SignupPageState extends State<SignupPage> {
                       _role = newValue!;
                     });
                   },
-                  items: _roles.map<DropdownMenuItem<String>>((String value) {
+                  items: _roles.map<DropdownMenuItem<String>>(
+                    (String value) {
                     return DropdownMenuItem<String>(
+            
                       value: value,
                       child: Text(value),
                     );
