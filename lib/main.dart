@@ -1,30 +1,38 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:teraflow/pages/home_page.dart';
 import 'package:teraflow/pages/login_page.dart';
-import 'package:teraflow/pages/home_page.dart'; // Add your HomePage widget here.
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'package:teraflow/pages/signup_page.dart';
+import 'package:teraflow/therapist/home_therapist.dart';
 
-void main()async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  runApp(const MyApp());
+void main() {
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-
-  const MyApp({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       initialRoute: '/login',
+      theme: ThemeData(
+        primarySwatch: Colors.deepPurple,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+      ),
       routes: {
-        '/login': (context) => FirebaseAuth.instance.currentUser == null ?  LoginPage():  HomePage(),
-        '/home': (context) =>  FirebaseAuth.instance.currentUser == null ?  LoginPage():  HomePage(),
+        '/login': (context) => LoginPage(),
+        '/signup': (context) => SignupPage(),
+        '/home_therapist': (context) =>
+            HomePaget(), // Route for therapist homepage
+        '/home_customer': (context) =>
+            HomePage(), // Route for customer homepage
       },
-      theme: ThemeData(primarySwatch: Colors.deepPurple),
+      onUnknownRoute: (settings) => MaterialPageRoute(
+        builder: (context) => Scaffold(
+          body: Center(
+            child: Text('404 - Page not found'),
+          ),
+        ),
+      ),
     );
   }
 }

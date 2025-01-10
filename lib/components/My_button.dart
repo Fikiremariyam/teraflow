@@ -2,8 +2,13 @@ import 'package:flutter/material.dart';
 
 class MyButton extends StatelessWidget {
   final VoidCallback onTab;
+  final String label;
 
-  const MyButton({Key? key, required this.onTab}) : super(key: key);
+  const MyButton({
+    super.key,
+    required this.onTab,
+    required this.label,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -16,13 +21,13 @@ class MyButton extends StatelessWidget {
           color: Colors.deepPurple,
           borderRadius: BorderRadius.circular(8),
         ),
-        child: const Center(
+        child: Center(
           child: Text(
-            'Sign In',
-            style: TextStyle(
+            label,
+            style: const TextStyle(
               color: Colors.white,
-              fontWeight: FontWeight.bold,
               fontSize: 16,
+              fontWeight: FontWeight.bold,
             ),
           ),
         ),
