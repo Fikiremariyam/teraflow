@@ -1,174 +1,174 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-
+import 'package:file_picker/file_picker.dart';
 
 class TherapistProfile extends StatefulWidget {
+  final Function(File, String, String) onProfileInfoChanged;
+
+  TherapistProfile({required this.onProfileInfoChanged});
+
   @override
   _TherapistProfileState createState() => _TherapistProfileState();
 }
 
 class _TherapistProfileState extends State<TherapistProfile> {
-  XFile? _profileImage;
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _experienceController = TextEditingController();
-  final TextEditingController _specializationController =
-      TextEditingController();
+  File? _profileImage;
+  File? _cvFile;
+  TextEditingController _nameController = TextEditingController();
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _phoneController = TextEditingController();
+  TextEditingController _addressController = TextEditingController();
 
+  @override
+  void initState() {
+    super.initState();
+    // Example initial values
+    _nameController.text = "Dr. Aman Moges";
+    _emailController.text = "Amanmo@gmail.com";
+    _phoneController.text = "+251 912 345 678";
+    _addressController.text = "Addis Ababa, Ethiopia";
+  }
+
+  // Method to pick an image for the profile
   Future<void> _pickImage() async {
     final ImagePicker _picker = ImagePicker();
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
     if (image != null) {
       setState(() {
-        _profileImage = image;
+        _profileImage = File(image.path);
       });
     }
+  }
+
+  // Method to pick a CV file
+  Future<void> _pickCV() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['pdf'],
+    );
+    if (result != null) {
+      setState(() {
+        _cvFile = File(result.files.single.path!);
+      });
+    }
+  }
+
+  // Save Profile Information
+  void _saveProfile() {
+    widget.onProfileInfoChanged(
+      _profileImage ?? File(''), // Ensure no null value
+      _nameController.text,
+      _emailController.text,
+    );
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Profile updated successfully!")),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        color: Colors.grey[300],
+      backgroundColor: Colors.grey.shade300,
+      body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
+          // Wrap with SingleChildScrollView
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Profile Image
               Center(
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    CircleAvatar(
-                      radius: 50,
-                      backgroundColor: Colors.deepPurple.shade50,
-                      backgroundImage: _profileImage != null
-                          ? FileImage(File(_profileImage!.path))
-                          : AssetImage('assets/profile_placeholder.png')
-                              as ImageProvider,
-                    ),
-                    Positioned(
-                      bottom: 0,
-                      right: -6,
-                      child: GestureDetector(
-                        onTap: _pickImage,
-                        child: CircleAvatar(
-                          radius: 18,
-                          backgroundColor: Colors.deepPurple,
-                          child: Icon(Icons.camera_alt,
-                              color: Colors.white, size: 20),
-                        ),
-                      ),
-                    ),
-                  ],
+                child: CircleAvatar(
+                  radius: 50,
+                  backgroundImage: _profileImage != null
+                      ? FileImage(_profileImage!)
+                      : AssetImage('lib/images/doctor1.jpg') as ImageProvider,
+                ),
+              ),
+              SizedBox(height: 10),
+              Center(
+                child: ElevatedButton.icon(
+                  onPressed: _pickImage,
+                  icon: Icon(Icons.camera_alt),
+                  label: Text('Change Profile Picture'),
                 ),
               ),
               SizedBox(height: 20),
-              ProfileField(
-                label: "Name",
-                hint: "Enter your name",
-                icon: Icons.person,
+
+              // Editable Fields
+              TextFormField(
                 controller: _nameController,
-              ),
-              ProfileField(
-                label: "Email",
-                hint: "Enter your email",
-                icon: Icons.email,
-                controller: _emailController,
+                decoration: InputDecoration(
+                  labelText: 'Full Name',
+                  border: OutlineInputBorder(),
+                ),
               ),
               SizedBox(height: 10),
+              TextFormField(
+                controller: _emailController,
+                decoration: InputDecoration(
+                  labelText: 'Email',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              SizedBox(height: 10),
+              TextFormField(
+                controller: _phoneController,
+                decoration: InputDecoration(
+                  labelText: 'Phone Number',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              SizedBox(height: 10),
+              TextFormField(
+                controller: _addressController,
+                decoration: InputDecoration(
+                  labelText: 'Address',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              SizedBox(height: 20),
+
+              // CV Upload Section
               Text(
-                "Upload CV",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                'Upload Your CV:',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 10),
               ElevatedButton.icon(
-                onPressed: () {
-                  // Add functionality to upload CV
-                },
+                onPressed: _pickCV,
                 icon: Icon(Icons.upload_file),
-                label: Text("Upload"),
+                label: Text('Upload CV'),
               ),
+              if (_cvFile != null) ...[
+                SizedBox(height: 10),
+                Text(
+                  'CV Uploaded: ${_cvFile!.path.split('/').last}',
+                  style: TextStyle(
+                      fontSize: 16,
+                      color: const Color.fromARGB(255, 3, 28, 99)),
+                ),
+              ],
+
               SizedBox(height: 20),
-              Text(
-                "Experience",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-              ),
-              SizedBox(height: 10),
-              ProfileField(
-                label: "Years of Experience",
-                hint: "Enter your experience",
-                icon: Icons.timeline,
-                controller: _experienceController,
-              ),
-              ProfileField(
-                label: "Specialization",
-                hint: "Enter your specialization",
-                icon: Icons.star,
-                controller: _specializationController,
-              ),
-              SizedBox(height: 20),
-              Divider(),
-              ListTile(
-                leading: Icon(Icons.settings),
-                title: Text("Settings"),
-                onTap: () {
-                  // Navigate to settings page
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.support_agent),
-                title: Text("Contact Support"),
-                onTap: () {
-                  // Navigate to contact support page
-                },
+
+              // Save Button
+              Center(
+                child: ElevatedButton(
+                  onPressed: _saveProfile,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                  ),
+                  child: Text(
+                    'Save Profile',
+                  ),
+                ),
               ),
             ],
           ),
         ),
       ),
-    );
-  }
-}
-
-class ProfileField extends StatelessWidget {
-  final String label;
-  final String hint;
-  final IconData icon;
-  final TextEditingController? controller; // Make it nullable
-
-  const ProfileField({
-    required this.label,
-    required this.hint,
-    required this.icon,
-    this.controller, // Make this nullable so we can pass null
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
-            color: Colors.deepPurple[700],
-          ),
-        ),
-        SizedBox(height: 10),
-        TextField(
-          controller: controller, // Use the controller here
-          decoration: InputDecoration(
-            hintText: hint,
-            prefixIcon: Icon(icon),
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-          ),
-        ),
-        SizedBox(height: 10),
-      ],
     );
   }
 }

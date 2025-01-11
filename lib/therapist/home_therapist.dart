@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:teraflow/therapist/blog_page.dart';
 import 'package:teraflow/therapist/calendar_therapist.dart';
@@ -13,18 +14,30 @@ class HomePaget extends StatefulWidget {
 
 class _HomePagetState extends State<HomePaget> {
   int _selectedIndex = 0;
+  File? _profileImage;
+  String _name = "Dr. Amla Douge";
+  String _email = "therapist@theraflow.com";
 
-  // Pages to navigate
+  // Callback to update profile image, name, and email
+  void _updateProfileInfo(File newImage, String newName, String newEmail) {
+    setState(() {
+      _profileImage = newImage;
+      _name = newName;
+      _email = newEmail;
+    });
+  }
+
   final List<Widget> _pages = [
-    TherapistProfile(), // Profile page first
-    ClientPage(), // Client page second
-    CalendarTherapist(), // Calendar page third
-    ChatTherapist(), // Chat page fourth
-    BlogPage(), // Blog page fifth
-    FinancePage(), // Finance page sixth
+    TherapistProfile(
+      onProfileInfoChanged: (File newImage, String newName, String newEmail) {},
+    ), // Profile page first
+    ClientPage(),
+    CalendarTherapist(),
+    ChatTherapist(),
+    BlogPage(),
+    FinancePage(),
   ];
 
-  // Titles for each page
   final List<String> _titles = [
     'Profile',
     'Client',
@@ -34,46 +47,30 @@ class _HomePagetState extends State<HomePaget> {
     'Finance',
   ];
 
-  // Background colors for AppBar
-  final List<Color> _backgroundColors = [
-    Colors.deepPurple[200]!,
-    Colors.deepPurple[200]!,
-    Colors.deepPurple[200]!,
-    Colors.deepPurple[200]!,
-    Colors.deepPurple[200]!,
-    Colors.deepPurple[200]!,
-  ];
-
-  // Handle Drawer item tap
   void _onDrawerItemTapped(int index) {
-    if (index < _pages.length) {
-      setState(() {
-        _selectedIndex = index;
-      });
-    } else {
-      print("Page not implemented yet");
-    }
-    Navigator.of(context).pop(); // Close drawer after selection
+    setState(() {
+      _selectedIndex = index;
+    });
+    Navigator.of(context).pop();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[300], // Background color for the whole page
       appBar: AppBar(
-        title: Text(_titles[_selectedIndex]), // Dynamically change title
-        backgroundColor:
-            _backgroundColors[_selectedIndex], // Dynamic AppBar color
+        title: Text(_titles[_selectedIndex]),
+        backgroundColor: Colors.deepPurple[200],
       ),
       drawer: Drawer(
         child: ListView(
-          padding: EdgeInsets.zero,
           children: <Widget>[
             UserAccountsDrawerHeader(
-              accountName: Text("Dr. Amla Douge"),
-              accountEmail: Text("therapist@theraflow.com"),
+              accountName: Text(_name),
+              accountEmail: Text(_email),
               currentAccountPicture: CircleAvatar(
-                backgroundImage: AssetImage('lib/images/doctor1.jpg'),
+                backgroundImage: _profileImage != null
+                    ? FileImage(_profileImage!)
+                    : AssetImage('lib/images/doctor1.jpg') as ImageProvider,
               ),
             ),
             ListTile(
@@ -106,7 +103,13 @@ class _HomePagetState extends State<HomePaget> {
       body: SafeArea(
         child: IndexedStack(
           index: _selectedIndex,
-          children: _pages,
+          children: _pages.map((page) {
+            if (page is TherapistProfile) {
+              return TherapistProfile(
+                  onProfileInfoChanged: _updateProfileInfo); // Corrected
+            }
+            return page;
+          }).toList(),
         ),
       ),
     );
