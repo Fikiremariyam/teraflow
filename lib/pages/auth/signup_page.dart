@@ -132,7 +132,6 @@ void showAuthResult(BuildContext context, String? errorMessage) {
         if (mounted){
             Navigator.pushReplacementNamed(context,"/home_customer");
             print("++++++++++++++++++++++++++++++++++++++++++++");
-        print("logged");
         }
         
         }
