@@ -128,10 +128,11 @@ void showAuthResult(BuildContext context, String? errorMessage) {
 
 
         await FirebaseFirestore.instance.collection('users').doc(email).set(data);
-        showSuccessMessage(context, null);
         
         if (mounted){
             Navigator.pushReplacementNamed(context,"/home_customer");
+            print("++++++++++++++++++++++++++++++++++++++++++++");
+        print("logged");
         }
         
         }

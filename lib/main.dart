@@ -25,11 +25,12 @@ class MyApp extends StatelessWidget {
       ),
       routes: {
         '/login': (context) => FirebaseAuth.instance.currentUser == null ?  LoginPage():  HomePage(),
-        '/signup': (context) => SignupPage(),
+        '/signup': (context) =>  FirebaseAuth.instance.currentUser == null ?  SignupPage():  HomePage(),
         '/home_therapist': (context) =>
-            HomePaget(), // Route for therapist homepage
+        FirebaseAuth.instance.currentUser == null ?  LoginPage():  HomePaget(),
+            
         '/home_customer': (context) =>
-            HomePage(), // Route for customer homepage
+            FirebaseAuth.instance.currentUser == null ?  LoginPage():  HomePage(),
       },
       onUnknownRoute: (settings) => MaterialPageRoute(
         builder: (context) => Scaffold(

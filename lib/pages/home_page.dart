@@ -6,6 +6,9 @@ import 'package:teraflow/pages/calendar_page.dart';
 import 'package:teraflow/pages/chat_page.dart';
 import 'package:teraflow/pages/selfhelp_page.dart';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
@@ -31,7 +34,26 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      
       backgroundColor: Colors.grey[300],
+      drawer: Drawer(
+        child: ListView(
+          children: [
+            Expanded(child: Text( FirebaseAuth.instance.currentUser?.email ?? 'no email avalibe ' )),
+            ListTile(
+              onTap: () async{
+                            FirebaseAuth.instance.signOut(); 
+                            Navigator.pushReplacementNamed(context,"/home_customer");
+                
+                              },
+              title: Text(
+                "Sign Out"
+              ),
+            )
+          ],
+        ),
+      ),
+      
       body: SafeArea(
         child: IndexedStack(
           index: _selectedIndex,
