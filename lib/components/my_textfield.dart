@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:form_validator/form_validator.dart';
 
 class MyTextfield extends StatelessWidget {
   final controller;
@@ -16,7 +17,8 @@ class MyTextfield extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 25.0),
-      child: TextField(
+      child: TextFormField(
+        validator: ValidationBuilder().email().maxLength(50).build(),
         controller: controller,
         obscureText: obscureText,
         decoration: InputDecoration(

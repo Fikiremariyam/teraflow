@@ -13,6 +13,7 @@ class SignupPage extends StatefulWidget {
 }
 
 class _SignupPageState extends State<SignupPage> {
+
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
@@ -85,34 +86,17 @@ void showAuthResult(BuildContext context, String? errorMessage) {
 
   // Registration logic
   void registerUser(BuildContext context)async  {
+    print("started the logining prcess");
     String email = emailController.text.trim();
     String password = passwordController.text.trim();
     String confirmPassword = confirmPasswordController.text.trim();
     String role = _role;
     
-    if (email.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill in all fields')),
-      );
-    } else if (password != confirmPassword) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Passwords do not match')),
-      );
-    } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(email)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter a valid email address')),
-      );
-    } else {
-      // Direct login simulation after successful registration
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Registration successful as $_role!')),
-      );
-
-
       
       try{
+        print("sent message for firebase Auth");
           UserCredential usercred =  await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email!, password: password!);
-          // Authentication successful
+        print("done loging in the firebase auth");
         
         
         if (usercred.user != null) {
@@ -130,6 +114,9 @@ void showAuthResult(BuildContext context, String? errorMessage) {
         await FirebaseFirestore.instance.collection('users').doc(email).set(data);
         
         if (mounted){
+          if (role ==""){
+
+          }
             Navigator.pushReplacementNamed(context,"/home_customer");
             print("++++++++++++++++++++++++++++++++++++++++++++");
         }
@@ -155,7 +142,8 @@ void showAuthResult(BuildContext context, String? errorMessage) {
 
 
     }
-  }
+    
+  
 
   @override
   Widget build(BuildContext context) {
