@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:teraflow/util/category_card.dart';
 import 'package:teraflow/util/therapist_card.dart';
 import 'package:teraflow/pages/calendar_page.dart';
@@ -17,7 +18,6 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
 
-  
   // ignore: unused_field
   final List<Widget> _pages = [
     ChatPage(),
@@ -34,26 +34,147 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
       backgroundColor: Colors.grey[300],
       drawer: Drawer(
-        child: ListView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(child: Text( FirebaseAuth.instance.currentUser?.email ?? 'no email avalibe ' )),
-            ListTile(
-              onTap: () async{
-                            FirebaseAuth.instance.signOut(); 
-                            Navigator.pushReplacementNamed(context,"/home_customer");
-                
-                              },
-              title: Text(
-                "Sign Out"
+            // Profile Section
+            UserAccountsDrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.deepPurple[300],
               ),
-            )
+              currentAccountPicture: GestureDetector(
+                onTap: () async {
+                  // Simplified logic to pick a local image without Firebase
+                  final ImagePicker picker = ImagePicker();
+                  final XFile? image =
+                      await picker.pickImage(source: ImageSource.gallery);
+                  if (image != null) {
+                    // Optionally update a local state or show the image temporarily
+                    setState(() {}); // Trigger UI update if necessary
+                  }
+                },
+                child: CircleAvatar(
+                  backgroundImage:
+                      FirebaseAuth.instance.currentUser?.photoURL != null
+                          ? NetworkImage(
+                              FirebaseAuth.instance.currentUser!.photoURL!)
+                          : AssetImage('lib/images/default_profile.png')
+                              as ImageProvider,
+                ),
+              ),
+              accountName: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: TextEditingController(
+                        text: FirebaseAuth.instance.currentUser?.displayName ??
+                            '',
+                      ),
+                      decoration: InputDecoration(
+                        hintText: 'Enter your name',
+                        border: InputBorder.none,
+                      ),
+                      onSubmitted: (newName) async {
+                        // You can update the name locally if needed
+                        setState(() {});
+                      },
+                    ),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.edit),
+                    onPressed: () {
+                      // Optional: Open another dialog for editing
+                    },
+                  ),
+                ],
+              ),
+              accountEmail: Text(
+                FirebaseAuth.instance.currentUser?.email ??
+                    'No email available',
+              ),
+            ),
+
+            // Phone Number Section
+            ListTile(
+              leading: Icon(Icons.phone),
+              title: Text('Phone Number'),
+              subtitle: Text(
+                FirebaseAuth.instance.currentUser?.phoneNumber ??
+                    'No phone number added',
+              ),
+              trailing: Icon(Icons.edit),
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    TextEditingController phoneController =
+                        TextEditingController();
+                    return AlertDialog(
+                      title: Text('Update Phone Number'),
+                      content: TextField(
+                        controller: phoneController,
+                        keyboardType: TextInputType.phone,
+                        decoration: InputDecoration(
+                          hintText: 'Enter phone number',
+                        ),
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () async {
+                            String phoneNumber = phoneController.text.trim();
+                            // Save phone number to the database (or other logic)
+                            // Note: FirebaseAuth does not directly support phone updates
+                            // You can save this in your database
+                            Navigator.pop(context);
+                          },
+                          child: Text('Save'),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+            ),
+
+            // Dark Mode Toggle
+            ListTile(
+              leading: Icon(Icons.dark_mode),
+              title: Text('Dark Mode'),
+              trailing: Switch(
+                value: Theme.of(context).brightness == Brightness.dark,
+                onChanged: (value) {
+                  // Implement dark mode toggle logic
+                  if (value) {
+                    // Switch to dark theme
+                    setState(() {
+                      // Update app theme to dark mode
+                      // Example: ThemeData.dark() or custom theme
+                    });
+                  } else {
+                    // Switch to light theme
+                    setState(() {
+                      // Update app theme to light mode
+                      // Example: ThemeData.light() or custom theme
+                    });
+                  }
+                },
+              ),
+            ),
+
+            // Sign Out
+            ListTile(
+              leading: Icon(Icons.logout),
+              title: Text('Sign Out'),
+              onTap: () async {
+                await FirebaseAuth.instance.signOut();
+                Navigator.pushReplacementNamed(context, "/login");
+              },
+            ),
           ],
         ),
       ),
-      
       body: SafeArea(
         child: IndexedStack(
           index: _selectedIndex,
