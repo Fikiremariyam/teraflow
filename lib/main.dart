@@ -5,12 +5,12 @@ import 'package:teraflow/pages/auth/signup_page.dart';
 import 'package:teraflow/therapist/home_therapist.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(const MyApp());
 }
-
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -25,13 +25,19 @@ class MyApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       routes: {
-        '/login': (context) => FirebaseAuth.instance.currentUser == null ?  LoginPage():  HomePage(),
-        '/signup': (context) =>  FirebaseAuth.instance.currentUser == null ?  SignupPage():  HomePage(),
+        '/login': (context) => FirebaseAuth.instance.currentUser == null
+            ? LoginPage()
+            : HomePage(),
+        '/signup': (context) => FirebaseAuth.instance.currentUser == null
+            ? SignupPage()
+            : HomePage(),
         '/home_therapist': (context) =>
-        FirebaseAuth.instance.currentUser == null ?  LoginPage():  HomePaget(),
-            
-        '/home_customer': (context) =>
-            FirebaseAuth.instance.currentUser == null ?  LoginPage():  HomePage(),
+            FirebaseAuth.instance.currentUser == null
+                ? LoginPage()
+                : HomePaget(),
+        '/home_customer': (context) => FirebaseAuth.instance.currentUser == null
+            ? LoginPage()
+            : HomePage(),
       },
       onUnknownRoute: (settings) => MaterialPageRoute(
         builder: (context) => Scaffold(
