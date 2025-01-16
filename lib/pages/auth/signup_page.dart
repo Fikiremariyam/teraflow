@@ -131,7 +131,10 @@ void showAuthResult(BuildContext context, String? errorMessage) {
             showAuthResult(context, 'Password is too weak.');
           } else if (error.code == 'email-already-in-use') {
             showAuthResult(context, 'Email is already in use.');
-          } else {
+          } else if (error.code == 'The email address is badly formatted'){
+            showAuthResult(context,'An unexpected error occurred.');
+
+          }else {
             showAuthResult(context, 'An unexpected error occurred.');
           }
         } else {
@@ -178,11 +181,28 @@ void showAuthResult(BuildContext context, String? errorMessage) {
                 ),
                 const SizedBox(height: 10),
                 // Password Input
-                MyTextfield(
-                  controller: passwordController,
-                  hintText: 'Password',
-                  obscureText: true,
-                ),
+                Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                    child: TextFormField(
+                      validator: ValidationBuilder().email().maxLength(50).build(),
+                      controller: passwordController,
+                      
+                      decoration: InputDecoration(
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.grey.shade400),
+                          ),
+                          fillColor: Colors.grey.shade200,
+                          filled: true,
+                          hintText: 'password',
+                          hintStyle: TextStyle(
+                            color: Colors.deepPurple[200],
+                          )
+                          ),
+                    ),
+                  ),
                 const SizedBox(height: 10),
                 // Confirm Password Input
                 MyTextfield(

@@ -6,6 +6,8 @@ import 'package:teraflow/components/my_textfield.dart';
 import 'package:teraflow/components/square_tile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:form_validator/form_validator.dart';
+
 
 class LoginPage extends StatefulWidget {
    @override
