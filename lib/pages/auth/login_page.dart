@@ -21,6 +21,7 @@ class _LogInPageState extends State<LoginPage> {
 
   final emailController = TextEditingController(); // Change to email controller
   final passwordController = TextEditingController();
+// a funciton to show the status of the message after we clicked it 
 
   void showSuccessMessage(BuildContext context, String? successMessage) {
   
@@ -42,6 +43,7 @@ class _LogInPageState extends State<LoginPage> {
       },
     );
 }
+
 // to show error message
 
 void showAuthResult(BuildContext context, String? errorMessage) {
@@ -83,11 +85,10 @@ void showAuthResult(BuildContext context, String? errorMessage) {
     );
   }
 }
+ 
+// a funciton which  wich do the log in funcnality 
 
-
-
-
-   void logUserIn (BuildContext content) async{
+void logUserIn (BuildContext content) async{
 
     String email = emailController.text; // Change to email
     String password = passwordController.text;
@@ -101,6 +102,8 @@ void showAuthResult(BuildContext context, String? errorMessage) {
         .get();
         print(userDoc);
         if (mounted){
+          var role=FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser!.uid).get();
+          print(role);
         Navigator.pushReplacementNamed(context, "/login");                     
           }
 

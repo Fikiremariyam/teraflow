@@ -114,9 +114,7 @@ void showAuthResult(BuildContext context, String? errorMessage) {
         await FirebaseFirestore.instance.collection('users').doc(email).set(data);
         
         if (mounted){
-          if (role ==""){
-
-          }
+          
             Navigator.pushReplacementNamed(context,"/home_customer");
             print("++++++++++++++++++++++++++++++++++++++++++++");
         }

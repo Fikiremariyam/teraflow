@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:teraflow/pages/home_page.dart';
 import 'package:teraflow/pages/auth/login_page.dart';
@@ -11,9 +12,14 @@ void main() async {
   await Firebase.initializeApp();
   runApp(const MyApp());
 }
-
-class MyApp extends StatelessWidget {
+ class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
@@ -27,17 +33,45 @@ class MyApp extends StatelessWidget {
       routes: {
         '/login': (context) => FirebaseAuth.instance.currentUser == null
             ? LoginPage()
-            : HomePage(),
+            :FutureBuilder(
+              future: FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser!.email).get(), 
+              builder: (context,snapshot){
+              if (snapshot.connectionState == ConnectionState.waiting){
+                return CircularProgressIndicator();
+
+              }
+              var role = snapshot.data!.get('role');
+              print("+++++++++++++++++++++++++");
+              print(role);
+              if (role =="Customer"){
+                return HomePage();
+
+              }
+              else {
+                return  HomePaget();
+              } 
+            }),
+
         '/signup': (context) => FirebaseAuth.instance.currentUser == null
             ? SignupPage()
-            : HomePage(),
-        '/home_therapist': (context) =>
-            FirebaseAuth.instance.currentUser == null
-                ? LoginPage()
-                : HomePaget(),
-        '/home_customer': (context) => FirebaseAuth.instance.currentUser == null
-            ? LoginPage()
-            : HomePage(),
+            : FutureBuilder(
+              future: FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser!.email).get(), 
+              builder: (context,snapshot){
+              if (snapshot.connectionState == ConnectionState.waiting){
+                return CircularProgressIndicator();
+
+              }
+              var role = snapshot.data!.get('role');
+              if (role =="custmer"){
+                return HomePage();
+
+              }
+              else {
+                return  HomePaget();
+              } 
+            }),
+
+        
       },
       onUnknownRoute: (settings) => MaterialPageRoute(
         builder: (context) => Scaffold(

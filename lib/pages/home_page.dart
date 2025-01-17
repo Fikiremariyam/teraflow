@@ -17,6 +17,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>(); // Create a GlobalKey for Scaffold
+
 
   // ignore: unused_field
   final List<Widget> _pages = [
@@ -34,8 +36,9 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: Colors.grey[300],
-      drawer: Drawer(
+      drawer: Drawer(//a drawer which  contains the user prfile and some of navications 
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -210,6 +213,12 @@ class _HomePageState extends State<HomePage> {
                             ],
                           ),
                         ),
+                       GestureDetector(
+                        onTap: ()
+                                      {
+                                        _scaffoldKey.currentState?.openDrawer();
+                                      }, 
+                       child: 
                         Container(
                           padding: EdgeInsets.all(12),
                           decoration: BoxDecoration(
@@ -218,6 +227,7 @@ class _HomePageState extends State<HomePage> {
                           ),
                           child: Icon(Icons.person),
                         ),
+                        )
                       ],
                     ),
                   ),

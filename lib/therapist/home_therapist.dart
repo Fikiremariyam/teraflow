@@ -6,6 +6,7 @@ import 'package:teraflow/therapist/chat_therapist.dart';
 import 'package:teraflow/therapist/finance_page.dart';
 import 'package:teraflow/therapist/client_page.dart';
 import 'package:teraflow/therapist/therapist_profile.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class HomePaget extends StatefulWidget {
   @override
@@ -97,6 +98,15 @@ class _HomePagetState extends State<HomePaget> {
               title: Text('Finance'),
               onTap: () => _onDrawerItemTapped(5),
             ),
+            ListTile(
+              leading: Icon(Icons.logout),
+              title: Text('Sign Out'),
+              onTap: () async {
+                await FirebaseAuth.instance.signOut();
+                Navigator.pushReplacementNamed(context, "/login");
+              },
+            ),
+
           ],
         ),
       ),
