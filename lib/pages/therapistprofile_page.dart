@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:teraflow/util/bookschedule_popup.dart';
 
 class TherapistPortfolioPage extends StatelessWidget {
   final Map<String, dynamic> therapist;
@@ -71,72 +72,98 @@ class TherapistPortfolioPage extends StatelessWidget {
                 ),
               ),
 
-              SizedBox(height: 25.0),
+              SizedBox(height: 2.0),
 
               // Profile Section (with minimized profile pic and rearranged details)
               Container(
                 padding: EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Color.fromARGB(
-                      255, 221, 182, 138), // Updated background color
+                  color: Color.fromARGB(255, 221, 182, 138),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Column(
                   children: [
-                    Row(
+                    SizedBox(height: 10),
+                    // Stack for overlapping profile picture on top-left of the white container
+                    Stack(
                       children: [
-                        // Minimized Profile Picture
-                        CircleAvatar(
-                          backgroundImage: AssetImage(
-                              therapist['image'] ?? 'assets/profile.jpg'),
-                          radius: 30,
-                        ),
-                        SizedBox(width: 16.0),
-                        // Name and Rating
-                        Expanded(
+                        // White Container with Name, Rating, and Note
+                        Container(
+                          margin: EdgeInsets.only(
+                              left:
+                                  20), // Shift the white container to the left by 20
+                          padding: EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
+                              // Name and Rating
                               Text(
                                 therapist['name'] ?? 'No Name Available',
                                 style: TextStyle(
                                     fontSize: 22, fontWeight: FontWeight.bold),
                               ),
-                              SizedBox(height: 4.0),
-                              Row(
-                                children: List.generate(
-                                  5,
-                                  (index) => Icon(
-                                    Icons.star,
-                                    color: index < (therapist['rating'] ?? 0)
-                                        ? Colors.amber
-                                        : Colors.grey[300],
-                                    size: 16.0,
+                              SizedBox(height: 8.0),
+                              // Rating (Centered)
+                              Center(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: List.generate(
+                                    5,
+                                    (index) => Icon(
+                                      Icons.star,
+                                      color: index < (therapist['rating'] ?? 0)
+                                          ? Colors.amber
+                                          : Colors.grey[300],
+                                      size: 16.0,
+                                    ),
                                   ),
                                 ),
+                              ),
+                              SizedBox(height: 8.0),
+                              // Therapist Note
+                              Text(
+                                therapist['note'] ??
+                                    'No note available for this therapist',
+                                style: TextStyle(
+                                    fontSize: 16, color: Colors.black),
                               ),
                             ],
                           ),
                         ),
+                        // Profile Picture overlapping on top-left of the white container
+                        Positioned(
+                          left:
+                              10, // Negative value to make the profile picture overlap on the left side
+                          top: -2, // Negative value for overlap effect
+                          child: CircleAvatar(
+                            backgroundImage: AssetImage(
+                              therapist['image'] ?? 'assets/profile.jpg',
+                            ),
+                            radius: 30,
+                          ),
+                        ),
                       ],
                     ),
-                    SizedBox(height: 16.0),
-
-                    // Therapist Note
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: Text(
-                        therapist['note'] ??
-                            'No note available for this therapist',
-                        style: TextStyle(fontSize: 16, color: Colors.black),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-
+                    SizedBox(height: 10.0),
                     // Book a Schedule Button
                     Center(
                       child: ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          String therapistName =
+                              therapist['name'] ?? 'Therapist Name';
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return BookschedulePopup(
+                                therapistName: therapistName,
+                              );
+                            },
+                          );
+                        },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.deepPurple[300],
                           padding: EdgeInsets.symmetric(
