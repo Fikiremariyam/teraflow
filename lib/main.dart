@@ -12,7 +12,8 @@ void main() async {
   await Firebase.initializeApp();
   runApp(const MyApp());
 }
- class MyApp extends StatefulWidget {
+
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   @override
@@ -20,7 +21,6 @@ void main() async {
 }
 
 class _MyAppState extends State<MyApp> {
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -33,45 +33,42 @@ class _MyAppState extends State<MyApp> {
       routes: {
         '/login': (context) => FirebaseAuth.instance.currentUser == null
             ? LoginPage()
-            :FutureBuilder(
-              future: FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser!.email).get(), 
-              builder: (context,snapshot){
-              if (snapshot.connectionState == ConnectionState.waiting){
-                return CircularProgressIndicator();
-
-              }
-              var role = snapshot.data!.get('role');
-              print("+++++++++++++++++++++++++");
-              print(role);
-              if (role =="Customer"){
-                return HomePage();
-
-              }
-              else {
-                return  HomePaget();
-              } 
-            }),
-
+            : FutureBuilder(
+                future: FirebaseFirestore.instance
+                    .collection('users')
+                    .doc(FirebaseAuth.instance.currentUser!.email)
+                    .get(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator();
+                  }
+                  var role = snapshot.data!.get('role');
+                  print("+++++++++++++++++++++++++");
+                  print(role);
+                  if (role == "Customer") {
+                    return HomePage();
+                  } else {
+                    return HomePaget();
+                  }
+                }),
         '/signup': (context) => FirebaseAuth.instance.currentUser == null
             ? SignupPage()
             : FutureBuilder(
-              future: FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser!.email).get(), 
-              builder: (context,snapshot){
-              if (snapshot.connectionState == ConnectionState.waiting){
-                return CircularProgressIndicator();
-
-              }
-              var role = snapshot.data!.get('role');
-              if (role =="custmer"){
-                return HomePage();
-
-              }
-              else {
-                return  HomePaget();
-              } 
-            }),
-
-        
+                future: FirebaseFirestore.instance
+                    .collection('users')
+                    .doc(FirebaseAuth.instance.currentUser!.email)
+                    .get(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator();
+                  }
+                  var role = snapshot.data!.get('role');
+                  if (role == "custmer") {
+                    return HomePage();
+                  } else {
+                    return HomePaget();
+                  }
+                }),
       },
       onUnknownRoute: (settings) => MaterialPageRoute(
         builder: (context) => Scaffold(
