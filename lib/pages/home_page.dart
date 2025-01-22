@@ -5,8 +5,8 @@ import 'package:teraflow/util/category_card.dart';
 import 'package:teraflow/util/therapist_card.dart';
 import 'package:teraflow/pages/calendar_page.dart';
 import 'package:teraflow/pages/chat_page.dart';
+import 'package:teraflow/pages/chatpage_main.dart';
 import 'package:teraflow/pages/selfhelp_page.dart';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -418,7 +418,7 @@ class _HomePageState extends State<HomePage> {
             ),
 
             // Other Pages
-            ChatPage(),
+            ChatpageMain(recieverEmail: 'abcd@gmail.com',),
             CalendarPage(),
             SelfHelpPage(),
           ],
