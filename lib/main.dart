@@ -42,7 +42,7 @@ class _MyAppState extends State<MyApp> {
               }
               var role = snapshot.data!.get('role');
               print("+++++++++++++++++++++++++");
-              print(role);
+
               if (role =="Customer"){
                 return HomePage();
 
