@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:teraflow/pages/searchpage.dart';
 import 'package:teraflow/util/category_card.dart';
 import 'package:teraflow/util/therapist_card.dart';
 import 'package:teraflow/pages/calendar_page.dart';
-import 'package:teraflow/pages/chat_page.dart';
-import 'package:teraflow/pages/chatpage_main.dart';
+import 'package:teraflow/pages/utils/chats/chatlist_page.dart';
+import 'package:teraflow/pages/utils/chats/chatpage_main.dart';
 import 'package:teraflow/pages/selfhelp_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -360,11 +361,22 @@ class _HomePageState extends State<HomePage> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        Text(
-                          'see all',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.grey[500],
+                        InkWell(
+                          onTap:() {
+                            Navigator.of(context).push(MaterialPageRoute (
+                                    builder: (context) => const Searchpage()
+                                    ),
+                                    );//navigator
+
+
+
+                          },
+                          child: Text(
+                            'see all',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey[500],
+                            ),
                           ),
                         ),
                       ],
@@ -418,7 +430,7 @@ class _HomePageState extends State<HomePage> {
             ),
 
             // Other Pages
-            ChatpageMain(recieverEmail: 'abcd@gmail.com',),
+            ChatPage(),
             CalendarPage(),
             SelfHelpPage(),
           ],
