@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:teraflow/pages/searchpage.dart';
 import 'package:teraflow/util/category_card.dart';
 import 'package:teraflow/util/therapist_card.dart';
 import 'package:teraflow/pages/calendar_page.dart';
-import 'package:teraflow/pages/chat_page.dart';
+import 'package:teraflow/pages/utils/chats/chatlist_page.dart';
+import 'package:teraflow/pages/utils/chats/chatpage_main.dart';
 import 'package:teraflow/pages/selfhelp_page.dart';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -36,6 +37,51 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.grey[300],
+        automaticallyImplyLeading: false,
+        title: Row(
+          children: [
+            GestureDetector(
+              onTap: () {
+                _scaffoldKey.currentState?.openDrawer();
+              },
+              child: Container(
+                padding: EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.deepPurple[100],
+                  borderRadius: BorderRadius.circular(50),
+                ),
+                child: Icon(Icons.person),
+              ),
+            ),
+            SizedBox(width: 8.0),
+            Expanded(
+              child: Container(
+                height: 40.0,
+                decoration: BoxDecoration(
+                  color: Colors.grey[200],
+                  borderRadius: BorderRadius.circular(12.0),
+                ),
+                child: TextField(
+                  decoration: InputDecoration(
+                    hintText: 'Search ...',
+                    hintStyle: TextStyle(color: Colors.grey[600]),
+                    prefixIcon:
+                        Icon(Icons.search, color: Colors.deepPurple[200]),
+                    border: InputBorder.none,
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(width: 8.0),
+            IconButton(
+              icon: Icon(Icons.notifications, color: Colors.deepPurple[200]),
+              onPressed: () {},
+            ),
+          ],
+        ),
+      ),
       key: _scaffoldKey,
       backgroundColor: Colors.grey[300],
       drawer: Drawer(
@@ -214,19 +260,6 @@ class _HomePageState extends State<HomePage> {
                             ],
                           ),
                         ),
-                        GestureDetector(
-                          onTap: () {
-                            _scaffoldKey.currentState?.openDrawer();
-                          },
-                          child: Container(
-                            padding: EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                              color: Colors.deepPurple[100],
-                              borderRadius: BorderRadius.circular(50),
-                            ),
-                            child: Icon(Icons.person),
-                          ),
-                        )
                       ],
                     ),
                   ),
@@ -359,11 +392,19 @@ class _HomePageState extends State<HomePage> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        Text(
-                          'see all',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.grey[500],
+                        InkWell(
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                  builder: (context) => const Searchpage()),
+                            ); //navigator
+                          },
+                          child: Text(
+                            'see all',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey[500],
+                            ),
                           ),
                         ),
                       ],

@@ -2,12 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart'; // Import file picker package
 import 'package:intl/intl.dart'; // To format the timestamp
 import 'package:teraflow/pages/videocall_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 
 class ChatpageMain extends StatefulWidget {
-  final String recieverEmail;
+    final DocumentSnapshot doc;
+    final String recieverEmail;
+
 
   const ChatpageMain({
     super.key,
+    required this.doc,
     required this.recieverEmail,
   });
 
@@ -16,25 +22,23 @@ class ChatpageMain extends StatefulWidget {
 }
 
 class _ChatpageMainState extends State<ChatpageMain> {
-  final TextEditingController _controller = TextEditingController();
-  List<Map<String, String>> messages =
-      []; // List to hold the messages with timestamp
+  final TextEditingController message = TextEditingController();
 
   // Function to send a message
-  void _sendMessage() {
-    if (_controller.text.isNotEmpty) {
+  void _sendMessage() async {
+    if (message.text.isNotEmpty) {
       final timestamp =
           DateFormat('hh:mm a').format(DateTime.now()); // Format timestamp
-      setState(() {
-        messages.add({
-          'message': _controller.text,
+       await widget.doc.reference.collection('messages').add(
+        {
+          'message': message.text,
           'timestamp': timestamp,
-          'sender': 'me', // You can set this according to the sender
+          'sender': FirebaseAuth.instance.currentUser!.email, // You can set this according to the sender
         });
-      });
-      _controller.clear(); // Clear the input field
+      }
+      message.clear(); // Clear the input field
     }
-  }
+  
 
   // Function to pick a file
   Future<void> _pickFile() async {
@@ -48,6 +52,7 @@ class _ChatpageMainState extends State<ChatpageMain> {
 
   @override
   Widget build(BuildContext context) {
+    print(widget.doc.reference.collection('messages') );
     return Scaffold(
       backgroundColor:
           Colors.blueGrey.shade50, // Background color for the whole screen
@@ -59,18 +64,20 @@ class _ChatpageMainState extends State<ChatpageMain> {
               padding: const EdgeInsets.all(8.0),
               child: Row(
                 children: [
-                  IconButton(
+                  IconButton(//back button
                     icon: const Icon(Icons.arrow_back, color: Colors.black),
                     onPressed: () {
                       Navigator.pop(context);
                     },
                   ),
-                  const CircleAvatar(
+                  
+                  const CircleAvatar(//other guy photo or /avatar
                     backgroundColor: Colors.deepPurple,
                     child: Icon(Icons.person, color: Colors.white),
                   ),
+                  
                   const SizedBox(width: 10),
-                  Expanded(
+                  Expanded(//other guy email
                     child: Text(
                       widget.recieverEmail,
                       style: const TextStyle(
@@ -80,7 +87,7 @@ class _ChatpageMainState extends State<ChatpageMain> {
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  IconButton(
+                  IconButton(//vide call redirecting button
                     icon: const Icon(Icons.videocam, color: Colors.deepPurple),
                     onPressed: () {
                       Navigator.push(
@@ -96,12 +103,25 @@ class _ChatpageMainState extends State<ChatpageMain> {
             ),
             // Chat messages area with a custom background color
             Expanded(
-              child: ListView.builder(
-                itemCount: messages.length,
+              child: StreamBuilder(
+            stream: widget.doc.reference.collection('messages').snapshots(), 
+          builder: (context, snapshot){
+            if(snapshot.hasData){
+              //print(snapshot.data!.docs);
+              if (snapshot.data?.docs.isEmpty == true){
+                return Text("No messages yet!");
+
+              }
+             
+             return ListView.builder(
+                padding:  EdgeInsets.all(15.0),
+                itemCount: snapshot.data?.docs.length ?? 0,
                 itemBuilder: (context, index) {
-                  final message = messages[index];
-                  bool isSender = message['sender'] ==
-                      'me'; // Check if the message is from the sender
+                  
+                  DocumentSnapshot msg =snapshot.data!.docs[index];
+                  
+                  bool isSender = msg['sender'] ==FirebaseAuth.instance.currentUser!.email; // Check if the message is from the sender
+                  
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Align(
@@ -140,7 +160,7 @@ class _ChatpageMainState extends State<ChatpageMain> {
                               ],
                             ),
                             child: Text(
-                              message['message']!,
+                              msg['message']!,
                               style: TextStyle(
                                 color: isSender ? Colors.white : Colors.black,
                                 fontSize: 16,
@@ -149,7 +169,7 @@ class _ChatpageMainState extends State<ChatpageMain> {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            message['timestamp']!,
+                            msg['timestamp']!,
                             style: TextStyle(
                               fontSize: 12,
                               color: Colors.grey.shade600,
@@ -160,8 +180,16 @@ class _ChatpageMainState extends State<ChatpageMain> {
                     ),
                   );
                 },
-              ),
-            ),
+              );
+
+            }
+            else{
+              return CircularProgressIndicator();
+            }
+            }
+  ),
+  
+  ),
             // Input area with file picker button and rounded input field
             Padding(
               padding: const EdgeInsets.all(8.0),
@@ -181,7 +209,7 @@ class _ChatpageMainState extends State<ChatpageMain> {
                         borderRadius: BorderRadius.circular(30),
                       ),
                       child: TextField(
-                        controller: _controller,
+                        controller: message,
                         decoration: InputDecoration(
                           hintText: "Type a message",
                           border: InputBorder.none,
