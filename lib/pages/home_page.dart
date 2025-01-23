@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:teraflow/pages/SELFHELP/breathing_exercise.dart';
+import 'package:teraflow/pages/SELFHELP/meditation_list.dart';
 import 'package:teraflow/pages/searchpage.dart';
 import 'package:teraflow/util/category_card.dart';
 import 'package:teraflow/util/therapist_card.dart';
 import 'package:teraflow/pages/calendar_page.dart';
 import 'package:teraflow/pages/utils/chats/chatlist_page.dart';
 import 'package:teraflow/pages/utils/chats/chatpage_main.dart';
-import 'package:teraflow/pages/selfhelp_page.dart';
+import 'package:teraflow/pages/SELFHELP/selfhelp_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -18,8 +20,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>(); // Create a GlobalKey for Scaffold
-
+  final GlobalKey<ScaffoldState> _scaffoldKey =
+      GlobalKey<ScaffoldState>(); // Create a GlobalKey for Scaffold
 
   // ignore: unused_field
   final List<Widget> _pages = [
@@ -39,7 +41,8 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: Colors.grey[300],
-      drawer: Drawer(//a drawer which  contains the user prfile and some of navications 
+      drawer: Drawer(
+        //a drawer which  contains the user prfile and some of navications
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -214,20 +217,18 @@ class _HomePageState extends State<HomePage> {
                             ],
                           ),
                         ),
-                       GestureDetector(
-                        onTap: ()
-                                      {
-                                        _scaffoldKey.currentState?.openDrawer();
-                                      }, 
-                       child: 
-                        Container(
-                          padding: EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: Colors.deepPurple[100],
-                            borderRadius: BorderRadius.circular(50),
+                        GestureDetector(
+                          onTap: () {
+                            _scaffoldKey.currentState?.openDrawer();
+                          },
+                          child: Container(
+                            padding: EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: Colors.deepPurple[100],
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                            child: Icon(Icons.person),
                           ),
-                          child: Icon(Icons.person),
-                        ),
                         )
                       ],
                     ),
@@ -362,14 +363,11 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                         InkWell(
-                          onTap:() {
-                            Navigator.of(context).push(MaterialPageRoute (
-                                    builder: (context) => const Searchpage()
-                                    ),
-                                    );//navigator
-
-
-
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                  builder: (context) => const Searchpage()),
+                            ); //navigator
                           },
                           child: Text(
                             'see all',
@@ -433,6 +431,8 @@ class _HomePageState extends State<HomePage> {
             ChatPage(),
             CalendarPage(),
             SelfHelpPage(),
+
+            BreathingExerciseDetailPage(),
           ],
         ),
       ),
