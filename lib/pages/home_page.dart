@@ -37,6 +37,55 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.grey[300],
+        automaticallyImplyLeading: false,
+        title: Row(
+          children: [
+              GestureDetector(
+                        onTap: ()
+                                      {
+                                        _scaffoldKey.currentState?.openDrawer();
+                                      }, 
+                       child: 
+                        Container(
+                          padding: EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.deepPurple[100],
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                          child: Icon(Icons.person),
+                        ),
+                        )
+                     ,
+            SizedBox(width: 8.0),
+            Expanded(
+              child: Container(
+                height: 40.0,
+                decoration: BoxDecoration(
+                  color: Colors.grey[200],
+                  borderRadius: BorderRadius.circular(12.0),
+                ),
+                child: TextField(
+                  decoration: InputDecoration(
+                    hintText: 'Search ...',
+                    hintStyle: TextStyle(color: Colors.grey[600]),
+                    prefixIcon:
+                        Icon(Icons.search, color: Colors.deepPurple[200]),
+                    border: InputBorder.none,
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(width: 8.0),
+            IconButton(
+              icon: Icon(Icons.notifications, color: Colors.deepPurple[200]),
+              onPressed: () {},
+            ),
+          ],
+        ),
+      ),
+      
       key: _scaffoldKey,
       backgroundColor: Colors.grey[300],
       drawer: Drawer(//a drawer which  contains the user prfile and some of navications 
@@ -214,21 +263,6 @@ class _HomePageState extends State<HomePage> {
                             ],
                           ),
                         ),
-                       GestureDetector(
-                        onTap: ()
-                                      {
-                                        _scaffoldKey.currentState?.openDrawer();
-                                      }, 
-                       child: 
-                        Container(
-                          padding: EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: Colors.deepPurple[100],
-                            borderRadius: BorderRadius.circular(50),
-                          ),
-                          child: Icon(Icons.person),
-                        ),
-                        )
                       ],
                     ),
                   ),

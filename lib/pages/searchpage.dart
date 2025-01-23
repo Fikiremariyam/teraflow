@@ -19,7 +19,7 @@ class _SearchpageState extends State<Searchpage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar:AppBar(
-        title: Text("Search For A  user"),
+        title: Text("Search For A  psyctist "),
         flexibleSpace: Container(
     decoration: BoxDecoration(
       gradient: LinearGradient(
@@ -54,9 +54,9 @@ class _SearchpageState extends State<Searchpage> {
             future: FirebaseFirestore.instance.collection('users').where('email',isEqualTo: username).get(),// passed the search result to the snapshot
             builder: (context,snapshot){
               for (var doc in snapshot.data!.docs) {
-                print("searched data");
-               print(doc.id); // Prints the document ID
-              print(doc.data()); // Prints the document data as a map
+                //print("searched data");
+               //print(doc.id); // Prints the document ID
+              //print(doc.data()); // Prints the document data as a map
                   }
               
               var filtered = snapshot.data!.docs.where((doc){
@@ -98,7 +98,7 @@ class _SearchpageState extends State<Searchpage> {
                           }
                     if ( chatExists == false ){
                         //create a new chat 
-                        print("nodoc");
+                       // print("nodoc");
                         // the data
                          var data ={
                           'users':[
