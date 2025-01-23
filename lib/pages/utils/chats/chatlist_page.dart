@@ -12,7 +12,7 @@ return   Scaffold(
         future:  FirebaseFirestore.instance.collection('chats').where('users',arrayContains: FirebaseAuth.instance.currentUser!.email).get() , 
         builder: (context,snapshot){
           if (snapshot.hasData){
-            if (snapshot.data!.docs.isEmpty ?? true){
+            if (snapshot.data!.docs.isEmpty == true){
               return Text("no chat yets");
             }
             return ListView.builder(
@@ -20,19 +20,23 @@ return   Scaffold(
               itemBuilder:(context, index){
                 DocumentSnapshot doc = snapshot.data!.docs[index];
                  var  senderemail = FirebaseAuth.instance.currentUser!.email;
-                 var  reciveremail="bcvbcvbnv";
+                 var  reciveremail;
 
+                 for (var userDetails in doc['users']) {
+                      if (userDetails.toString()  != senderemail.toString()) {
+                              reciveremail = userDetails;
+                            }
+                          };
+                    
                 return ListTile(
-                   
-
-
                   
 
                   title : Text( reciveremail )
                   ,
                   subtitle: Text(doc['recent_text']),
                   onTap: (){
-                    
+                    print("sent snap shots");
+                    print(doc.reference.collection('messages').doc().get());
                     Navigator.of(context).push(MaterialPageRoute(builder: (context)=> ChatpageMain(doc: doc,recieverEmail: reciveremail,)));
 
                   },

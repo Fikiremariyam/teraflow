@@ -52,6 +52,7 @@ class _ChatpageMainState extends State<ChatpageMain> {
 
   @override
   Widget build(BuildContext context) {
+    print(widget.doc.reference.collection('messages') );
     return Scaffold(
       backgroundColor:
           Colors.blueGrey.shade50, // Background color for the whole screen
@@ -103,10 +104,11 @@ class _ChatpageMainState extends State<ChatpageMain> {
             // Chat messages area with a custom background color
             Expanded(
               child: StreamBuilder(
-            stream: widget.doc.reference.collection('messages').orderBy('time').snapshots(), 
+            stream: widget.doc.reference.collection('messages').snapshots(), 
           builder: (context, snapshot){
             if(snapshot.hasData){
-              if (snapshot.data?.docs.isEmpty ?? true){
+              //print(snapshot.data!.docs);
+              if (snapshot.data?.docs.isEmpty == true){
                 return Text("No messages yet!");
 
               }

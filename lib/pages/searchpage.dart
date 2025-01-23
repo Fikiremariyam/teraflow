@@ -54,9 +54,11 @@ class _SearchpageState extends State<Searchpage> {
             future: FirebaseFirestore.instance.collection('users').where('email',isEqualTo: username).get(),// passed the search result to the snapshot
             builder: (context,snapshot){
               for (var doc in snapshot.data!.docs) {
+                print("searched data");
                print(doc.id); // Prints the document ID
               print(doc.data()); // Prints the document data as a map
                   }
+              
               var filtered = snapshot.data!.docs.where((doc){
                 return doc['email'] != FirebaseAuth.instance.currentUser!.email;//exluding the seracers email 
               }
@@ -89,7 +91,7 @@ class _SearchpageState extends State<Searchpage> {
                             if (data['users'] != null && data['users'].contains(userData['email'])) {
                               chatExists = true;
                               print("Chat exists: ${doc.id}");
-                              //RNavigator.of(context).push(MaterialPageRoute(builder: (context)=> ChatpageMain(doc: doc,recieverEmail: userData['email'],)));
+                              Navigator.of(context).push(MaterialPageRoute(builder: (context)=> ChatpageMain(doc: doc,recieverEmail: userData['email'],)));
 
                               break;
                             }
