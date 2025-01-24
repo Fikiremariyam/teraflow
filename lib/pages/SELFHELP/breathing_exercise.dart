@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
+import 'package:get/get.dart';
+import 'dart:convert';
+import 'package:flutter/services.dart'; // Required for loading assets
+import 'package:teraflow/util/custom_video_player.dart';
 
 class BreathingExerciseDetailPage extends StatefulWidget {
   const BreathingExerciseDetailPage({super.key});
@@ -12,18 +16,72 @@ class BreathingExerciseDetailPage extends StatefulWidget {
 class _BreathingExerciseDetailPageState
     extends State<BreathingExerciseDetailPage> {
   late VideoPlayerController _videoPlayerController;
+  List<Map<String, dynamic>>?
+      _videoData; // Nullable to avoid late initialization error
+  int _currentVideoIndex = 0;
 
   @override
   void initState() {
     super.initState();
-    _videoPlayerController =
-        VideoPlayerController.asset('lib\video\video-2.mp4');
-    _videoPlayerController
-        .initialize()
-        .then((_) => setState(() {}))
-        .catchError((error) {
+    _loadVideoData();
+  }
+
+  Future<void> _loadVideoData() async {
+    try {
+      final String response = await rootBundle
+          .loadString('assets/video_data.json'); // Load JSON file
+      final List<dynamic> decodedData = json.decode(response);
+      setState(() {
+        _videoData = List<Map<String, dynamic>>.from(decodedData);
+      });
+
+      if (_videoData != null && _videoData!.isNotEmpty) {
+        _initializeVideo();
+      } else {
+        throw Exception("No video data found.");
+      }
+    } catch (e) {
+      print("Error loading video data: $e");
+      Get.snackbar(
+        'Error',
+        'Failed to load video data',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    }
+  }
+
+  void _initializeVideo() {
+    if (_videoData == null || _videoData!.isEmpty) return;
+
+    _videoPlayerController = VideoPlayerController.asset(
+        _videoData![_currentVideoIndex]['videoUrl']);
+    _videoPlayerController.initialize().then((_) {
+      setState(() {});
+    }).catchError((error) {
       print("Error initializing video: $error");
+      Get.snackbar(
+        'Error',
+        'Failed to load video',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
     });
+  }
+
+  void _changeVideo(int index) {
+    if (_videoData == null || index < 0 || index >= _videoData!.length) return;
+
+    _currentVideoIndex = index;
+    _videoPlayerController.dispose();
+    _initializeVideo();
+    Get.snackbar(
+      'Video Changed',
+      'Now playing: ${_videoData![_currentVideoIndex]['title']}',
+      snackPosition: SnackPosition.BOTTOM,
+    );
   }
 
   @override
@@ -42,84 +100,62 @@ class _BreathingExerciseDetailPageState
           icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text(
-          'Breathing Exercise 1',
-          style: TextStyle(color: Colors.black, fontSize: 16),
+        title: Text(
+          _videoData != null && _videoData!.isNotEmpty
+              ? _videoData![_currentVideoIndex]['title']
+              : 'Loading...',
+          style: const TextStyle(color: Colors.black, fontSize: 16),
         ),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: Stack(
-              alignment: Alignment.center,
+      body: _videoData == null
+          ? const Center(
+              child: CircularProgressIndicator()) // Show loading state
+          : Column(
               children: [
-                Container(
-                  margin: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.deepPurple.shade100,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: _videoPlayerController.value.isInitialized
-                      ? AspectRatio(
-                          aspectRatio: _videoPlayerController.value.aspectRatio,
-                          child: VideoPlayer(_videoPlayerController!),
-                        )
-                      : const Center(child: CircularProgressIndicator()),
-                ),
-                Container(
-                  width: 60,
-                  height: 60,
-                  decoration: const BoxDecoration(
-                    color: Color(0xFF4A4A65),
-                    shape: BoxShape.circle,
-                  ),
-                  child: IconButton(
-                    icon: Icon(
-                      _videoPlayerController.value.isPlaying
-                          ? Icons.pause
-                          : Icons.play_arrow,
-                      color: Colors.white,
-                      size: 30,
+                Expanded(
+                  child: Container(
+                    margin: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.deepPurple.shade100,
+                      borderRadius: BorderRadius.circular(8),
                     ),
-                    onPressed: () {
-                      if (_videoPlayerController.value.isPlaying) {
-                        _videoPlayerController.pause();
-                      } else {
-                        _videoPlayerController.play();
-                      }
-                      setState(() {});
-                    },
+                    child: _videoPlayerController.value.isInitialized
+                        ? CustomVideoPlayer(
+                            controller: _videoPlayerController,
+                            onNextVideo: () =>
+                                _changeVideo(_currentVideoIndex + 1),
+                            onPreviousVideo: () =>
+                                _changeVideo(_currentVideoIndex - 1),
+                          )
+                        : const Center(child: CircularProgressIndicator()),
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.all(24),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        _videoData![_currentVideoIndex]['title'],
+                        style: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        _videoData![_currentVideoIndex]['description'],
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.grey,
+                          height: 1.5,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
-          ),
-          Container(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                Text(
-                  'Breathing Exercise 1',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(height: 16),
-                Text(
-                  'A simple yet powerful technique to calm the mind and body. Techniques like deep breathing, diaphragmatic breathing, and alternate nostril breathing to calm the mind and body.',
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.grey,
-                    height: 1.5,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
     );
   }
 }
