@@ -6,14 +6,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:form_validator/form_validator.dart';
 
-
 class SignupPage extends StatefulWidget {
   @override
   _SignupPageState createState() => _SignupPageState();
 }
 
 class _SignupPageState extends State<SignupPage> {
-
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
@@ -22,8 +20,7 @@ class _SignupPageState extends State<SignupPage> {
   List<String> _roles = ['Customer', 'Therapist']; // Role options
 
 // to shwo the sucees message
-void showSuccessMessage(BuildContext context, String? successMessage) {
-  
+  void showSuccessMessage(BuildContext context, String? successMessage) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -41,110 +38,102 @@ void showSuccessMessage(BuildContext context, String? successMessage) {
         );
       },
     );
-}
+  }
 // to show error message
 
-void showAuthResult(BuildContext context, String? errorMessage) {
-  if (errorMessage != null) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Error'),
-          content: Text(errorMessage),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('OK'),
-            ),
-          ],
-        );
-      },
-    );
-  } else {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Success'),
-          content: Text('Authentication Successful'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('OK'),
-            ),
-          ],
-        );
-      },
-    );
+  void showAuthResult(BuildContext context, String? errorMessage) {
+    if (errorMessage != null) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Error'),
+            content: Text(errorMessage),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Success'),
+            content: Text('Authentication Successful'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
-}
 
   // Registration logic
-  void registerUser(BuildContext context)async  {
+  void registerUser(BuildContext context) async {
     print("started the logining prcess");
     String email = emailController.text.trim();
     String password = passwordController.text.trim();
     String confirmPassword = confirmPasswordController.text.trim();
     String role = _role;
-    
-      
-      try{
-        print("sent message for firebase Auth");
-          UserCredential usercred =  await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email!, password: password!);
-        print("done loging in the firebase auth");
-        
-        
-        if (usercred.user != null) {
-          print("storing  the user");
-          // adding to database 
 
-          var data ={
-            'email' : email,
-            'password':password,
-            'role':role,
-            'created_at' : DateTime.now()
-          };
+    try {
+      print("sent message for firebase Auth");
+      UserCredential usercred = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email!, password: password!);
+      print("done loging in the firebase auth");
 
+      if (usercred.user != null) {
+        print("storing  the user");
+        // adding to database
 
-        await FirebaseFirestore.instance.collection('users').doc(email).set(data);
-        
-        if (mounted){
-          
-            Navigator.pushReplacementNamed(context,"/login");
-            print("++++++++++++++++++++++++++++++++++++++++++++");
+        var data = {
+          'email': email,
+          'password': password,
+          'role': role,
+          'created_at': DateTime.now()
+        };
+
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(email)
+            .set(data);
+
+        if (mounted) {
+          Navigator.pushReplacementNamed(context, "/login");
+          print("++++++++++++++++++++++++++++++++++++++++++++");
         }
-        
-        }
-      
-        }on FirebaseAuthException catch  (
-        error) {
-        // Authentication failed
-        if (error is FirebaseAuthException) {
-          if (error.code == 'weak-password') {
-            showAuthResult(context, 'Password is too weak.');
-          } else if (error.code == 'email-already-in-use') {
-            showAuthResult(context, 'Email is already in use.');
-          } else if (error.code == 'The email address is badly formatted'){
-            showAuthResult(context,'An unexpected error occurred.');
-
-          }else {
-            showAuthResult(context, 'An unexpected error occurred.');
-          }
+      }
+    } on FirebaseAuthException catch (error) {
+      // Authentication failed
+      if (error is FirebaseAuthException) {
+        if (error.code == 'weak-password') {
+          showAuthResult(context, 'Password is too weak.');
+        } else if (error.code == 'email-already-in-use') {
+          showAuthResult(context, 'Email is already in use.');
+        } else if (error.code == 'The email address is badly formatted') {
+          showAuthResult(context, 'An unexpected error occurred.');
         } else {
           showAuthResult(context, 'An unexpected error occurred.');
         }
-      };
-
-
-
+      } else {
+        showAuthResult(context, 'An unexpected error occurred.');
+      }
     }
-    
-  
+    ;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -180,27 +169,26 @@ void showAuthResult(BuildContext context, String? errorMessage) {
                 const SizedBox(height: 10),
                 // Password Input
                 Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                    child: TextFormField(
-                      validator: ValidationBuilder().email().maxLength(50).build(),
-                      controller: passwordController,
-                      
-                      decoration: InputDecoration(
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey.shade400),
-                          ),
-                          fillColor: Colors.grey.shade200,
-                          filled: true,
-                          hintText: 'password',
-                          hintStyle: TextStyle(
-                            color: Colors.deepPurple[200],
-                          )
-                          ),
-                    ),
+                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                  child: TextFormField(
+                    validator:
+                        ValidationBuilder().email().maxLength(50).build(),
+                    controller: passwordController,
+                    decoration: InputDecoration(
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey.shade400),
+                        ),
+                        fillColor: Colors.grey.shade200,
+                        filled: true,
+                        hintText: 'password',
+                        hintStyle: TextStyle(
+                          color: Colors.deepPurple[200],
+                        )),
                   ),
+                ),
                 const SizedBox(height: 10),
                 // Confirm Password Input
                 MyTextfield(
@@ -217,10 +205,8 @@ void showAuthResult(BuildContext context, String? errorMessage) {
                       _role = newValue!;
                     });
                   },
-                  items: _roles.map<DropdownMenuItem<String>>(
-                    (String value) {
+                  items: _roles.map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
-            
                       value: value,
                       child: Text(value),
                     );
