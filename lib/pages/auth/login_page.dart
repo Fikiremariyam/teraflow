@@ -8,23 +8,17 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:form_validator/form_validator.dart';
 
-
 class LoginPage extends StatefulWidget {
-   @override
+  @override
   _LogInPageState createState() => _LogInPageState();
 }
 
-
-
-class _LogInPageState extends State<LoginPage> { 
-  
-
+class _LogInPageState extends State<LoginPage> {
   final emailController = TextEditingController(); // Change to email controller
   final passwordController = TextEditingController();
-// a funciton to show the status of the message after we clicked it 
+// a funciton to show the status of the message after we clicked it
 
   void showSuccessMessage(BuildContext context, String? successMessage) {
-  
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -42,95 +36,92 @@ class _LogInPageState extends State<LoginPage> {
         );
       },
     );
-}
+  }
 
 // to show error message
 
-void showAuthResult(BuildContext context, String? errorMessage) {
-  if (errorMessage != null) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Error'),
-          content: Text(errorMessage),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('OK'),
-            ),
-          ],
-        );
-      },
-    );
-  } else {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Success'),
-          content: Text('Authentication Successful'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('OK'),
-            ),
-          ],
-        );
-      },
-    );
+  void showAuthResult(BuildContext context, String? errorMessage) {
+    if (errorMessage != null) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Error'),
+            content: Text(errorMessage),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Success'),
+            content: Text('Authentication Successful'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
-}
- 
-// a funciton which  wich do the log in funcnality 
 
-void logUserIn (BuildContext content) async{
+// a funciton which  wich do the log in funcnality
 
+  void logUserIn(BuildContext content) async {
     String email = emailController.text; // Change to email
     String password = passwordController.text;
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(email: email!, password: password!);
-                        
-        showAuthResult(context, null);    
-        DocumentSnapshot userDoc = await FirebaseFirestore.instance
-        .collection('users')
-        .doc('email')
-        .get();
-        print(userDoc);
-        if (mounted){
-          var role=FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser!.uid).get();
-          print(role);
-        Navigator.pushReplacementNamed(context, "/login");                     
-          }
+      await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: email!, password: password!);
 
-                  }
-        on FirebaseAuthException catch (
-        error) {
-        // Authentication failed
-        if (error is FirebaseAuthException) {
-          if (error.code == 'wrong-password') {
-            showAuthResult(context, 'wrong password.');
-          } else if (error.code == 'invalid-email') {
-            showAuthResult(context, 'there is no account registerd with this email ');
-          } else if (error.code == 'invalid-credential'){
-            showAuthResult(context, 'wrong emai or password .');
-
-          }
-            else {
-          
-            showAuthResult(context, 'An unexpected error occurred.');
-          }
+      showAuthResult(context, null);
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc('email')
+          .get();
+      print(userDoc);
+      if (mounted) {
+        var role = FirebaseFirestore.instance
+            .collection('users')
+            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .get();
+        print(role);
+        Navigator.pushReplacementNamed(context, "/login");
+      }
+    } on FirebaseAuthException catch (error) {
+      // Authentication failed
+      if (error is FirebaseAuthException) {
+        if (error.code == 'wrong-password') {
+          showAuthResult(context, 'wrong password.');
+        } else if (error.code == 'invalid-email') {
+          showAuthResult(
+              context, 'there is no account registerd with this email ');
+        } else if (error.code == 'invalid-credential') {
+          showAuthResult(context, 'wrong emai or password .');
         } else {
-          showAuthResult(context, 'An unexpected exeption  occurred.');
+          showAuthResult(context, 'An unexpected error occurred.');
         }
-      };
-                  }
-            
-
+      } else {
+        showAuthResult(context, 'An unexpected exeption  occurred.');
+      }
+    }
+    ;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -154,7 +145,6 @@ void logUserIn (BuildContext content) async{
                 ),
                 const SizedBox(height: 25),
                 MyTextfield(
-                  
                   controller: emailController, // Use email controller
                   hintText: 'Email', // Change hint text to Email
                   obscureText: false,
@@ -167,7 +157,7 @@ void logUserIn (BuildContext content) async{
                 ),
                 const SizedBox(height: 25),
                 MyButton(
-                  onTab: () => logUserIn (context),
+                  onTab: () => logUserIn(context),
                   label: 'Sign In',
                 ),
                 const SizedBox(height: 50),

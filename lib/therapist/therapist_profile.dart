@@ -4,7 +4,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart';
 
 class TherapistProfile extends StatefulWidget {
-  final Function(File, String, String) onProfileInfoChanged;
+  final Function(File, String) onProfileInfoChanged;
 
   TherapistProfile({required this.onProfileInfoChanged});
 
@@ -16,21 +16,17 @@ class _TherapistProfileState extends State<TherapistProfile> {
   File? _profileImage;
   File? _cvFile;
   TextEditingController _nameController = TextEditingController();
-  TextEditingController _emailController = TextEditingController();
   TextEditingController _phoneController = TextEditingController();
   TextEditingController _addressController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    // Example initial values
     _nameController.text = "Dr. Aman Moges";
-    _emailController.text = "Amanmo@gmail.com";
     _phoneController.text = "+251 912 345 678";
     _addressController.text = "Addis Ababa, Ethiopia";
   }
 
-  // Method to pick an image for the profile
   Future<void> _pickImage() async {
     final ImagePicker _picker = ImagePicker();
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
@@ -41,7 +37,6 @@ class _TherapistProfileState extends State<TherapistProfile> {
     }
   }
 
-  // Method to pick a CV file
   Future<void> _pickCV() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
@@ -54,12 +49,10 @@ class _TherapistProfileState extends State<TherapistProfile> {
     }
   }
 
-  // Save Profile Information
   void _saveProfile() {
     widget.onProfileInfoChanged(
-      _profileImage ?? File(''), // Ensure no null value
+      _profileImage ?? File(''),
       _nameController.text,
-      _emailController.text,
     );
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text("Profile updated successfully!")),
@@ -73,11 +66,9 @@ class _TherapistProfileState extends State<TherapistProfile> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
-          // Wrap with SingleChildScrollView
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Profile Image
               Center(
                 child: CircleAvatar(
                   radius: 50,
@@ -95,20 +86,10 @@ class _TherapistProfileState extends State<TherapistProfile> {
                 ),
               ),
               SizedBox(height: 20),
-
-              // Editable Fields
               TextFormField(
                 controller: _nameController,
                 decoration: InputDecoration(
                   labelText: 'Full Name',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              SizedBox(height: 10),
-              TextFormField(
-                controller: _emailController,
-                decoration: InputDecoration(
-                  labelText: 'Email',
                   border: OutlineInputBorder(),
                 ),
               ),
@@ -129,8 +110,6 @@ class _TherapistProfileState extends State<TherapistProfile> {
                 ),
               ),
               SizedBox(height: 20),
-
-              // CV Upload Section
               Text(
                 'Upload Your CV:',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -150,10 +129,7 @@ class _TherapistProfileState extends State<TherapistProfile> {
                       color: const Color.fromARGB(255, 3, 28, 99)),
                 ),
               ],
-
               SizedBox(height: 20),
-
-              // Save Button
               Center(
                 child: ElevatedButton(
                   onPressed: _saveProfile,

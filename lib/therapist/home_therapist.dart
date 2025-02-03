@@ -1,3 +1,4 @@
+// home_pagete.dart
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:teraflow/therapist/blog_page.dart';
@@ -19,25 +20,27 @@ class _HomePagetState extends State<HomePaget> {
   String _name = "Dr. Amla Douge";
   String _email = "therapist@theraflow.com";
 
-  // Callback to update profile image, name, and email
-  void _updateProfileInfo(File newImage, String newName, String newEmail) {
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserEmail();
+  }
+
+  void _fetchUserEmail() {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      setState(() {
+        _email = user.email ?? "No email found";
+      });
+    }
+  }
+
+  void _updateProfileInfo(File newImage, String newName) {
     setState(() {
       _profileImage = newImage;
       _name = newName;
-      _email = newEmail;
     });
   }
-
-  final List<Widget> _pages = [
-    TherapistProfile(
-      onProfileInfoChanged: (File newImage, String newName, String newEmail) {},
-    ), // Profile page first
-    ClientPage(),
-    CalendarTherapist(),
-    ChatTherapist(),
-    BlogPage(),
-    FinancePage(),
-  ];
 
   final List<String> _titles = [
     'Profile',
@@ -48,15 +51,19 @@ class _HomePagetState extends State<HomePaget> {
     'Finance',
   ];
 
-  void _onDrawerItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-    Navigator.of(context).pop();
-  }
-
   @override
   Widget build(BuildContext context) {
+    final List<Widget> _pages = [
+      TherapistProfile(
+        onProfileInfoChanged: _updateProfileInfo,
+      ),
+      ClientPage(),
+      CalendarTherapist(),
+      ChatTherapist(),
+      BlogPage(),
+      FinancePage(),
+    ];
+
     return Scaffold(
       appBar: AppBar(
         title: Text(_titles[_selectedIndex]),
@@ -74,30 +81,19 @@ class _HomePagetState extends State<HomePaget> {
                     : AssetImage('lib/images/doctor1.jpg') as ImageProvider,
               ),
             ),
-            ListTile(
-              title: Text('Profile'),
-              onTap: () => _onDrawerItemTapped(0),
-            ),
-            ListTile(
-              title: Text('Client'),
-              onTap: () => _onDrawerItemTapped(1),
-            ),
-            ListTile(
-              title: Text('Calendar'),
-              onTap: () => _onDrawerItemTapped(2),
-            ),
-            ListTile(
-              title: Text('Chat'),
-              onTap: () => _onDrawerItemTapped(3),
-            ),
-            ListTile(
-              title: Text('Blog'),
-              onTap: () => _onDrawerItemTapped(4),
-            ),
-            ListTile(
-              title: Text('Finance'),
-              onTap: () => _onDrawerItemTapped(5),
-            ),
+            ..._titles.asMap().entries.map((entry) {
+              int index = entry.key;
+              String title = entry.value;
+              return ListTile(
+                title: Text(title),
+                onTap: () {
+                  setState(() {
+                    _selectedIndex = index;
+                  });
+                  Navigator.of(context).pop();
+                },
+              );
+            }).toList(),
             ListTile(
               leading: Icon(Icons.logout),
               title: Text('Sign Out'),
@@ -106,21 +102,11 @@ class _HomePagetState extends State<HomePaget> {
                 Navigator.pushReplacementNamed(context, "/login");
               },
             ),
-
           ],
         ),
       ),
       body: SafeArea(
-        child: IndexedStack(
-          index: _selectedIndex,
-          children: _pages.map((page) {
-            if (page is TherapistProfile) {
-              return TherapistProfile(
-                  onProfileInfoChanged: _updateProfileInfo); // Corrected
-            }
-            return page;
-          }).toList(),
-        ),
+        child: _pages[_selectedIndex],
       ),
     );
   }
