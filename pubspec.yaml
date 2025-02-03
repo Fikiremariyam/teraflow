@@ -1,7 +1,8 @@
 name: teraflow
 description: A new Flutter project.
 
-publish_to: "none"
+publish_to: 'none'
+
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -30,21 +31,26 @@ dependencies:
   cupertino_icons: ^1.0.8
   google_nav_bar: ^5.0.6
   flutter_heatmap_calendar: ^1.0.5
-  firebase_core: ^3.8.1
-  firebase_auth: ^5.3.4
+  firebase_core : ^3.8.1 
+  firebase_auth : ^5.3.4
   google_fonts: ^6.2.1
   form_validator: ^2.1.1
-  cloud_firestore: ^5.5.1
+  cloud_firestore : ^5.5.1
   image_picker: ^1.1.2
   file_picker: ^8.1.7
   shared_preferences: ^2.3.5
   intl: ^0.18.0
-  permission_handler: ^10.0.0
-  video_player: ^2.9.2
+  permission_handler: ^11.0.1
+  emoji_picker_flutter: ^4.3.0
+  #zego_express_engine: ^3.19.0
+  zego_uikit_prebuilt_call: ^4.16.21
+  table_calendar: ^3.0.9
 
-  get: ^4.6.5
+
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
+  
+
 
 dev_dependencies:
   flutter_test:
@@ -57,14 +63,14 @@ flutter:
   assets:
     - lib/icons/
     - lib/images/
-    - assets/video_data.json
-    - assets/video/
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
+  
+
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
