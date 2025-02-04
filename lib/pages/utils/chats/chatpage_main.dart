@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart'; // Import file picker package
 import 'package:intl/intl.dart'; // To format the timestamp
-import 'package:teraflow/pages/videocall_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
+import 'package:teraflow/pages/utils/videocall/videocall.dart';
 
 class ChatpageMain extends StatefulWidget {
     final DocumentSnapshot doc;
@@ -93,7 +92,7 @@ class _ChatpageMainState extends State<ChatpageMain> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const VideoCallScreen(),
+                          builder: (context) => CallPage( )
                         ),
                       );
                     },

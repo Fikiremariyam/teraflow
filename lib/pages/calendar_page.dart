@@ -131,7 +131,8 @@ class _CalendarPageState extends State<CalendarPage> {
           : Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: appointmentsForDay
-                  .map((appointment) => Container(
+                  .map((appointment) => 
+                  Container(
                         margin: const EdgeInsets.symmetric(vertical: 8.0),
                         padding: const EdgeInsets.all(12.0),
                         width: double.infinity,
