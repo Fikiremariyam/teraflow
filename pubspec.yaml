@@ -35,7 +35,7 @@ dependencies:
   firebase_auth : ^5.3.4
   google_fonts: ^6.2.1
   form_validator: ^2.1.1
-  cloud_firestore : ^5.5.1
+  cloud_firestore : ^5.6.2
   image_picker: ^1.1.2
   file_picker: ^8.1.7
   shared_preferences: ^2.3.5
@@ -47,6 +47,8 @@ dependencies:
   table_calendar: ^3.0.9
   video_player: ^2.9.2
   get: ^4.6.6
+  firebase_storage: ^12.4.1
+  path_provider: ^2.1.5
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -65,7 +67,7 @@ flutter:
   assets:
     - lib/icons/
     - lib/images/
-
+    - assets/
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your

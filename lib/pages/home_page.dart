@@ -1,6 +1,10 @@
+import 'dart:io';
+
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:teraflow/pages/SELFHELP/breathing_exercise.dart';
 import 'package:teraflow/pages/SELFHELP/meditation_list.dart';
 import 'package:teraflow/pages/searchpage.dart';
@@ -12,6 +16,9 @@ import 'package:teraflow/pages/utils/chats/chatpage_main.dart';
 import 'package:teraflow/pages/SELFHELP/selfhelp_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+
+import 'package:path_provider/path_provider.dart';
+import 'package:image_picker/image_picker.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -29,6 +36,68 @@ class _HomePageState extends State<HomePage> {
     CalendarPage(),
     SelfHelpPage(),
   ];
+       Future<File?> uploadnewImage(File imageFile) async {//for external directory dynamically
+
+            if (await Permission.storage.request().isGranted) { // Ask for permission
+              Directory? externalDir = await getExternalStorageDirectory(); // Get external storage
+              
+              String currentUser = FirebaseAuth.instance.currentUser!.uid;
+
+              String customPath = '${externalDir?.path}/images/profile/${currentUser}'; // Define your custom path
+
+              await Directory(customPath).create(recursive: true); // Create folder if not exists
+
+              File newImage = File('$customPath/profile.jpg'); // Create file path
+              return await imageFile.copy(newImage.path); // Copy file to custom directory
+            } else {
+              print("Storage permission denied.");
+              return null;
+            }
+            }
+
+  Widget _profilePic( ){
+    // to get the adrees of the image-fore firebase firestore 
+    /*Future<String?> getUserProfileImage() async {
+      String uid = FirebaseAuth.instance.currentUser!.uid;
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('users').doc(uid).get();
+      return userDoc['profileImage'];
+      }*/
+      Future<File?> getSavedImage() async {
+          final directory = await getApplicationDocumentsDirectory();
+          String currentUser = FirebaseAuth.instance.currentUser!.uid;
+
+          final localPath = '${directory.path}/images/profile/${currentUser}/profile.jpg';
+          
+          File file = File(localPath);
+          if (await file.exists()) {
+            return file;
+          }
+          return null;
+        }
+       
+      
+    return FutureBuilder<File?>(
+            future: getSavedImage(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return CircularProgressIndicator();
+              }
+              if (snapshot.hasData && snapshot.data != null) {
+                return CircleAvatar(
+                  radius: 50,
+                  backgroundImage:  FileImage( snapshot.data!),
+                );
+              } else {
+                return CircleAvatar(
+                  radius: 50,
+                  backgroundColor: Colors.grey,
+                  child: Icon(Icons.person, size: 50, color: Colors.white),
+                  );
+                }
+              },
+            );
+          }
+  
 
   void _onNavBarTap(int index) {
     setState(() {
@@ -97,7 +166,8 @@ class _HomePageState extends State<HomePage> {
                 color: Colors.deepPurple[300],
               ),
               currentAccountPicture: GestureDetector(
-                onTap: () async {
+                onTap: () async { // to change the profile Image
+
                   // Simplified logic to pick a local image without Firebase
                   final ImagePicker picker = ImagePicker();
                   final XFile? image =
@@ -107,15 +177,8 @@ class _HomePageState extends State<HomePage> {
                     setState(() {}); // Trigger UI update if necessary
                   }
                 },
-                child: CircleAvatar(
-                  backgroundImage:
-                      FirebaseAuth.instance.currentUser?.photoURL != null
-                          ? NetworkImage(
-                              FirebaseAuth.instance.currentUser!.photoURL!)
-                          : AssetImage('lib/images/default_profile.png')
-                              as ImageProvider,
+                child: _profilePic(),
                 ),
-              ),
               accountName: Row(
                 children: [
                   Expanded(

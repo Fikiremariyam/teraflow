@@ -1,5 +1,11 @@
-import 'package:flutter/material.dart';
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:teraflow/pages/utils/chats/chatlist_page.dart';
+import 'package:teraflow/pages/utils/chats/chatpage_main.dart';
 class BookschedulePopup extends StatefulWidget {
   final String therapistName;
 
@@ -7,7 +13,6 @@ class BookschedulePopup extends StatefulWidget {
     super.key,
     required this.therapistName,
   });
-
   @override
   _BookschedulePopupState createState() => _BookschedulePopupState();
 }
@@ -16,13 +21,77 @@ class _BookschedulePopupState extends State<BookschedulePopup> {
   TextEditingController messageController = TextEditingController();
   bool isSent = false;
 
-  // Function to handle sending the message
-  void sendMessage(String message) {
-    print("Message sent: $message");
-    setState(() {
-      isSent = true; // Mark message as sent
-    });
-  }
+  
+
+  
+void createappontiment(context,doctoremail  )async{
+    
+      QuerySnapshot q = await FirebaseFirestore.instance.collection('chats').where('users',arrayContains: FirebaseAuth.instance.currentUser!.email).get(); 
+      bool chatExists = false;
+      String Docid= "";
+      for (var doc in q.docs) {
+        final data = doc.data() as Map<String, dynamic>;
+        
+        if (data['users'] != null && data['users'].contains(doctoremail)) {
+          chatExists = true;
+          print("Chat exists: ${doc.id}");
+          Docid =doc.id;
+
+         
+          
+          break;
+          
+        }
+      }
+    if ( chatExists == false ){
+        //create a new chat 
+        var data ={
+          'users':[
+            FirebaseAuth.instance.currentUser!.email,
+            doctoremail,
+          ],
+          "recent_text":"HI",
+        };
+
+
+        // sening fifrebase command
+        DocumentReference newchat = await FirebaseFirestore.instance.collection('chats').add(data);
+
+        DocumentSnapshot newsnapshot =  await newchat.get();
+
+              if (messageController.text.isNotEmpty) {
+            final timestamp =
+                DateFormat('hh:mm a').format(DateTime.now()); // Format timestamp
+            await newsnapshot.reference.collection('messages').add(
+              {
+                'message': messageController,
+                'timestamp': timestamp,
+                'sender': FirebaseAuth.instance.currentUser!.email, // You can set this according to the sender
+              });
+              
+              }
+              
+              
+         
+        }else{
+          DocumentSnapshot chat=  await FirebaseFirestore.instance.collection("chats").doc(Docid).get();
+          print("chatid${chat.data()}");
+           if (messageController.text.isNotEmpty) {
+            final timestamp =
+                DateFormat('hh:mm a').format(DateTime.now()); // Format timestamp
+            await chat.reference.collection('messages').add(
+              {
+                'message': messageController.text,
+                'timestamp': timestamp,
+                'sender': FirebaseAuth.instance.currentUser!.email, // You can set this according to the sender
+              });
+              
+              }
+
+
+        }
+        messageController.clear();       
+}
 
   @override
   Widget build(BuildContext context) {
@@ -73,14 +142,20 @@ class _BookschedulePopupState extends State<BookschedulePopup> {
                   ElevatedButton(
                     onPressed: () {
                       String message = messageController.text;
-                      sendMessage(message);
+                      //     Navigator.of(context).push(MaterialPageRoute(builder: (context)=> ChatPage()));
+                      createappontiment(context,"doctoraselefech@gmail.com");
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context)=> ChatPage()));
                     },
                     child: Text("Send Message"),
                   ),
                   TextButton(
                     onPressed: () {
+                      setState(() {
+                        isSent = true; // Mark message as sent
+                      });
                       Navigator.of(context).pop();
-                    },
+                      
+                      },
                     child: Text("Cancel"),
                   ),
                 ],

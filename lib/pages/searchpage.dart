@@ -15,6 +15,38 @@ class Searchpage extends StatefulWidget {
 class _SearchpageState extends State<Searchpage> {
       String? username;
 
+void messageFunction(context,doc) async{
+    
+      var userData = doc.data() as Map<String, dynamic>;
+      QuerySnapshot q = await FirebaseFirestore.instance.collection('chats').where('users',arrayContains: FirebaseAuth.instance.currentUser!.email).get(); 
+      bool chatExists = false;
+      for (var doc in q.docs) {
+        final data = doc.data() as Map<String, dynamic>;
+        if (data['users'] != null && data['users'].contains(userData['email'])) {
+          chatExists = true;
+          print("Chat exists: ${doc.id}");
+          Navigator.of(context).push(MaterialPageRoute(builder: (context)=> ChatpageMain(doc: doc,recieverEmail: userData['email'],)));
+          break;
+        }
+      }
+    if ( chatExists == false ){
+        //create a new chat 
+        var data ={
+          'users':[
+            FirebaseAuth.instance.currentUser!.email,
+            userData['email'],
+          ],
+          "recent_text":"HI",
+        };
+
+        // sening fifrebase command
+        DocumentReference newchat = await FirebaseFirestore.instance.collection('chats').add(data);
+        DocumentSnapshot newsnapshot =  await newchat.get();
+        Navigator.of(context).push(MaterialPageRoute(builder: (context)=> ChatpageMain(doc: newsnapshot,recieverEmail: userData['email'],)));
+
+        }                    
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -74,50 +106,10 @@ class _SearchpageState extends State<Searchpage> {
                     DocumentSnapshot doc = filtered[index];
                   
                   return ListTile(
-                    leading: IconButton(onPressed: () async{
-                      //print("searched user");
-                      var userData = doc.data() as Map<String, dynamic>;
-                    //  print(FirebaseAuth.instance.currentUser!.email);
-                    //  print(userData);
-
-                      
-                        QuerySnapshot q = await FirebaseFirestore.instance.collection('chats').where('users',arrayContains: FirebaseAuth.instance.currentUser!.email).get(); 
-                     //Note : q retives all the chat that have our email address we have to filter it letter
-                        bool chatExists = false;
-
-                          // Iterate through the results to check if the other user's email is also in the users array
-                          for (var doc in q.docs) {
-                            final data = doc.data() as Map<String, dynamic>;
-                            if (data['users'] != null && data['users'].contains(userData['email'])) {
-                              chatExists = true;
-                              print("Chat exists: ${doc.id}");
-                              Navigator.of(context).push(MaterialPageRoute(builder: (context)=> ChatpageMain(doc: doc,recieverEmail: userData['email'],)));
-
-                              break;
-                            }
-                          }
-                    if ( chatExists == false ){
-                        //create a new chat 
-                       // print("nodoc");
-                        // the data
-                         var data ={
-                          'users':[
-                            FirebaseAuth.instance.currentUser!.email,
-                            userData['email'],
-
-                          ],
-                          "recent_text":"HI",
-                        };
-                        // sening fifrebase command
-                       DocumentReference newchat = await FirebaseFirestore.instance.collection('chats').add(data);
-                       DocumentSnapshot newsnapshot =  await newchat.get();
-                      Navigator.of(context).push(MaterialPageRoute(builder: (context)=> ChatpageMain(doc: newsnapshot,recieverEmail: userData['email'],)));
-
-
-                       }
-
-                    }, 
-                    icon: Icon(Icons.chat),color: Colors.indigo,
+                    leading: IconButton(
+                      onPressed: () => {messageFunction(context,doc)}
+                      ,
+                      icon: Icon(Icons.chat),color: Colors.indigo,
                     ),
                      title: Text(doc['email']),
                       trailing: FutureBuilder<DocumentSnapshot>(
