@@ -86,17 +86,7 @@ class _ChatpageMainState extends State<ChatpageMain> {
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  IconButton(//vide call redirecting button
-                    icon: const Icon(Icons.videocam, color: Colors.deepPurple),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => CallPage( )
-                        ),
-                      );
-                    },
-                  ),
+                
                 ],
               ),
             ),
