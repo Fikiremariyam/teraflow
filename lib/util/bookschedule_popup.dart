@@ -60,7 +60,7 @@ void createappontiment(context,doctoremail  )async{
         
         //PROCEED ONY IF THE MESSAGE CONTROLLER HAS FILE 
         if (messageController.text.isNotEmpty) {
-            final timestamp = DateFormat('hh:mm a').format(DateTime.now()); // Format timestamp
+            final timestamp = DateFormat('yyyy-MM-dd hh:mm a').format(DateTime.now());
             await newsnapshot.reference.collection('messages').add(
               {
                 'message': messageController.text,

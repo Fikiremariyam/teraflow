@@ -26,8 +26,7 @@ class _ChatpageMainState extends State<ChatpageMain> {
   // Function to send a message
   void _sendMessage() async {
     if (message.text.isNotEmpty) {
-      final timestamp =
-          DateFormat('hh:mm a').format(DateTime.now()); // Format timestamp
+      final timestamp = DateFormat('yyyy-MM-dd hh:mm a').format(DateTime.now()); // Format timestamp
        await widget.doc.reference.collection('messages').add(
         {
           'message': message.text,
@@ -114,6 +113,8 @@ class _ChatpageMainState extends State<ChatpageMain> {
                 itemBuilder: (context, index) {
                   
                   DocumentSnapshot msg =snapshot.data!.docs[index];
+                  String timeOnly = msg['timestamp'].split(' ')[1] + ' ' + msg['timestamp']!.split(' ')[2];  
+  
                   
                   bool isSender = msg['sender'] ==FirebaseAuth.instance.currentUser!.email; // Check if the message is from the sender
                   
@@ -164,7 +165,7 @@ class _ChatpageMainState extends State<ChatpageMain> {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            msg['timestamp']!,
+                            timeOnly,
                             style: TextStyle(
                               fontSize: 12,
                               color: Colors.grey.shade600,

@@ -10,12 +10,12 @@ class ChatPage extends StatelessWidget {
       appBar: AppBar(
         title: Text("your Chats"),
       ),
-      body: FutureBuilder(
-          future:   FirebaseFirestore.instance
-              .collection('chats')
-              .where('users',
-                  arrayContains: FirebaseAuth.instance.currentUser!.email)
-              .get(),
+      body: StreamBuilder<QuerySnapshot>(
+  stream: FirebaseFirestore.instance
+      .collection('chats')
+      .where('users', arrayContains: FirebaseAuth.instance.currentUser!.email)
+      .orderBy("lastmessageTimeStamp", descending: true)
+      .snapshots(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               if (snapshot.data!.docs.isEmpty == true) {
