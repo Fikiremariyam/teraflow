@@ -37,6 +37,7 @@ void messageFunction(context,doc) async{
             userData['email'],
           ],
           "recent_text":"HI",
+          "lastmessageTimeStamp":DateTime.now().toString(),
         };
 
         // sening fifrebase command

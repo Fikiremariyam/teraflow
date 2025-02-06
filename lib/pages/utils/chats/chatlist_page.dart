@@ -11,7 +11,7 @@ class ChatPage extends StatelessWidget {
         title: Text("your Chats"),
       ),
       body: FutureBuilder(
-          future: FirebaseFirestore.instance
+          future:   FirebaseFirestore.instance
               .collection('chats')
               .where('users',
                   arrayContains: FirebaseAuth.instance.currentUser!.email)

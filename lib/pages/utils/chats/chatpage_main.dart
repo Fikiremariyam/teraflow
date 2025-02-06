@@ -34,6 +34,12 @@ class _ChatpageMainState extends State<ChatpageMain> {
           'timestamp': timestamp,
           'sender': FirebaseAuth.instance.currentUser!.email, // You can set this according to the sender
         });
+         await widget.doc.reference.update(
+                {
+                  "recent_text":message.text,
+                  "lastmessageTimeStamp":timestamp,
+                }
+                );
       }
       message.clear(); // Clear the input field
     }
@@ -93,7 +99,7 @@ class _ChatpageMainState extends State<ChatpageMain> {
             // Chat messages area with a custom background color
             Expanded(
               child: StreamBuilder(
-            stream: widget.doc.reference.collection('messages').snapshots(), 
+            stream: widget.doc.reference.collection('messages').orderBy('timestamp',descending: false).snapshots(), 
           builder: (context, snapshot){
             if(snapshot.hasData){
               //print(snapshot.data!.docs);

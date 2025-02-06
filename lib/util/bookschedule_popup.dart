@@ -37,7 +37,6 @@ void createappontiment(context,doctoremail  )async{
           print("Chat exists: ${doc.id}");
           Docid =doc.id;
 
-         
           
           break;
           
@@ -50,48 +49,57 @@ void createappontiment(context,doctoremail  )async{
             FirebaseAuth.instance.currentUser!.email,
             doctoremail,
           ],
-          "recent_text":"HI",
+          "recent_text":"message",
+          "lastmessageTimeStamp": DateFormat('hh:mm a').format(DateTime.now()), // Format timestamp
         };
+        
+        // CREATING A NEW CHAT it the chat dosen't exist 
 
-
-        // sening fifrebase command
         DocumentReference newchat = await FirebaseFirestore.instance.collection('chats').add(data);
-
         DocumentSnapshot newsnapshot =  await newchat.get();
-
-              if (messageController.text.isNotEmpty) {
-            final timestamp =
-                DateFormat('hh:mm a').format(DateTime.now()); // Format timestamp
+        
+        //PROCEED ONY IF THE MESSAGE CONTROLLER HAS FILE 
+        if (messageController.text.isNotEmpty) {
+            final timestamp = DateFormat('hh:mm a').format(DateTime.now()); // Format timestamp
             await newsnapshot.reference.collection('messages').add(
               {
-                'message': messageController,
+                'message': messageController.text,
                 'timestamp': timestamp,
                 'sender': FirebaseAuth.instance.currentUser!.email, // You can set this according to the sender
               });
-              
+              //update last message and time stamp 
+              await newchat.update(
+                {
+                  "recent_text":messageController.text,
+                  "lastmessageTimeStamp":timestamp,
+                }
+              );
               }
               
-              
-         
-        }else{
+        }
+        
+        else{
           DocumentSnapshot chat=  await FirebaseFirestore.instance.collection("chats").doc(Docid).get();
           print("chatid${chat.data()}");
            if (messageController.text.isNotEmpty) {
-            final timestamp =
-                DateFormat('hh:mm a').format(DateTime.now()); // Format timestamp
+            final timestamp = DateFormat('hh:mm a').format(DateTime.now()); // Format timestamp
             await chat.reference.collection('messages').add(
               {
                 'message': messageController.text,
                 'timestamp': timestamp,
                 'sender': FirebaseAuth.instance.currentUser!.email, // You can set this according to the sender
               });
+                 await chat.reference.update(
+                {
+                  "recent_text":messageController,
+                  "lastmessageTimeStamp":timestamp,
+                });
               
               }
-
-
         }
         messageController.clear();       
 }
+
 
   @override
   Widget build(BuildContext context) {
