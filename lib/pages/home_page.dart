@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:teraflow/chatbot/chatbot_screen.dart';
 import 'package:teraflow/pages/SELFHELP/breathing_exercise.dart';
 import 'package:teraflow/pages/SELFHELP/meditation_list.dart';
 import 'package:teraflow/pages/searchpage.dart';
@@ -36,68 +37,73 @@ class _HomePageState extends State<HomePage> {
     CalendarPage(),
     SelfHelpPage(),
   ];
-       Future<File?> uploadnewImage(File imageFile) async {//for external directory dynamically
+  Future<File?> uploadnewImage(File imageFile) async {
+    //for external directory dynamically
 
-            if (await Permission.storage.request().isGranted) { // Ask for permission
-              Directory? externalDir = await getExternalStorageDirectory(); // Get external storage
-              
-              String currentUser = FirebaseAuth.instance.currentUser!.uid;
+    if (await Permission.storage.request().isGranted) {
+      // Ask for permission
+      Directory? externalDir =
+          await getExternalStorageDirectory(); // Get external storage
 
-              String customPath = '${externalDir?.path}/images/profile/${currentUser}'; // Define your custom path
+      String currentUser = FirebaseAuth.instance.currentUser!.uid;
 
-              await Directory(customPath).create(recursive: true); // Create folder if not exists
+      String customPath =
+          '${externalDir?.path}/images/profile/${currentUser}'; // Define your custom path
 
-              File newImage = File('$customPath/profile.jpg'); // Create file path
-              return await imageFile.copy(newImage.path); // Copy file to custom directory
-            } else {
-              print("Storage permission denied.");
-              return null;
-            }
-            }
+      await Directory(customPath)
+          .create(recursive: true); // Create folder if not exists
 
-  Widget _profilePic( ){
-    // to get the adrees of the image-fore firebase firestore 
+      File newImage = File('$customPath/profile.jpg'); // Create file path
+      return await imageFile
+          .copy(newImage.path); // Copy file to custom directory
+    } else {
+      print("Storage permission denied.");
+      return null;
+    }
+  }
+
+  Widget _profilePic() {
+    // to get the adrees of the image-fore firebase firestore
     /*Future<String?> getUserProfileImage() async {
       String uid = FirebaseAuth.instance.currentUser!.uid;
       DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('users').doc(uid).get();
       return userDoc['profileImage'];
       }*/
-      Future<File?> getSavedImage() async {
-          final directory = await getApplicationDocumentsDirectory();
-          String currentUser = FirebaseAuth.instance.currentUser!.uid;
+    Future<File?> getSavedImage() async {
+      final directory = await getApplicationDocumentsDirectory();
+      String currentUser = FirebaseAuth.instance.currentUser!.uid;
 
-          final localPath = '${directory.path}/images/profile/${currentUser}/profile.jpg';
-          
-          File file = File(localPath);
-          if (await file.exists()) {
-            return file;
-          }
-          return null;
-        }
-       
-      
+      final localPath =
+          '${directory.path}/images/profile/${currentUser}/profile.jpg';
+
+      File file = File(localPath);
+      if (await file.exists()) {
+        return file;
+      }
+      return null;
+    }
+
     return FutureBuilder<File?>(
-            future: getSavedImage(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return CircularProgressIndicator();
-              }
-              if (snapshot.hasData && snapshot.data != null) {
-                return CircleAvatar(
-                  radius: 50,
-                  backgroundImage:  FileImage( snapshot.data!),
-                );
-              } else {
-                return CircleAvatar(
-                  radius: 50,
-                  backgroundColor: Colors.grey,
-                  child: Icon(Icons.person, size: 50, color: Colors.white),
-                  );
-                }
-              },
-            );
-          }
-  
+      future: getSavedImage(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return CircularProgressIndicator();
+        }
+        if (snapshot.hasData && snapshot.data != null) {
+          return CircleAvatar(
+            radius: 50,
+            backgroundImage: FileImage(snapshot.data!),
+          );
+        } else {
+          return CircleAvatar(
+            radius: 50,
+            backgroundColor: Colors.grey,
+            child: Icon(Icons.person, size: 50, color: Colors.white),
+          );
+        }
+      },
+    );
+  }
 
   void _onNavBarTap(int index) {
     setState(() {
@@ -109,7 +115,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.grey[300],
+        backgroundColor: Color(0xFFF8F8FF),
         automaticallyImplyLeading: false,
         title: Row(
           children: [
@@ -139,7 +145,7 @@ class _HomePageState extends State<HomePage> {
                     hintText: 'Search ...',
                     hintStyle: TextStyle(color: Colors.grey[600]),
                     prefixIcon:
-                        Icon(Icons.search, color: Colors.deepPurple[200]),
+                        Icon(Icons.search, color: Colors.deepPurple[250]),
                     border: InputBorder.none,
                   ),
                 ),
@@ -147,14 +153,14 @@ class _HomePageState extends State<HomePage> {
             ),
             SizedBox(width: 8.0),
             IconButton(
-              icon: Icon(Icons.notifications, color: Colors.deepPurple[200]),
+              icon: Icon(Icons.notifications, color: Colors.deepPurple[500]),
               onPressed: () {},
             ),
           ],
         ),
       ),
       key: _scaffoldKey,
-      backgroundColor: Colors.grey[300],
+      backgroundColor: Colors.white,
       drawer: Drawer(
         //a drawer which  contains the user prfile and some of navications
         child: Column(
@@ -166,7 +172,8 @@ class _HomePageState extends State<HomePage> {
                 color: Colors.deepPurple[300],
               ),
               currentAccountPicture: GestureDetector(
-                onTap: () async { // to change the profile Image
+                onTap: () async {
+                  // to change the profile Image
 
                   // Simplified logic to pick a local image without Firebase
                   final ImagePicker picker = ImagePicker();
@@ -178,7 +185,7 @@ class _HomePageState extends State<HomePage> {
                   }
                 },
                 child: _profilePic(),
-                ),
+              ),
               accountName: Row(
                 children: [
                   Expanded(
@@ -412,7 +419,7 @@ class _HomePageState extends State<HomePage> {
                       padding: EdgeInsets.symmetric(horizontal: 12),
                       height: 40,
                       decoration: BoxDecoration(
-                        color: Colors.deepPurple[100],
+                        color: Colors.deepPurple[50],
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: TextField(
@@ -424,35 +431,40 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 40),
 
                   // Categories Section
-                  Container(
-                    height: 100,
-                    child: ListView(
-                      scrollDirection: Axis.horizontal,
-                      children: [
-                        CategoryCard(
-                          categoryName: 'Meditation',
-                          iconImagePath: 'lib/icons/meditation.png',
-                        ),
-                        CategoryCard(
-                          categoryName: 'Community',
-                          iconImagePath: 'lib/icons/community.png',
-                        ),
-                        CategoryCard(
-                          categoryName: 'Exercise',
-                          iconImagePath: 'lib/icons/exercise.png',
-                        ),
-                        CategoryCard(
-                          categoryName: 'Journaling',
-                          iconImagePath: 'lib/icons/journaling.png',
-                        ),
-                        CategoryCard(
-                          categoryName: 'Time',
-                          iconImagePath: 'lib/icons/time.png',
-                        ),
-                      ],
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      height: 100,
+
+                      //backgroundColor: Colors.deepPurple[50],
+                      child: ListView(
+                        scrollDirection: Axis.horizontal,
+                        children: [
+                          CategoryCard(
+                            categoryName: 'Meditation',
+                            iconImagePath: 'lib/icons/meditation.png',
+                          ),
+                          CategoryCard(
+                            categoryName: 'Community',
+                            iconImagePath: 'lib/icons/community.png',
+                          ),
+                          CategoryCard(
+                            categoryName: 'Exercise',
+                            iconImagePath: 'lib/icons/exercise.png',
+                          ),
+                          CategoryCard(
+                            categoryName: 'Journaling',
+                            iconImagePath: 'lib/icons/journaling.png',
+                          ),
+                          CategoryCard(
+                            categoryName: 'Time',
+                            iconImagePath: 'lib/icons/time.png',
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                   SizedBox(height: 25),
@@ -478,7 +490,7 @@ class _HomePageState extends State<HomePage> {
                             ); //navigator
                           },
                           child: Text(
-                            'see all',
+                            'See all',
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               color: Colors.grey[500],
@@ -539,15 +551,27 @@ class _HomePageState extends State<HomePage> {
             ChatPage(),
             CalendarPage(),
             SelfHelpPage(),
-
+            ChatScreen(),
             BreathingExerciseDetailPage(),
           ],
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => const ChatScreen()),
+          );
+        },
+        backgroundColor: Colors.deepPurple[200],
+        child: const Icon(
+          Icons.support,
+          color: Colors.white,
+        ),
+      ),
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 20.0),
+        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0),
         child: GNav(
-          backgroundColor: Colors.grey.shade300,
+          backgroundColor: Colors.white,
           color: const Color.fromARGB(255, 97, 97, 97),
           activeColor: Colors.deepPurple.shade500,
           tabBackgroundColor: Colors.deepPurple.shade100,
@@ -570,7 +594,7 @@ class _HomePageState extends State<HomePage> {
               text: 'Calendar',
             ),
             GButton(
-              icon: Icons.mediation,
+              icon: Icons.book,
               text: 'Self-help',
             ),
           ],

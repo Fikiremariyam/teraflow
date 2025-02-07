@@ -19,8 +19,16 @@ class TherapistCard extends StatelessWidget {
       padding: const EdgeInsets.only(left: 25.0),
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.deepPurple[100],
+          color: Colors.white,
           borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.shade400, // Shadow color
+              offset: Offset(2, 4), // Shadow position (X, Y)
+              blurRadius: 6, // Blur intensity
+              spreadRadius: 1, // Spread of the shadow
+            ),
+          ],
         ),
         child: Column(
           children: [
