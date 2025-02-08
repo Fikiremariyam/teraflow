@@ -15,9 +15,10 @@ class CategoryCard extends StatelessWidget {
       padding: const EdgeInsets.only(left: 25.0),
       child: Container(
         width: 120, // Increase width for a larger circular container
-        height: 120, // Increase height to maintain the circular shape
+        height: 120,
+        // Increase height to maintain the circular shape
         decoration: BoxDecoration(
-          color: Colors.deepPurple[100],
+          color: Colors.white,
           borderRadius: BorderRadius.circular(12), // Keep rounded corners
           boxShadow: [
             BoxShadow(

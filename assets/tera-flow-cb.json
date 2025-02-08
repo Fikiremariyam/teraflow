@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "tera-flow",
+  "private_key_id": "f9d1708aed26dac245109453a132170080dd9d92",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDAw1PaKS1+8nMr\neOXuzH+VxPEiBazAyrNTcwYOx53ZaVTFbDlLywSo4vt93VaksThV3Lis49zbEyfl\nc1wuD76PKTdcD65Paf4THcvWvAoqT2fLtQMUlgkBnjuGfCT/kImRdZd0bDoJjagF\n33MJFkc887VmMjLmUU4uvIMWvW1yx+nYOo0m8sfmh6jaKEheAorejhmdlo2YXXqN\nfE8NKf+zcKweL+8XK5y5EIZPQcBWYcmJUTDSnZRtZsOSroQJWrcHYjVp7BI3qjfh\n//PzyH/pGNY6Nda4ZjXtGkIg/qtle3it+4RdnXLNk0M25EbhBBBrdvpVPgdkkJ9J\nbfOPAmz3AgMBAAECggEAKszT9/svomHD57Gi4Chg5cjCP6sh5fa75XoDLNHuvwDP\ntTwn5qfPw44OiC5WmB/PYeUtzhmUBsKUl7JLE+EkDxZ4N8U1j2V56BW0FlxPJ4DV\nC5qH8hC0NDtFfUFgV6xolzcUZ2HGayucVJ1+JdTgAW0daHEZ8yC3atIpiymJPTQ5\n8lB8NRG+5/nrKAXOrnNThzvlOZKkE7cAKVmKnZYpzQqkxBvEZrcRNfA7ihlnhNlS\nVkSvj8VpYRaioGBJBdHKoTjVHOJUWN/HE8/LGnKJwDX4ReGEF7fZokRf1wc7Jygg\nAgfiksGAoVVkLCCuYAsFKRs/KWu6S7HKU6kmn4/w5QKBgQD49Hsnc9iB90ZwTEb/\nxfxE2UOepwoiwT8C+iJMkI/guriMs+rFWl9BKegrY+NLyZyuGHFQNtw8HAd632TJ\nVAsjcWqZ5KOMS6nOS1Ec1j/tUoTQeCM8MMgJdeaox5NkRgyP9gZJfuxHqgmagSqW\nNfOGArZMk38+uuxVsSRPmRF6owKBgQDGN8WCpb3nOG9EdysiU0EqWKe9aUXVNU8T\n7ui/pBw9DSv009xjvatvKomJnQVa4vEV7Iz7zraDmIsNAhZTRStl5blt1mC3wiV7\nKYFJGBqJILQM3kBGU7hu8kMj6ThuiEog7utbz0nQP8PLQLXNVOE/eI1xsUNJxJnd\nCkDkVB9dnQKBgBhr+0zSe3G8bSeFBA4BQQ8L9SsyHbdtF55WJVk3cTXNe18qIyS7\nCc8dqk3fXaPIolsdwLfquc4XvdAa7Asn+HPAo4F3QWf44C6BivJ2Pg0s5CSDNImq\nC2WKMFdsRJQ4nvDcZJ9/GPSqxIholWHo5vvFdlaqvXfM5HQ/jV1VmbZbAoGATM+H\n5hy7/kHMPEfBm0eP1Q0N00RcH0bNIfhOkRTTLIVSJ0mB+dSh/i4Jph4G2TVgHxLP\nfzSXXV9bYusQI6yGKLJgrMOKLys4wwVOaDjC76iQnPvzBE2lBrkyc1QI3ixKLYDo\nC2fEPsK26Khmyu69ao8YoJoEbS2WQiWbB9/hV7ECgYEA1uavRCFjRusf/qvEdovw\ns1r+6/pWeT6g5VvXnT7lLz0WD5XVyv1/9q41/yXBXNd6EgsV4Y32IL5rthIE/bPD\nxPdYrrfc5WBLFFKbdrqvJSgeAoyXY5pNcUsyb3+0v3U8s+7/4OBLxIUfr2RfA8Hw\nki8GThzB+jz23Am/3mAyzHw=\n-----END PRIVATE KEY-----\n",
+  "client_email": "theradialog@tera-flow.iam.gserviceaccount.com",
+  "client_id": "105112192369378980409",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/theradialog%40tera-flow.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
