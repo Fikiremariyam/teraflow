@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloudinary_flutter/cloudinary_object.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:intl/message_format.dart';
 import 'package:provider/provider.dart';
 import 'package:teraflow/pages/home_page.dart';
@@ -17,17 +18,21 @@ import 'package:cloudinary_url_gen/cloudinary.dart';
 void main() async {
   //flutter widget binding
   WidgetsFlutterBinding.ensureInitialized();
+
+  try {
+    await dotenv.load();
+    print("Pass .env Loaded Successfully!");
+  } catch (e) {
+    print("Error loading .env: $e");
+  }
   // firebase intialazing
   await Firebase.initializeApp();
   //cloudinary inilazing
-  CloudinaryContext.cloudinary= Cloudinary.fromCloudName(cloudName: "dd8qfpth2");
+  CloudinaryContext.cloudinary =
+      Cloudinary.fromCloudName(cloudName: "dd8qfpth2");
   final cloudinary = CloudinaryObject.fromCloudName(cloudName: "dd8qfpth2");
-  runApp(
-    ChangeNotifierProvider(
-      create:(context)=>MessageProvider(),
-      child:const MyApp()
-  )
-  );
+  runApp(ChangeNotifierProvider(
+      create: (context) => MessageProvider(), child: const MyApp()));
 }
 
 class MyApp extends StatefulWidget {
