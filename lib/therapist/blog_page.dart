@@ -34,7 +34,7 @@ class _BlogPageState extends State<BlogPage> {
     });
   }
 
-  // Toggle like/unlike the blog
+  // Toggle like/unlike the bloge
   Future<void> _toggleLike(Blog blog) async {
     bool isLiked = likedBlogs[blog.id] ?? false;
 

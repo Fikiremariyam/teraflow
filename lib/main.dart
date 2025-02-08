@@ -1,16 +1,28 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:teraflow/pages/home_page.dart';
 import 'package:teraflow/pages/auth/login_page.dart';
 import 'package:teraflow/pages/auth/signup_page.dart';
 import 'package:teraflow/therapist/home_therapist.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'dart:io';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  try {
+    await dotenv.load();
+    print("Pass .env Loaded Successfully!");
+  } catch (e) {
+    print("Error loading .env: $e");
+  }
+
+  // Initialize Firebase
   await Firebase.initializeApp();
-  runApp(const MyApp());
+
+  runApp(MyApp());
 }
 
 class MyApp extends StatefulWidget {

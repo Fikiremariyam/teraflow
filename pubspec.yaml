@@ -42,6 +42,13 @@ dependencies:
   permission_handler: ^10.0.0
   video_player: ^2.9.2
   table_calendar: ^3.0.8
+  http: ^1.3.0
+  flutter_dotenv: ^5.2.1
+  url_launcher: ^6.0.9 
+  uni_links5: ^0.5.4
+ 
+  
+
 
   get: ^4.6.5
   # The following adds the Cupertino Icons font to your application.

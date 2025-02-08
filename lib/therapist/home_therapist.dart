@@ -61,7 +61,7 @@ class _HomePagetState extends State<HomePaget> {
       CalendarTherapist(),
       ChatTherapist(),
       BlogPage(),
-      FinancePage(),
+     // FinancePage(),
     ];
 
     return Scaffold(
