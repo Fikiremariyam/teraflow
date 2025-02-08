@@ -52,7 +52,9 @@ dependencies:
   bubble:
   http: ^1.2.2
   googleapis_auth: ^1.4.0
-
+  cloudinary_flutter:
+  cloudinary_url_gen:
+  flutter_svg: ^2.0.9
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
 

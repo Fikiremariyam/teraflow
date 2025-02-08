@@ -11,6 +11,7 @@ import 'package:teraflow/chatbot/chatbot_screen.dart';
 import 'package:teraflow/pages/SELFHELP/breathing_exercise.dart';
 import 'package:teraflow/pages/SELFHELP/meditation_list.dart';
 import 'package:teraflow/pages/searchpage.dart';
+import 'package:teraflow/pages/splashPage/ProfilePage.dart';
 import 'package:teraflow/util/category_card.dart';
 import 'package:teraflow/util/therapist_card.dart';
 import 'package:teraflow/pages/calendar_page.dart';
@@ -31,107 +32,112 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
-  final GlobalKey<ScaffoldState> _scaffoldKey =GlobalKey<ScaffoldState>(); // Create a GlobalKey for Scaffold
-  var username  = TextEditingController();
-  var phonenumber=TextEditingController();
+  final GlobalKey<ScaffoldState> _scaffoldKey =
+      GlobalKey<ScaffoldState>(); // Create a GlobalKey for Scaffold
+  var username = TextEditingController();
+  var phonenumber = TextEditingController();
 
-      // List of widgets to change on body  
-      final List<Widget> _pages = [
-        ChatPage(),
-        CalendarPage(),
-        SelfHelpPage(),
-      ];
+  // List of widgets to change on body
+  final List<Widget> _pages = [
+    ChatPage(),
+    CalendarPage(),
+    SelfHelpPage(),
+    ProfileScreen(),
+  ];
 
-      // image uploading function
-      Future<File?> uploadnewImage(File imageFile) async {
+  // image uploading function
+  Future<File?> uploadnewImage(File imageFile) async {
+    if (await Permission.storage.request().isGranted) {
+      // Ask for permission
+      Directory? externalDir =
+          await getExternalStorageDirectory(); // Get external storage
 
-                if (await Permission.storage.request().isGranted) { // Ask for permission
-                  Directory? externalDir = await getExternalStorageDirectory(); // Get external storage
-                  
-                  String currentUser = FirebaseAuth.instance.currentUser!.uid;
+      String currentUser = FirebaseAuth.instance.currentUser!.uid;
 
-                  String customPath = '${externalDir?.path}/images/profile/${currentUser}'; // Define your custom path
+      String customPath =
+          '${externalDir?.path}/images/profile/${currentUser}'; // Define your custom path
 
-                  await Directory(customPath).create(recursive: true); // Create folder if not exists
+      await Directory(customPath)
+          .create(recursive: true); // Create folder if not exists
 
-                  File newImage = File('$customPath/profile.jpg'); // Create file path
-                  return await imageFile.copy(newImage.path); // Copy file to custom directory
-                } else {
-                  print("Storage permission denied.");
-                  return null;
-                }
-                }
+      File newImage = File('$customPath/profile.jpg'); // Create file path
+      return await imageFile
+          .copy(newImage.path); // Copy file to custom directory
+    } else {
+      print("Storage permission denied.");
+      return null;
+    }
+  }
 
-      //getting  profule  pic 
-      Widget _profilePic() {
-        // Initialize Cloudinary properly
-        final cloudinary = Cloudinary.fromCloudName(cloudName: "dd8qfpth2");
+  //getting  profule  pic
+  Widget _profilePic() {
+    // Initialize Cloudinary properly
+    final cloudinary = Cloudinary.fromCloudName(cloudName: "dd8qfpth2");
 
-        return CircleAvatar(
-          radius: 50,
-          backgroundColor: Colors.grey,
-          child: CldImageWidget(
-            cloudinary: cloudinary,  // Pass Cloudinary instance
-            publicId: "cld-sample-4",
+    return CircleAvatar(
+      radius: 50,
+      backgroundColor: Colors.grey,
+      child: CldImageWidget(
+        cloudinary: cloudinary, // Pass Cloudinary instance
+        publicId: "cld-sample-4",
+      ),
+    );
+  }
+
+  //getting user name
+  void getusercred() async {
+    var docSnapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.email)
+        .get();
+    String usernameholder =
+        docSnapshot.data()?['username'] ?? 'enter yourname ';
+    String phoneno =
+        docSnapshot.data()?['phonenumber'] ?? 'enter your  phone  no';
+    setState(() {
+      username.text = usernameholder;
+      phonenumber.text = phoneno;
+    });
+  }
+
+  // showing edit dialog
+  void showEditDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Edit Username"),
+          content: TextField(
+            controller: username,
+            decoration: InputDecoration(hintText: "Enter new username"),
           ),
-        );
-      }
-      
-      //getting user name
-      void getusercred() async {
-      var docSnapshot = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(FirebaseAuth.instance.currentUser!.email)
-          .get();
-          String usernameholder = docSnapshot.data()?['username'] ?? 'enter yourname ';
-          String phoneno = docSnapshot.data()?['phonenumber'] ?? 'enter your  phone  no';
-          setState(() {
-            username.text= usernameholder;
-            phonenumber.text=phoneno;
-          });
-        
-          
-}
-      
-      // showing edit dialog
-      void showEditDialog() {
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context), // Close dialog
+              child: Text("Cancel"),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                String newName = username.text.trim();
+                if (newName.isNotEmpty) {
+                  await FirebaseFirestore.instance
+                      .collection('users')
+                      .doc(FirebaseAuth.instance.currentUser!.email)
+                      .update({'username': newName});
 
-        showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              title: Text("Edit Username"),
-              content: TextField(
-                controller: username,
-                decoration: InputDecoration(hintText: "Enter new username"),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context), // Close dialog
-                  child: Text("Cancel"),
-                ),
-                ElevatedButton(
-                  onPressed: () async {
-                    String newName = username.text.trim();
-                    if (newName.isNotEmpty) {
-                      await FirebaseFirestore.instance
-                        .collection('users')
-                        .doc(FirebaseAuth.instance.currentUser!.email)
-                        .update({'username': newName});
-
-                    setState(() {
-                        username.text = newName; // Update the UI
-                    });
-                    }
-                    Navigator.pop(context); // Close dialog
-                  },
-                  child: Text("Submit"),
-                ),
-              ],
-            );
-          },
+                  setState(() {
+                    username.text = newName; // Update the UI
+                  });
+                }
+                Navigator.pop(context); // Close dialog
+              },
+              child: Text("Submit"),
+            ),
+          ],
         );
-      }
+      },
+    );
+  }
 
   void _onNavBarTap(int index) {
     setState(() {
@@ -139,11 +145,12 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  @override 
-    void initState() {//function to run then ever the page is loaded
-      super.initState();
-      getusercred();
-    }
+  @override
+  void initState() {
+    //function to run then ever the page is loaded
+    super.initState();
+    getusercred();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -155,7 +162,12 @@ class _HomePageState extends State<HomePage> {
           children: [
             GestureDetector(
               onTap: () {
-                _scaffoldKey.currentState?.openDrawer();
+                print("=====================================================");
+                print("button clicked"); // debug code
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ProfileScreen()),
+                );
               },
               child: Container(
                 padding: EdgeInsets.all(8),
@@ -187,14 +199,15 @@ class _HomePageState extends State<HomePage> {
             ),
             SizedBox(width: 8.0),
             IconButton(
-              icon: Icon(Icons.notifications, color: Colors.deepPurple[500]),
+              icon: Icon(Icons.notifications, color: Colors.deepPurple[400]),
               onPressed: () {},
             ),
           ],
         ),
       ),
       key: _scaffoldKey,
-      backgroundColor: Colors.grey[300],
+      backgroundColor: Color(0xFFF8F8FF),
+      // /*
       drawer: Drawer(
         //a drawer which  contains the user prfile and some of navications
         child: Column(
@@ -206,7 +219,8 @@ class _HomePageState extends State<HomePage> {
                 color: Colors.deepPurple[300],
               ),
               currentAccountPicture: GestureDetector(
-                onTap: () async { // to change the profile Image
+                onTap: () async {
+                  // to change the profile Image
 
                   // Simplified logic to pick a local image without Firebase
                   final ImagePicker picker = ImagePicker();
@@ -218,86 +232,88 @@ class _HomePageState extends State<HomePage> {
                   }
                 },
                 child: _profilePic(),
-                ),
+              ),
               accountName: Row(
                 children: [
                   Expanded(
                     child: TextField(
                       controller: username,
                       decoration: InputDecoration(
-                        hintText: username.text.isNotEmpty ? username.text : "Enter username",
+                        hintText: username.text.isNotEmpty
+                            ? username.text
+                            : "Enter username",
                         border: InputBorder.none,
                       ),
                     ),
                   ),
-                  
                   SizedBox(
                     width: 40,
                     child: IconButton(
                       icon: Icon(Icons.edit),
                       onPressed: () {
-                    
                         showEditDialog();
                       },
                     ),
                   ),
                 ],
               ),
+              accountEmail: null,
             ),
-          
+
             // Phone Number Section
             ListTile(
               leading: Icon(Icons.phone),
-              title:   Expanded(
-                    child: TextField(
-                      controller: phonenumber,
-                      decoration: InputDecoration(
-                        hintText: phonenumber.text.isNotEmpty ? phonenumber.text : "Enter username",
-                        border: InputBorder.none,
-                      ),
-                    ),
+              title: Expanded(
+                child: TextField(
+                  controller: phonenumber,
+                  decoration: InputDecoration(
+                    hintText: phonenumber.text.isNotEmpty
+                        ? phonenumber.text
+                        : "Enter username",
+                    border: InputBorder.none,
                   ),
+                ),
+              ),
               trailing: Icon(Icons.edit),
-              onTap: (){
-                 showDialog(
-                context: context,
-                builder: (context) {
-                  return AlertDialog(
-                    title: Text("Edit phone no "),
-                    content: TextField(
-                      controller: phonenumber,
-                      decoration: InputDecoration(hintText: "Enter new number"),
-                    ),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.pop(context), // Close dialog
-                        child: Text("Cancel"),
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: Text("Edit phone no "),
+                      content: TextField(
+                        controller: phonenumber,
+                        decoration:
+                            InputDecoration(hintText: "Enter new number"),
                       ),
-                      ElevatedButton(
-                        onPressed: () async {
-                          String newnumber = phonenumber.text.trim();
-                          if (newnumber.isNotEmpty) {
-                            await FirebaseFirestore.instance
-                              .collection('users')
-                              .doc(FirebaseAuth.instance.currentUser!.email)
-                              .update({'phone_number': newnumber});
+                      actions: [
+                        TextButton(
+                          onPressed: () =>
+                              Navigator.pop(context), // Close dialog
+                          child: Text("Cancel"),
+                        ),
+                        ElevatedButton(
+                          onPressed: () async {
+                            String newnumber = phonenumber.text.trim();
+                            if (newnumber.isNotEmpty) {
+                              await FirebaseFirestore.instance
+                                  .collection('users')
+                                  .doc(FirebaseAuth.instance.currentUser!.email)
+                                  .update({'phone_number': newnumber});
 
-                          setState(() {
-                              phonenumber.text = newnumber; // Update the UI
-                          });
-                          }
-                          Navigator.pop(context); // Close dialog
-                        },
-                        child: Text("Submit"),
-                      ),
-                    ],
-                  );
-                },
-              );
-            
-
+                              setState(() {
+                                phonenumber.text = newnumber; // Update the UI
+                              });
+                            }
+                            Navigator.pop(context); // Close dialog
+                          },
+                          child: Text("Submit"),
+                        ),
+                      ],
+                    );
+                  },
+                );
               },
-              
             ),
 
             // Dark Mode Toggle
@@ -337,6 +353,7 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
+      // */
       body: SafeArea(
         child: IndexedStack(
           index: _selectedIndex,
@@ -510,9 +527,7 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                         InkWell(
-                          onTap: () {
-                           
-                          },
+                          onTap: () {},
                           child: Text(
                             'See all',
                             style: TextStyle(

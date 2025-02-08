@@ -6,6 +6,8 @@ import 'package:provider/provider.dart';
 import 'package:teraflow/pages/home_page.dart';
 import 'package:teraflow/pages/auth/login_page.dart';
 import 'package:teraflow/pages/auth/signup_page.dart';
+import 'package:teraflow/pages/splashPage/OnboardingScreen.dart';
+import 'package:teraflow/pages/splashPage/WellcomeScreen.dart';
 import 'package:teraflow/provider/provider.dart';
 import 'package:teraflow/therapist/home_therapist.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -20,14 +22,11 @@ void main() async {
   // firebase intialazing
   await Firebase.initializeApp();
   //cloudinary inilazing
-  CloudinaryContext.cloudinary= Cloudinary.fromCloudName(cloudName: "dd8qfpth2");
+  CloudinaryContext.cloudinary =
+      Cloudinary.fromCloudName(cloudName: "dd8qfpth2");
   final cloudinary = CloudinaryObject.fromCloudName(cloudName: "dd8qfpth2");
-  runApp(
-    ChangeNotifierProvider(
-      create:(context)=>MessageProvider(),
-      child:const MyApp()
-  )
-  );
+  runApp(ChangeNotifierProvider(
+      create: (context) => MessageProvider(), child: const MyApp()));
 }
 
 class MyApp extends StatefulWidget {
@@ -42,12 +41,16 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: '/login',
+      //initialRoute: '/login',
+      initialRoute: '/Onboarding',
+
       theme: ThemeData(
         primarySwatch: Colors.deepPurple,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       routes: {
+        '/Onboarding': (context) => OnboardingScreen(),
+        '/welcome': (context) => WelcomeScreen(),
         '/login': (context) => FirebaseAuth.instance.currentUser == null
             ? LoginPage()
             : FutureBuilder(

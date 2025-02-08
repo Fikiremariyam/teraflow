@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:teraflow/components/My_button.dart';
 import 'package:teraflow/components/my_textfield.dart';
@@ -16,6 +14,9 @@ class LoginPage extends StatefulWidget {
 class _LogInPageState extends State<LoginPage> {
   final emailController = TextEditingController(); // Change to email controller
   final passwordController = TextEditingController();
+
+  bool isPasswordVisible = false;
+
 // a funciton to show the status of the message after we clicked it
 
   void showSuccessMessage(BuildContext context, String? successMessage) {
@@ -122,96 +123,203 @@ class _LogInPageState extends State<LoginPage> {
     }
     ;
   }
+/*
+  void showAuthResult(BuildContext context, String? errorMessage) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(errorMessage == null ? 'Success' : 'Error'),
+          content: Text(errorMessage ?? 'Authentication Successful'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void logUserIn(BuildContext context) async {
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: emailController.text,
+        password: passwordController.text,
+      );
+
+      showAuthResult(context, null);
+
+      if (mounted) {
+        var role = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .get();
+        print(role);
+        Navigator.pushReplacementNamed(context, "/home");
+      }
+    } on FirebaseAuthException catch (error) {
+      String errorMessage;
+      switch (error.code) {
+        case 'wrong-password':
+          errorMessage = 'Wrong password.';
+          break;
+        case 'invalid-email':
+          errorMessage = 'There is no account registered with this email.';
+          break;
+        case 'invalid-credential':
+          errorMessage = 'Wrong email or password.';
+          break;
+        default:
+          errorMessage = 'An unexpected error occurred.';
+      }
+      showAuthResult(context, errorMessage);
+    }
+  }
+*/
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[300],
-      body: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.pop(context),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {},
+            child: const Row(
               children: [
-                const SizedBox(height: 50),
-                Icon(Icons.lock, size: 100, color: Colors.deepPurple[500]),
-                const SizedBox(height: 50),
-                Text(
-                  'Welcome back',
-                  style: TextStyle(
-                    color: Colors.grey[700],
-                    fontSize: 16,
-                  ),
-                ),
-                const SizedBox(height: 25),
-                MyTextfield(
-                  controller: emailController, // Use email controller
-                  hintText: 'Email', // Change hint text to Email
-                  obscureText: false,
-                ),
-                const SizedBox(height: 10),
-                MyTextfield(
-                  controller: passwordController,
-                  hintText: 'Password',
-                  obscureText: true,
-                ),
-                const SizedBox(height: 25),
-                MyButton(
-                  onTab: () => logUserIn(context),
-                  label: 'Sign In',
-                ),
-                const SizedBox(height: 50),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                  child: Text(
-                    'or continue with',
-                    style: TextStyle(color: Colors.grey[700]),
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Divider(
-                  thickness: 0.5,
-                  color: Colors.grey[400],
-                ),
-                const SizedBox(height: 20),
-                // Social login buttons
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SquareTile(imagePath: 'lib/images/google.png'),
-                    const SizedBox(width: 25),
-                    SquareTile(imagePath: 'lib/images/apple.png'),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                // Register option
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Not a member?',
-                      style: TextStyle(color: Colors.grey[700]),
-                    ),
-                    const SizedBox(width: 4),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.pushNamed(context, '/signup');
-                      },
-                      child: const Text(
-                        'Register now?',
-                        style: TextStyle(
-                          color: Colors.deepPurple,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                Text('English', style: TextStyle(color: Colors.black)),
+                Icon(Icons.check, color: Colors.deepPurple),
               ],
             ),
           ),
+        ],
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Welcome back!',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 32),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _socialButton('lib/images/google.png'),
+                _socialButton('lib/images/apple.png'),
+              ],
+            ),
+            const SizedBox(height: 24),
+            const Row(
+              children: [
+                Expanded(child: Divider()),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: Text('OR', style: TextStyle(color: Colors.grey)),
+                ),
+                Expanded(child: Divider()),
+              ],
+            ),
+            const SizedBox(height: 24),
+            TextField(
+              controller: emailController,
+              decoration: const InputDecoration(
+                labelText: 'Email',
+                prefixIcon: Icon(Icons.email_outlined),
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: passwordController,
+              obscureText: !isPasswordVisible,
+              decoration: InputDecoration(
+                labelText: 'Password',
+                prefixIcon: const Icon(Icons.lock_outline),
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    isPasswordVisible ? Icons.visibility_off : Icons.visibility,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      isPasswordVisible = !isPasswordVisible;
+                    });
+                  },
+                ),
+                border: const OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 24),
+            Align(
+              alignment: Alignment.centerRight,
+              child: TextButton(
+                onPressed: () {},
+                child: const Text(
+                  'Forgot Password?',
+                  style: TextStyle(color: Colors.deepPurple),
+                ),
+              ),
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton(
+              onPressed: () => logUserIn(context),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.deepPurple,
+                minimumSize: Size(double.infinity, 50),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              child: const Text('Login', style: TextStyle(color: Colors.white)),
+            ),
+            const SizedBox(height: 24),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text(
+                  'Don\'t have an account? ',
+                  style: TextStyle(color: Colors.grey),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/signup');
+                  },
+                  child: const Text(
+                    'Sign Up',
+                    style: TextStyle(
+                      color: Colors.deepPurple,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
+    );
+  }
+
+  Widget _socialButton(String iconPath) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey.shade300),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Image.asset(iconPath, width: 24),
     );
   }
 }
