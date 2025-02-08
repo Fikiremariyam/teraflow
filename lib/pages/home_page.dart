@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:cloudinary_flutter/cloudinary_object.dart';
+import 'package:cloudinary_flutter/image/cld_image.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
@@ -16,9 +18,10 @@ import 'package:teraflow/pages/utils/chats/chatpage_main.dart';
 import 'package:teraflow/pages/SELFHELP/selfhelp_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
 import 'package:path_provider/path_provider.dart';
-import 'package:image_picker/image_picker.dart';
+
+import 'package:cloudinary_url_gen/cloudinary.dart';
+import 'package:cloudinary_flutter/image/cld_image.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -27,83 +30,119 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
-  final GlobalKey<ScaffoldState> _scaffoldKey =
-      GlobalKey<ScaffoldState>(); // Create a GlobalKey for Scaffold
+  final GlobalKey<ScaffoldState> _scaffoldKey =GlobalKey<ScaffoldState>(); // Create a GlobalKey for Scaffold
+  var username  = TextEditingController();
+  var phonenumber=TextEditingController();
 
-  // ignore: unused_field
-  final List<Widget> _pages = [
-    ChatPage(),
-    CalendarPage(),
-    SelfHelpPage(),
-  ];
-       Future<File?> uploadnewImage(File imageFile) async {//for external directory dynamically
+      // List of widgets to change on body  
+      final List<Widget> _pages = [
+        ChatPage(),
+        CalendarPage(),
+        SelfHelpPage(),
+      ];
 
-            if (await Permission.storage.request().isGranted) { // Ask for permission
-              Directory? externalDir = await getExternalStorageDirectory(); // Get external storage
-              
-              String currentUser = FirebaseAuth.instance.currentUser!.uid;
+      // image uploading function
+      Future<File?> uploadnewImage(File imageFile) async {
 
-              String customPath = '${externalDir?.path}/images/profile/${currentUser}'; // Define your custom path
+                if (await Permission.storage.request().isGranted) { // Ask for permission
+                  Directory? externalDir = await getExternalStorageDirectory(); // Get external storage
+                  
+                  String currentUser = FirebaseAuth.instance.currentUser!.uid;
 
-              await Directory(customPath).create(recursive: true); // Create folder if not exists
+                  String customPath = '${externalDir?.path}/images/profile/${currentUser}'; // Define your custom path
 
-              File newImage = File('$customPath/profile.jpg'); // Create file path
-              return await imageFile.copy(newImage.path); // Copy file to custom directory
-            } else {
-              print("Storage permission denied.");
-              return null;
-            }
-            }
+                  await Directory(customPath).create(recursive: true); // Create folder if not exists
 
-  Widget _profilePic( ){
-    // to get the adrees of the image-fore firebase firestore 
-    /*Future<String?> getUserProfileImage() async {
-      String uid = FirebaseAuth.instance.currentUser!.uid;
-      DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('users').doc(uid).get();
-      return userDoc['profileImage'];
-      }*/
-      Future<File?> getSavedImage() async {
-          final directory = await getApplicationDocumentsDirectory();
-          String currentUser = FirebaseAuth.instance.currentUser!.uid;
-
-          final localPath = '${directory.path}/images/profile/${currentUser}/profile.jpg';
-          
-          File file = File(localPath);
-          if (await file.exists()) {
-            return file;
-          }
-          return null;
-        }
-       
-      
-    return FutureBuilder<File?>(
-            future: getSavedImage(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return CircularProgressIndicator();
-              }
-              if (snapshot.hasData && snapshot.data != null) {
-                return CircleAvatar(
-                  radius: 50,
-                  backgroundImage:  FileImage( snapshot.data!),
-                );
-              } else {
-                return CircleAvatar(
-                  radius: 50,
-                  backgroundColor: Colors.grey,
-                  child: Icon(Icons.person, size: 50, color: Colors.white),
-                  );
+                  File newImage = File('$customPath/profile.jpg'); // Create file path
+                  return await imageFile.copy(newImage.path); // Copy file to custom directory
+                } else {
+                  print("Storage permission denied.");
+                  return null;
                 }
-              },
+                }
+
+      //getting  profule  pic 
+      Widget _profilePic() {
+        // Initialize Cloudinary properly
+        final cloudinary = Cloudinary.fromCloudName(cloudName: "dd8qfpth2");
+
+        return CircleAvatar(
+          radius: 50,
+          backgroundColor: Colors.grey,
+          child: CldImageWidget(
+            cloudinary: cloudinary,  // Pass Cloudinary instance
+            publicId: "cld-sample-4",
+          ),
+        );
+      }
+      
+      //getting user name
+      void getusercred() async {
+      var docSnapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser!.email)
+          .get();
+          String usernameholder = docSnapshot.data()?['username'] ?? 'enter yourname ';
+          String phoneno = docSnapshot.data()?['phonenumber'] ?? 'enter your  phone  no';
+          setState(() {
+            username.text= usernameholder;
+            phonenumber.text=phoneno;
+          });
+        
+          
+}
+      
+      // showing edit dialog
+      void showEditDialog() {
+
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text("Edit Username"),
+              content: TextField(
+                controller: username,
+                decoration: InputDecoration(hintText: "Enter new username"),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context), // Close dialog
+                  child: Text("Cancel"),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    String newName = username.text.trim();
+                    if (newName.isNotEmpty) {
+                      await FirebaseFirestore.instance
+                        .collection('users')
+                        .doc(FirebaseAuth.instance.currentUser!.email)
+                        .update({'username': newName});
+
+                    setState(() {
+                        username.text = newName; // Update the UI
+                    });
+                    }
+                    Navigator.pop(context); // Close dialog
+                  },
+                  child: Text("Submit"),
+                ),
+              ],
             );
-          }
-  
+          },
+        );
+      }
 
   void _onNavBarTap(int index) {
     setState(() {
       _selectedIndex = index;
     });
   }
+
+  @override 
+    void initState() {//function to run then ever the page is loaded
+      super.initState();
+      getusercred();
+    }
 
   @override
   Widget build(BuildContext context) {
@@ -123,7 +162,7 @@ class _HomePageState extends State<HomePage> {
                   color: Colors.deepPurple[100],
                   borderRadius: BorderRadius.circular(50),
                 ),
-                child: Icon(Icons.person),
+                child: _profilePic(),
               ),
             ),
             SizedBox(width: 8.0),
@@ -134,15 +173,24 @@ class _HomePageState extends State<HomePage> {
                   color: Colors.grey[200],
                   borderRadius: BorderRadius.circular(12.0),
                 ),
-                child: TextField(
-                  decoration: InputDecoration(
-                    hintText: 'Search ...',
-                    hintStyle: TextStyle(color: Colors.grey[600]),
-                    prefixIcon:
-                        Icon(Icons.search, color: Colors.deepPurple[200]),
-                    border: InputBorder.none,
+              
+                  child: TextField(
+                    decoration: InputDecoration(
+                      hintText: 'Search ...',
+                      hintStyle: TextStyle(color: Colors.grey[600]),
+                      prefixIcon:
+                          Icon(Icons.search, color: Colors.deepPurple[200]),
+                      border: InputBorder.none,
+                    ),
+                    onTap: (){
+                       Navigator.of(context).push(
+                              MaterialPageRoute(
+                                  builder: (context) => const Searchpage()),
+                            ); 
+
+                    },
                   ),
-                ),
+                
               ),
             ),
             SizedBox(width: 8.0),
@@ -155,102 +203,113 @@ class _HomePageState extends State<HomePage> {
       ),
       key: _scaffoldKey,
       backgroundColor: Colors.grey[300],
-      drawer: Drawer(
-        //a drawer which  contains the user prfile and some of navications
+
+
+      drawer: Drawer(  
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Profile Section
-            UserAccountsDrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.deepPurple[300],
-              ),
-              currentAccountPicture: GestureDetector(
-                onTap: () async { // to change the profile Image
-
-                  // Simplified logic to pick a local image without Firebase
-                  final ImagePicker picker = ImagePicker();
-                  final XFile? image =
-                      await picker.pickImage(source: ImageSource.gallery);
-                  if (image != null) {
-                    // Optionally update a local state or show the image temporarily
-                    setState(() {}); // Trigger UI update if necessary
-                  }
-                },
-                child: _profilePic(),
-                ),
-              accountName: Row(
+           UserAccountsDrawerHeader(
+            decoration: BoxDecoration(
+              color: Colors.deepPurple[300],
+            ),
+            currentAccountPicture: GestureDetector(
+              onTap: () async {
+                final ImagePicker picker = ImagePicker();
+                final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+                if (image != null) {
+                  setState(() {}); // Trigger UI update
+                }
+              },
+              child: _profilePic(),
+            ),
+            accountName: Text(''),
+            accountEmail: Text(
+              FirebaseAuth.instance.currentUser?.email ?? 'No email available',
+            ),
+          ),
+          ListTile(
+            leading: Icon(Icons.person),
+            title: Row(
                 children: [
                   Expanded(
                     child: TextField(
-                      controller: TextEditingController(
-                        text: FirebaseAuth.instance.currentUser?.displayName ??
-                            '',
-                      ),
+                      controller: username,
                       decoration: InputDecoration(
-                        hintText: 'Enter your name',
+                        hintText: username.text.isNotEmpty ? username.text : "Enter username",
                         border: InputBorder.none,
                       ),
-                      onSubmitted: (newName) async {
-                        // You can update the name locally if needed
-                        setState(() {});
+                    ),
+                  ),
+                  
+                  SizedBox(
+                    width: 40,
+                    child: IconButton(
+                      icon: Icon(Icons.edit),
+                      onPressed: () {
+                    
+                        showEditDialog();
                       },
                     ),
                   ),
-                  IconButton(
-                    icon: Icon(Icons.edit),
-                    onPressed: () {
-                      // Optional: Open another dialog for editing
-                    },
-                  ),
                 ],
               ),
-              accountEmail: Text(
-                FirebaseAuth.instance.currentUser?.email ??
-                    'No email available',
-              ),
             ),
-
+          
             // Phone Number Section
             ListTile(
               leading: Icon(Icons.phone),
-              title: Text('Phone Number'),
-              subtitle: Text(
-                FirebaseAuth.instance.currentUser?.phoneNumber ??
-                    'No phone number added',
-              ),
-              trailing: Icon(Icons.edit),
-              onTap: () {
-                showDialog(
-                  context: context,
-                  builder: (context) {
-                    TextEditingController phoneController =
-                        TextEditingController();
-                    return AlertDialog(
-                      title: Text('Update Phone Number'),
-                      content: TextField(
-                        controller: phoneController,
-                        keyboardType: TextInputType.phone,
-                        decoration: InputDecoration(
-                          hintText: 'Enter phone number',
-                        ),
+              title:   Expanded(
+                    child: TextField(
+                      controller: phonenumber,
+                      decoration: InputDecoration(
+                        hintText: phonenumber.text.isNotEmpty ? phonenumber.text : "Enter username",
+                        border: InputBorder.none,
                       ),
-                      actions: [
-                        TextButton(
-                          onPressed: () async {
-                            String phoneNumber = phoneController.text.trim();
-                            // Save phone number to the database (or other logic)
-                            // Note: FirebaseAuth does not directly support phone updates
-                            // You can save this in your database
-                            Navigator.pop(context);
-                          },
-                          child: Text('Save'),
-                        ),
-                      ],
-                    );
-                  },
-                );
+                    ),
+                  ),
+              trailing: Icon(Icons.edit),
+              onTap: (){
+                 showDialog(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    title: Text("Edit phone no "),
+                    content: TextField(
+                      controller: phonenumber,
+                      decoration: InputDecoration(hintText: "Enter new number"),
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context), // Close dialog
+                        child: Text("Cancel"),
+                      ),
+                      ElevatedButton(
+                        onPressed: () async {
+                          String newnumber = phonenumber.text.trim();
+                          if (newnumber.isNotEmpty) {
+                            await FirebaseFirestore.instance
+                              .collection('users')
+                              .doc(FirebaseAuth.instance.currentUser!.email)
+                              .update({'phone_number': newnumber});
+
+                          setState(() {
+                              phonenumber.text = newnumber; // Update the UI
+                          });
+                          }
+                          Navigator.pop(context); // Close dialog
+                        },
+                        child: Text("Submit"),
+                      ),
+                    ],
+                  );
+                },
+              );
+            
+
               },
+              
             ),
 
             // Dark Mode Toggle
@@ -316,7 +375,7 @@ class _HomePageState extends State<HomePage> {
                               ),
                               SizedBox(height: 4),
                               Text(
-                                'Kalkidan',
+                                username.text,
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 24,
@@ -325,19 +384,6 @@ class _HomePageState extends State<HomePage> {
                             ],
                           ),
                         ),
-                        GestureDetector(
-                          onTap: () {
-                            _scaffoldKey.currentState?.openDrawer();
-                          },
-                          child: Container(
-                            padding: EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                              color: Colors.deepPurple[100],
-                              borderRadius: BorderRadius.circular(50),
-                            ),
-                            child: Icon(Icons.person),
-                          ),
-                        )
                       ],
                     ),
                   ),
@@ -472,10 +518,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                         InkWell(
                           onTap: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                  builder: (context) => const Searchpage()),
-                            ); //navigator
+                           
                           },
                           child: Text(
                             'see all',

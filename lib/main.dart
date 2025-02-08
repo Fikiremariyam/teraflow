@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloudinary_flutter/cloudinary_object.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/message_format.dart';
 import 'package:provider/provider.dart';
@@ -9,10 +10,18 @@ import 'package:teraflow/provider/provider.dart';
 import 'package:teraflow/therapist/home_therapist.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:cloudinary_flutter/cloudinary_context.dart';
+import 'package:cloudinary_flutter/image/cld_image.dart';
+import 'package:cloudinary_url_gen/cloudinary.dart';
 
 void main() async {
+  //flutter widget binding
   WidgetsFlutterBinding.ensureInitialized();
+  // firebase intialazing
   await Firebase.initializeApp();
+  //cloudinary inilazing
+  CloudinaryContext.cloudinary= Cloudinary.fromCloudName(cloudName: "dd8qfpth2");
+  final cloudinary = CloudinaryObject.fromCloudName(cloudName: "dd8qfpth2");
   runApp(
     ChangeNotifierProvider(
       create:(context)=>MessageProvider(),
@@ -48,7 +57,7 @@ class _MyAppState extends State<MyApp> {
                     .get(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return CircularProgressIndicator();
+                    return Center(child: CircularProgressIndicator());
                   }
                   var role = snapshot.data!.get('role');
                   print("+++++++++++++++++++++++++");
@@ -69,7 +78,7 @@ class _MyAppState extends State<MyApp> {
                     .get(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return CircularProgressIndicator();
+                    return Center(child: CircularProgressIndicator());
                   }
                   var role = snapshot.data!.get('role');
                   if (role == "custmer") {
