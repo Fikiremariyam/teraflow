@@ -18,39 +18,9 @@ class CategoryPage extends StatelessWidget {
       backgroundColor: Colors.grey[300],
       appBar: AppBar(
         backgroundColor: Colors.grey[300],
-        automaticallyImplyLeading: false,
-        title: Row(
-          children: [
-            CircleAvatar(
-              backgroundImage: AssetImage('assets/profile.jpg'),
-              radius: 20,
-            ),
-            SizedBox(width: 8.0),
-            Expanded(
-              child: Container(
-                height: 40.0,
-                decoration: BoxDecoration(
-                  color: Colors.grey[200],
-                  borderRadius: BorderRadius.circular(12.0),
-                ),
-                child: TextField(
-                  decoration: InputDecoration(
-                    hintText: 'Search ...',
-                    hintStyle: TextStyle(color: Colors.grey[600]),
-                    prefixIcon:
-                        Icon(Icons.search, color: Colors.deepPurple[200]),
-                    border: InputBorder.none,
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(width: 8.0),
-            IconButton(
-              icon: Icon(Icons.notifications, color: Colors.deepPurple[200]),
-              onPressed: () {},
-            ),
-          ],
-        ),
+        
+        title: Center (
+          child: Text("Booking page "))
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

@@ -149,7 +149,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFFF8F8FF),
+        backgroundColor: Colors.grey[300],
         automaticallyImplyLeading: false,
         title: Row(
           children: [
@@ -160,7 +160,7 @@ class _HomePageState extends State<HomePage> {
               child: Container(
                 padding: EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: Colors.deepPurple[100],
+                  color: Colors.deepPurple[50],
                   borderRadius: BorderRadius.circular(50),
                 ),
                 child: _profilePic(),
@@ -174,52 +174,65 @@ class _HomePageState extends State<HomePage> {
                   color: Colors.grey[200],
                   borderRadius: BorderRadius.circular(12.0),
                 ),
-                child: TextField(
-                  decoration: InputDecoration(
-                    hintText: 'Search ...',
-                    hintStyle: TextStyle(color: Colors.grey[600]),
-                    prefixIcon:
-                        Icon(Icons.search, color: Colors.deepPurple[200]),
-                    border: InputBorder.none,
+              
+                  child: TextField(
+                    decoration: InputDecoration(
+                      hintText: 'Search ...',
+                      hintStyle: TextStyle(color: Colors.grey[600]),
+                      prefixIcon:
+                          Icon(Icons.search, color: Colors.deepPurple[200]),
+                      border: InputBorder.none,
+                    ),
+                    onTap: (){
+                       Navigator.of(context).push(
+                              MaterialPageRoute(
+                                  builder: (context) => const Searchpage()),
+                            ); 
+
+                    },
                   ),
-                ),
+                
               ),
             ),
             SizedBox(width: 8.0),
             IconButton(
-              icon: Icon(Icons.notifications, color: Colors.deepPurple[500]),
+              icon: Icon(Icons.notifications, color: Colors.deepPurple[200]),
               onPressed: () {},
             ),
           ],
         ),
       ),
       key: _scaffoldKey,
-      backgroundColor: Colors.grey[300],
-      drawer: Drawer(
-        //a drawer which  contains the user prfile and some of navications
+       backgroundColor: Colors.white,
+
+
+      drawer: Drawer(  
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Profile Section
-            UserAccountsDrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.deepPurple[300],
-              ),
-              currentAccountPicture: GestureDetector(
-                onTap: () async { // to change the profile Image
-
-                  // Simplified logic to pick a local image without Firebase
-                  final ImagePicker picker = ImagePicker();
-                  final XFile? image =
-                      await picker.pickImage(source: ImageSource.gallery);
-                  if (image != null) {
-                    // Optionally update a local state or show the image temporarily
-                    setState(() {}); // Trigger UI update if necessary
-                  }
-                },
-                child: _profilePic(),
-                ),
-              accountName: Row(
+           UserAccountsDrawerHeader(
+            decoration: BoxDecoration(
+              color: Colors.deepPurple[300],
+            ),
+            currentAccountPicture: GestureDetector(
+              onTap: () async {
+                final ImagePicker picker = ImagePicker();
+                final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+                if (image != null) {
+                  setState(() {}); // Trigger UI update
+                }
+              },
+              child: _profilePic(),
+            ),
+            accountName: Text(''),
+            accountEmail: Text(
+              FirebaseAuth.instance.currentUser?.email ?? 'No email available',
+            ),
+          ),
+          ListTile(
+            leading: Icon(Icons.person),
+            title: Row(
                 children: [
                   Expanded(
                     child: TextField(
@@ -461,37 +474,36 @@ class _HomePageState extends State<HomePage> {
                   SizedBox(height: 40),
 
                   // Categories Section
-                  Padding(
+                    Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Container(
                       height: 100,
-
-                      //backgroundColor: Colors.deepPurple[50],
-                      child: ListView(
-                        scrollDirection: Axis.horizontal,
-                        children: [
-                          CategoryCard(
-                            categoryName: 'Meditation',
-                            iconImagePath: 'lib/icons/meditation.png',
-                          ),
-                          CategoryCard(
-                            categoryName: 'Community',
-                            iconImagePath: 'lib/icons/community.png',
-                          ),
-                          CategoryCard(
-                            categoryName: 'Exercise',
-                            iconImagePath: 'lib/icons/exercise.png',
-                          ),
-                          CategoryCard(
-                            categoryName: 'Journaling',
-                            iconImagePath: 'lib/icons/journaling.png',
-                          ),
-                          CategoryCard(
-                            categoryName: 'Time',
-                            iconImagePath: 'lib/icons/time.png',
-                          ),
-                        ],
+                    child: ListView(
+                      scrollDirection: Axis.horizontal,
+                      children: [
+                        CategoryCard(
+                          categoryName: 'Meditation',
+                          iconImagePath: 'lib/icons/meditation.png',
+                        ),
+                        CategoryCard(
+                          categoryName: 'Community',
+                          iconImagePath: 'lib/icons/community.png',
+                        ),
+                        CategoryCard(
+                          categoryName: 'Exercise',
+                          iconImagePath: 'lib/icons/exercise.png',
+                        ),
+                        CategoryCard(
+                          categoryName: 'Journaling',
+                          iconImagePath: 'lib/icons/journaling.png',
+                        ),
+                        CategoryCard(
+                          categoryName: 'Time',
+                          iconImagePath: 'lib/icons/time.png',
+                        ),
+                      ],
                       ),
+                      
                     ),
                   ),
                   SizedBox(height: 25),
@@ -514,7 +526,7 @@ class _HomePageState extends State<HomePage> {
                            
                           },
                           child: Text(
-                            'See all',
+                            'see all',
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               color: Colors.grey[500],
@@ -579,7 +591,7 @@ class _HomePageState extends State<HomePage> {
             BreathingExerciseDetailPage(),
           ],
         ),
-      ),
+      ),    
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.of(context).push(
@@ -593,10 +605,10 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0),
-        child: GNav(
-          backgroundColor: Colors.white,
-          color: const Color.fromARGB(255, 97, 97, 97),
+          padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0),
+       child: GNav(
+           backgroundColor: Colors.white,
+         color: const Color.fromARGB(255, 97, 97, 97),
           activeColor: Colors.deepPurple.shade500,
           tabBackgroundColor: Colors.deepPurple.shade100,
           duration: Duration(milliseconds: 900),
@@ -618,7 +630,7 @@ class _HomePageState extends State<HomePage> {
               text: 'Calendar',
             ),
             GButton(
-              icon: Icons.book,
+              icon: Icons.mediation,
               text: 'Self-help',
             ),
           ],

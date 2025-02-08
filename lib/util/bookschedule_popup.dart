@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:teraflow/pages/home_page.dart';
 import 'package:teraflow/pages/utils/chats/chatlist_page.dart';
 import 'package:teraflow/pages/utils/chats/chatpage_main.dart';
 class BookschedulePopup extends StatefulWidget {
@@ -36,8 +37,6 @@ void createappontiment(context,doctoremail  )async{
           chatExists = true;
           print("Chat exists: ${doc.id}");
           Docid =doc.id;
-
-          
           break;
           
         }
@@ -50,7 +49,7 @@ void createappontiment(context,doctoremail  )async{
             doctoremail,
           ],
           "recent_text":"message",
-          "lastmessageTimeStamp": DateFormat('hh:mm a').format(DateTime.now()), // Format timestamp
+          "lastmessageTimeStamp":  DateFormat('yyyy-MM-dd hh:mm a').format(DateTime.now()) // Format timestamp
         };
         
         // CREATING A NEW CHAT it the chat dosen't exist 
@@ -60,7 +59,7 @@ void createappontiment(context,doctoremail  )async{
         
         //PROCEED ONY IF THE MESSAGE CONTROLLER HAS FILE 
         if (messageController.text.isNotEmpty) {
-            final timestamp = DateFormat('yyyy-MM-dd hh:mm a').format(DateTime.now());
+            final timestamp = DateFormat('yyyy-MM-dd hh:mm a').format(DateTime.now()); // Format timestamp
             await newsnapshot.reference.collection('messages').add(
               {
                 'message': messageController.text,
@@ -91,7 +90,7 @@ void createappontiment(context,doctoremail  )async{
               });
                  await chat.reference.update(
                 {
-                  "recent_text":messageController,
+                  "recent_text":messageController.text,
                   "lastmessageTimeStamp":timestamp,
                 });
               
@@ -152,7 +151,7 @@ void createappontiment(context,doctoremail  )async{
                       String message = messageController.text;
                       //     Navigator.of(context).push(MaterialPageRoute(builder: (context)=> ChatPage()));
                       createappontiment(context,"doctoraselefech@gmail.com");
-                      Navigator.of(context).push(MaterialPageRoute(builder: (context)=> ChatPage()));
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context)=> HomePage()));
                     },
                     child: Text("Send Message"),
                   ),

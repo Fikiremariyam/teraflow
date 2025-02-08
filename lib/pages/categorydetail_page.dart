@@ -18,50 +18,6 @@ class CategoryDetailPage extends StatelessWidget {
       body: Column(
         children: [
           // Profile, search, and notification bar
-          Padding(
-            padding: const EdgeInsets.fromLTRB(
-                16.0, 40.0, 16.0, 16.0), // Adjust top padding
-            child: Row(
-              children: [
-                CircleAvatar(
-                  backgroundImage: AssetImage('assets/profile.jpg'),
-                  radius: 20,
-                ),
-                SizedBox(width: 8.0),
-                Expanded(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.grey[200],
-                      borderRadius: BorderRadius.circular(12.0),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black26,
-                          blurRadius: 5.0,
-                          offset: Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: TextField(
-                      decoration: InputDecoration(
-                        hintText: 'Search ...',
-                        hintStyle: TextStyle(color: Colors.grey[600]),
-                        prefixIcon:
-                            Icon(Icons.search, color: Colors.deepPurple[200]),
-                        contentPadding: EdgeInsets.symmetric(vertical: 10.0),
-                        border: InputBorder.none,
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(width: 8.0),
-                IconButton(
-                  icon:
-                      Icon(Icons.notifications, color: Colors.deepPurple[200]),
-                  onPressed: () {},
-                ),
-              ],
-            ),
-          ),
 
           // Icon and category name
           Padding(
