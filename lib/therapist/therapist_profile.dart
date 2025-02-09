@@ -1,7 +1,11 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:teraflow/components/ListButton.dart';
+import 'package:teraflow/components/my_button.dart';
 
 class TherapistProfile extends StatefulWidget {
   final Function(File, String) onProfileInfoChanged;
@@ -13,19 +17,118 @@ class TherapistProfile extends StatefulWidget {
 }
 
 class _TherapistProfileState extends State<TherapistProfile> {
+  bool background_bool =false;
+  final FocusNode _backgroundFocusNode = FocusNode();
   File? _profileImage;
   File? _cvFile;
-  TextEditingController _nameController = TextEditingController();
-  TextEditingController _phoneController = TextEditingController();
-  TextEditingController _addressController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _addressController = TextEditingController();
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _backgroundController = TextEditingController();
+
+  
+  List<dynamic> _department = [];
+  Map<String, dynamic> userdata = {};
+
+  // Fetch user credentials
+  Future<Map<String, String>> getuserdata() async {
+    String? userEmail = FirebaseAuth.instance.currentUser?.email;
+
+    if (userEmail == null) {
+      print("No logged-in user");
+      return {};
+    }
+
+    DocumentSnapshot user = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(userEmail)
+        .get();
+
+    if (user.exists && user.data() != null) {
+      Map<String, dynamic> data = user.data() as Map<String, dynamic>;
+      return data.map((key, value) => MapEntry(key, value.toString()));
+    }
+    return {};
+  }
+  //rounded button widgets 
+   Widget _buildTag(String label, {bool isSelected = false}) {
+    return ConstrainedBox(
+  constraints: BoxConstraints(maxWidth: 200),
+  child: Container(
+    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+    decoration: BoxDecoration(
+      color: const Color.fromARGB(255, 124, 53, 217),
+      borderRadius: BorderRadius.circular(20),
+    ),
+    child: Row(
+      children: [
+        Flexible(
+          child: Text(
+            label,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              color: isSelected ? Colors.white : Colors.grey[600],
+            ),
+          ),
+        ),
+      ],
+    ),
+  ),
+);
+   
+   }
+  void populateuserDAta() async {
+    userdata = await getuserdata();
+    setState(() {
+      _nameController.text = userdata['username'] ?? "no name";
+      _phoneController.text = userdata['phoneno'] ?? "no phone";
+      _addressController.text = userdata['address'] ?? "no address"; 
+      _titleController.text = userdata['title'] ?? "no address";
+      _backgroundController.text=userdata['background'] ??  " no background"; 
+      _department= userdata['department'].replaceAll(RegExp(r'[\[\]]'), '')  // Remove brackets
+      .split(',')                        // Split by comma
+      .map((item) => item.trim())        // Remove extra spaces
+      .toList();
+    });
+    print( userdata['department']);
+  }
+
 
   @override
   void initState() {
+
     super.initState();
-    _nameController.text = "Dr. Aman Moges";
-    _phoneController.text = "+251 912 345 678";
-    _addressController.text = "Addis Ababa, Ethiopia";
+    populateuserDAta();
   }
+   Widget itemTextField(controller, label){
+
+       return TextField(
+                  controller: controller,
+                  //onChanged: (){},
+                  decoration: InputDecoration(
+                    
+                    labelText:label ,
+                    labelStyle: TextStyle(color: Colors.grey[600]),
+                    
+                    suffixIcon:IconButton(
+                            icon: Icon(Icons.edit, color: const Color.fromARGB(255, 124, 53, 217)),
+                            onPressed: (){}),
+        
+                       
+                    enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey, width: 1.5),
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: const Color.fromARGB(255, 124, 53, 217), width: 2.0),
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                  ),
+                );
+              
+   }
 
   Future<void> _pickImage() async {
     final ImagePicker _picker = ImagePicker();
@@ -50,6 +153,7 @@ class _TherapistProfileState extends State<TherapistProfile> {
   }
 
   void _saveProfile() {
+    
     widget.onProfileInfoChanged(
       _profileImage ?? File(''),
       _nameController.text,
@@ -60,55 +164,159 @@ class _TherapistProfileState extends State<TherapistProfile> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) { 
+
+    
+    //print(userdata);
+
+
+
     return Scaffold(
-      backgroundColor: Colors.grey.shade300,
+      
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Center(
-                child: CircleAvatar(
-                  radius: 50,
-                  backgroundImage: _profileImage != null
-                      ? FileImage(_profileImage!)
-                      : AssetImage('lib/images/doctor1.jpg') as ImageProvider,
+                Padding(
+                padding: EdgeInsets.all(16),
+                child: Column(
+                  children: [
+                    Stack(
+                      alignment: Alignment.bottomRight,
+                      children: [
+                        CircleAvatar(
+                          radius: 50,
+                          backgroundImage: NetworkImage('https://hebbkx1anhila5yf.public.blob.vercel-storage.com/upwork-app-redesign-feQnAPzPpxoQTpxfa77mNm6SRdqgQB.png'),
+                        ),
+                        Container(
+                          padding: EdgeInsets.all(4),
+                          decoration: BoxDecoration(
+                            color: const Color.fromARGB(255, 124, 53, 217),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            Icons.edit,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 8),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          _nameController.text,
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(width: 4),
+                        Icon(
+                          Icons.verified,
+                          color: Colors.blue,
+                          size: 20,
+                        ),
+                      ],
+                    ),
+                    Text(
+                      _addressController.text,
+                      style: TextStyle(
+                        color: const Color.fromARGB(255, 124, 53, 217),
+                      ),
+                    ),
+                 
+                    // Profile description
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 24),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                           _titleController.text,
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                          TextField(
+                            focusNode: _backgroundFocusNode,
+                            enabled: background_bool,
+                            controller: _backgroundController,
+                            style: TextStyle(color: Colors.grey[600]),
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                            ),
+
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              setState(() {
+                                background_bool=true;
+                              });
+                                  Future.delayed(Duration(milliseconds: 100), () {
+                                    _backgroundFocusNode.requestFocus();
+    });
+                            },
+                            child: Icon(Icons.edit,color: const Color.fromARGB(255, 124, 53, 217),),
+
+                            style: TextButton.styleFrom(
+                              padding: EdgeInsets.zero,
+                              minimumSize: Size(0, 0),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    // Play video button
+                    ElevatedButton.icon(
+                      onPressed: () {},
+                      icon: Icon(Icons.play_circle_outline),
+                      label: Text('Play Video',style: TextStyle(color: Colors.white),),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color.fromARGB(255, 124, 53, 217),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                    ),
+
+                        ],
+                      ),
+                    ),
+                
+           SizedBox(height: 20),
+           itemTextField(_nameController,"user name"),
+            SizedBox(height: 10,),
+            itemTextField(_phoneController, "phone number"),
+            SizedBox(height: 10),
+            itemTextField(_addressController, "Address"),
+            SizedBox(height: 20),
+            Text("skills"),
+           
+         
+            SizedBox(
+              height: 100,
+              child: GridView.builder(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3,
+                  crossAxisSpacing: 1.0,
+                  mainAxisSpacing: 1.0,
+                  mainAxisExtent: 40,
                 ),
+                itemCount: _department.length,
+                itemBuilder: (rcontext, index) {
+                  return _buildTag(_department[index],isSelected: true);
+                },
               ),
-              SizedBox(height: 10),
-              Center(
-                child: ElevatedButton.icon(
-                  onPressed: _pickImage,
-                  icon: Icon(Icons.camera_alt),
-                  label: Text('Change Profile Picture'),
-                ),
-              ),
-              SizedBox(height: 20),
-              TextFormField(
-                controller: _nameController,
-                decoration: InputDecoration(
-                  labelText: 'Full Name',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              SizedBox(height: 10),
-              TextFormField(
-                controller: _phoneController,
-                decoration: InputDecoration(
-                  labelText: 'Phone Number',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              SizedBox(height: 10),
-              TextFormField(
-                controller: _addressController,
-                decoration: InputDecoration(
-                  labelText: 'Address',
-                  border: OutlineInputBorder(),
-                ),
-              ),
+            ),
+
               SizedBox(height: 20),
               Text(
                 'Upload Your CV:',
@@ -120,13 +328,14 @@ class _TherapistProfileState extends State<TherapistProfile> {
                 icon: Icon(Icons.upload_file),
                 label: Text('Upload CV'),
               ),
-              if (_cvFile != null) ...[
+           if (_cvFile != null) ...[
                 SizedBox(height: 10),
                 Text(
                   'CV Uploaded: ${_cvFile!.path.split('/').last}',
                   style: TextStyle(
-                      fontSize: 16,
-                      color: const Color.fromARGB(255, 3, 28, 99)),
+                    fontSize: 16,
+                    color: Color.fromARGB(255, 3, 28, 99),
+                  ),
                 ),
               ],
               SizedBox(height: 20),

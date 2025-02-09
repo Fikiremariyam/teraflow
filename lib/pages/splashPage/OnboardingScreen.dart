@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -33,6 +34,17 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       'illustration': 'lib/images/boardingscreen1.png',
     },
   ];
+  @override
+void initState() {
+  super.initState();
+
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    if (FirebaseAuth.instance.currentUser != null) {
+      Navigator.pushNamed(context, '/login');
+    }
+  });
+}
+
 
   @override
   Widget build(BuildContext context) {

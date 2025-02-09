@@ -1,11 +1,12 @@
 // home_pagete.dart
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:teraflow/pages/utils/chats/chatlist_page.dart';
 import 'package:teraflow/therapist/blog_page.dart';
 import 'package:teraflow/therapist/calendar_therapist.dart';
-import 'package:teraflow/therapist/chat_therapist.dart';
 import 'package:teraflow/therapist/finance_page.dart';
 import 'package:teraflow/therapist/client_page.dart';
+import 'package:teraflow/therapist/testpage.dart';
 import 'package:teraflow/therapist/therapist_profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -59,9 +60,10 @@ class _HomePagetState extends State<HomePaget> {
       ),
       ClientPage(),
       CalendarTherapist(),
-      ChatTherapist(),
-      BlogPage(),
+      ChatPage(),
+      //BlogPage(),
       FinancePage(),
+      ProfileScreen()
     ];
 
     return Scaffold(
