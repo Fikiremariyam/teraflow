@@ -1,3 +1,4 @@
+import 'package:flick_video_player/flick_video_player.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:get/get.dart';
@@ -15,27 +16,48 @@ class BreathingExerciseDetailPage extends StatefulWidget {
 
 class _BreathingExerciseDetailPageState
     extends State<BreathingExerciseDetailPage> {
-  late VideoPlayerController _videoPlayerController;
-  List<Map<String, dynamic>>?
-      _videoData; // Nullable to avoid late initialization error
-  int _currentVideoIndex = 0;
+      late VideoPlayerController _videoPlayerController;
+      List<Map<String, dynamic>>? _videoData; // Nullable to avoid late initialization error
+      int _currentVideoIndex = 0;
+      late FlickManager flickmanager;
 
-  @override
-  void initState() {
-    super.initState();
-    _loadVideoData();
+  
+  void _initializeVideo()  async{
+    if (_videoData == null || _videoData!.isEmpty) {
+     
+      return;
+
+    }
+    _videoPlayerController = VideoPlayerController.asset(_videoData![_currentVideoIndex]['videoUrl']);
+    _videoPlayerController.initialize().then((_) {
+      setState(() {
+        
+      });
+    }).catchError((error) {
+      print("============================================Error initializing video: $error");
+      Get.snackbar(
+        'Error',
+        'Failed to load video',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    });
   }
+
 
   Future<void> _loadVideoData() async {
     try {
-      final String response = await rootBundle
-          .loadString('assets/video_data.json'); // Load JSON file
+      final String response = await rootBundle.loadString('assets/video_data.json'); // Load JSON file
       final List<dynamic> decodedData = json.decode(response);
+
+
       setState(() {
         _videoData = List<Map<String, dynamic>>.from(decodedData);
       });
 
       if (_videoData != null && _videoData!.isNotEmpty) {
+       
         _initializeVideo();
       } else {
         throw Exception("No video data found.");
@@ -52,41 +74,27 @@ class _BreathingExerciseDetailPageState
     }
   }
 
-  void _initializeVideo() {
-    if (_videoData == null || _videoData!.isEmpty) return;
-
-    _videoPlayerController = VideoPlayerController.asset(
-        _videoData![_currentVideoIndex]['videoUrl']);
-    _videoPlayerController.initialize().then((_) {
-      setState(() {});
-    }).catchError((error) {
-      print("Error initializing video: $error");
-      Get.snackbar(
-        'Error',
-        'Failed to load video',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
-    });
-  }
-
-  void _changeVideo(int index) {
-    if (_videoData == null || index < 0 || index >= _videoData!.length) return;
-
-    _currentVideoIndex = index;
-    _videoPlayerController.dispose();
-    _initializeVideo();
-    Get.snackbar(
-      'Video Changed',
-      'Now playing: ${_videoData![_currentVideoIndex]['title']}',
-      snackPosition: SnackPosition.BOTTOM,
+  @override
+  void initState() {
+    super.initState();
+    //_loadVideoData();
+    flickmanager =FlickManager( 
+      videoPlayerController:  VideoPlayerController.asset("video-2.mp4")..
+      initialize()
+    .then((_){
+      setState(() {
+        
+      });
+    }
+    )
     );
   }
 
   @override
   void dispose() {
+    if (_videoPlayerController != null) {
     _videoPlayerController.dispose();
+  }
     super.dispose();
   }
 
@@ -107,6 +115,7 @@ class _BreathingExerciseDetailPageState
           style: const TextStyle(color: Colors.black, fontSize: 16),
         ),
       ),
+      
       body: _videoData == null
           ? const Center(
               child: CircularProgressIndicator()) // Show loading state
@@ -122,10 +131,8 @@ class _BreathingExerciseDetailPageState
                     child: _videoPlayerController.value.isInitialized
                         ? CustomVideoPlayer(
                             controller: _videoPlayerController,
-                            onNextVideo: () =>
-                                _changeVideo(_currentVideoIndex + 1),
-                            onPreviousVideo: () =>
-                                _changeVideo(_currentVideoIndex - 1),
+                            onNextVideo: (){},
+                            onPreviousVideo: (){}
                           )
                         : const Center(child: CircularProgressIndicator()),
                   ),

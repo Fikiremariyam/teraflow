@@ -81,10 +81,10 @@ class _TherapistProfileState extends State<TherapistProfile> {
   void populateuserDAta() async {
     userdata = await getuserdata();
     setState(() {
-      _nameController.text = userdata['username'] ?? "no name";
-      _phoneController.text = userdata['phoneno'] ?? "no phone";
+      _nameController.text = userdata['fullName'] ?? "no name";
+      _phoneController.text = userdata['phone'] ?? "no phone";
       _addressController.text = userdata['address'] ?? "no address"; 
-      _titleController.text = userdata['title'] ?? "no address";
+      _titleController.text = userdata['title'] ?? "no title";
       _backgroundController.text=userdata['background'] ??  " no background"; 
       _department= userdata['department'].replaceAll(RegExp(r'[\[\]]'), '')  // Remove brackets
       .split(',')                        // Split by comma
@@ -152,12 +152,20 @@ class _TherapistProfileState extends State<TherapistProfile> {
     }
   }
 
-  void _saveProfile() {
+  void _saveProfile()async {
     
-    widget.onProfileInfoChanged(
-      _profileImage ?? File(''),
-      _nameController.text,
-    );
+    await FirebaseFirestore.instance
+            .collection('users')
+            .doc(FirebaseAuth.instance.currentUser!.email)
+            .update({
+          'fullName': _nameController.text,
+          'title':_titleController.text,
+          'phone': _phoneController.text,
+          'gender': "F",
+          'address': _addressController.text,
+          'background':_backgroundController.text,
+          'department': _department
+        });
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text("Profile updated successfully!")),
     );
@@ -186,10 +194,12 @@ class _TherapistProfileState extends State<TherapistProfile> {
                     Stack(
                       alignment: Alignment.bottomRight,
                       children: [
+                        //profile pic 
                         CircleAvatar(
                           radius: 50,
                           backgroundImage: NetworkImage('https://hebbkx1anhila5yf.public.blob.vercel-storage.com/upwork-app-redesign-feQnAPzPpxoQTpxfa77mNm6SRdqgQB.png'),
                         ),
+                        // editing profile pic
                         Container(
                           padding: EdgeInsets.all(4),
                           decoration: BoxDecoration(
@@ -205,6 +215,8 @@ class _TherapistProfileState extends State<TherapistProfile> {
                       ],
                     ),
                     SizedBox(height: 8),
+
+                    //name
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -216,6 +228,7 @@ class _TherapistProfileState extends State<TherapistProfile> {
                           ),
                         ),
                         SizedBox(width: 4),
+                        //verification icon
                         Icon(
                           Icons.verified,
                           color: Colors.blue,
@@ -223,6 +236,7 @@ class _TherapistProfileState extends State<TherapistProfile> {
                         ),
                       ],
                     ),
+                    //adress
                     Text(
                       _addressController.text,
                       style: TextStyle(
@@ -236,14 +250,20 @@ class _TherapistProfileState extends State<TherapistProfile> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                           _titleController.text,
+                          // title 
+                          TextField(
+                            decoration: InputDecoration(
+                              
+                            border: InputBorder.none
+                            ),
+                           controller: _titleController,
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           SizedBox(height: 8),
+                          //background
                           TextField(
                             focusNode: _backgroundFocusNode,
                             enabled: background_bool,
