@@ -1,6 +1,7 @@
 // home_pagete.dart
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:teraflow/pages/splashPage/ProfilePage.dart';
 import 'package:teraflow/pages/utils/chats/chatlist_page.dart';
 import 'package:teraflow/therapist/blog_page.dart';
 import 'package:teraflow/therapist/calendar_therapist.dart';
