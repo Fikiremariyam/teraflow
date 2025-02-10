@@ -1,4 +1,5 @@
 import 'package:flick_video_player/flick_video_player.dart';
+import 'package:flick_video_player/flick_video_player.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:get/get.dart';
@@ -59,6 +60,7 @@ class _BreathingExerciseDetailPageState
 
       if (_videoData != null && _videoData!.isNotEmpty) {
        
+       
         _initializeVideo();
       } else {
         throw Exception("No video data found.");
@@ -75,19 +77,42 @@ class _BreathingExerciseDetailPageState
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
-    //_loadVideoData();
-    flickmanager =FlickManager( 
-      videoPlayerController:
-        VideoPlayerController.asset("assets/video-1.mp4"));
-        
+  void _initializeVideo() {
+    if (_videoData == null || _videoData!.isEmpty) return;
+
+    _videoPlayerController = VideoPlayerController.asset(
+        _videoData![_currentVideoIndex]['videoUrl']);
+    _videoPlayerController.initialize().then((_) {
+      setState(() {});
+    }).catchError((error) {
+      print("Error initializing video: $error");
+      Get.snackbar(
+        'Error',
+        'Failed to load video',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    });
+  }
+
+  void _changeVideo(int index) {
+    if (_videoData == null || index < 0 || index >= _videoData!.length) return;
+
+    _currentVideoIndex = index;
+    _videoPlayerController.dispose();
+    _initializeVideo();
+    Get.snackbar(
+      'Video Changed',
+      'Now playing: ${_videoData![_currentVideoIndex]['title']}',
+      snackPosition: SnackPosition.BOTTOM,
+    );
   }
 /*
 
   @override
   void dispose() {
+    if (_videoPlayerController != null) {
     if (_videoPlayerController != null) {
     _videoPlayerController.dispose();
   }
@@ -125,6 +150,8 @@ class _BreathingExerciseDetailPageState
                      child: _videoPlayerController.value.isInitialized
                         ? CustomVideoPlayer(
                             controller: _videoPlayerController,
+                            onNextVideo: (){},
+                            onPreviousVideo: (){}
                             onNextVideo: (){},
                             onPreviousVideo: (){}
                           )
