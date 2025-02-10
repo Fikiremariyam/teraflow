@@ -1,11 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloudinary_flutter/cloudinary_object.dart';
 import 'package:flutter/material.dart';
-<<<<<<< Updated upstream
-import 'package:intl/message_format.dart';
-=======
 import 'package:flutter_dotenv/flutter_dotenv.dart';
->>>>>>> Stashed changes
+import 'package:intl/message_format.dart';
 import 'package:provider/provider.dart';
 import 'package:teraflow/pages/home_page.dart';
 import 'package:teraflow/pages/auth/login_page.dart';
@@ -23,11 +20,9 @@ import 'firebase_options.dart'; // Import your Firebase configuration
 void main() async {
   // Ensure Flutter widgets are initialized
   WidgetsFlutterBinding.ensureInitialized();
-<<<<<<< Updated upstream
   // firebase intialazing
   await Firebase.initializeApp();
   //cloudinary inilazing
-=======
 
   try {
     // Load .env file
@@ -44,7 +39,6 @@ void main() async {
   );
 
   // Initialize Cloudinary
->>>>>>> Stashed changes
   CloudinaryContext.cloudinary =
       Cloudinary.fromCloudName(cloudName: "dd8qfpth2");
   final cloudinary = CloudinaryObject.fromCloudName(cloudName: "dd8qfpth2");
