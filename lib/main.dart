@@ -14,11 +14,11 @@ import 'package:teraflow/therapist/home_therapist.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloudinary_flutter/cloudinary_context.dart';
-import 'package:cloudinary_flutter/image/cld_image.dart';
 import 'package:cloudinary_url_gen/cloudinary.dart';
+import 'firebase_options.dart'; // Import your Firebase configuration
 
 void main() async {
-  //flutter widget binding
+  // Ensure Flutter widgets are initialized
   WidgetsFlutterBinding.ensureInitialized();
 
   try {
@@ -28,13 +28,33 @@ void main() async {
     print("Error loading .env: $e");
   }
   // firebase intialazing
-  await Firebase.initializeApp();
+ // await Firebase.initializeApp();
   //cloudinary inilazing
+
+  try {
+    // Load .env file
+    await dotenv.load();
+    print("Pass .env Loaded Successfully!");
+  } catch (e) {
+    print("Error loading .env: $e");
+  }
+
+  // Initialize Firebase with the appropriate platform-specific options
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions
+        .currentPlatform, // Use the platform-specific options here
+  );
+
+  // Initialize Cloudinary
   CloudinaryContext.cloudinary =
       Cloudinary.fromCloudName(cloudName: "dd8qfpth2");
   final cloudinary = CloudinaryObject.fromCloudName(cloudName: "dd8qfpth2");
+
+  // Run the app
   runApp(ChangeNotifierProvider(
-      create: (context) => MessageProvider(), child: const MyApp()));
+    create: (context) => MessageProvider(),
+    child: const MyApp(),
+  ));
 }
 
 class MyApp extends StatefulWidget {

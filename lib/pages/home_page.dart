@@ -3,13 +3,15 @@ import 'dart:io';
 import 'package:cloudinary_flutter/cloudinary_object.dart';
 import 'package:cloudinary_flutter/image/cld_image.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:teraflow/chatbot/chatbot_screen.dart';
 import 'package:teraflow/pages/SELFHELP/breathing_exercise.dart';
-import 'package:teraflow/pages/SELFHELP/meditation_list.dart';
+import 'package:teraflow/pages/SELFHELP/ResourceListPage.dart';
 import 'package:teraflow/pages/searchpage.dart';
 import 'package:teraflow/pages/splashPage/ProfilePage.dart';
 
@@ -91,8 +93,7 @@ class _HomePageState extends State<HomePage> {
         .collection('users')
         .doc(FirebaseAuth.instance.currentUser!.email)
         .get();
-    String usernameholder =
-        docSnapshot.data()?['username'] ?? 'enter yourname ';
+    String usernameholder = docSnapshot.data()?['username'] ?? 'Meron ';
     String phoneno =
         docSnapshot.data()?['phonenumber'] ?? 'enter your  phone  no';
     setState(() {
@@ -146,6 +147,12 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  void _handleBackPress() {
+    setState(() {
+      _selectedIndex = 0;
+    });
+  }
+
   @override
   void initState() {
     //function to run then ever the page is loaded
@@ -157,87 +164,89 @@ class _HomePageState extends State<HomePage> {
   // Widget build(BuildContext context) {
 
   Widget build(BuildContext context) {
+    bool isHomePage = _selectedIndex == 0;
+    bool isChatPage = _selectedIndex == 1;
+
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        automaticallyImplyLeading: false,
-        title: Row(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: IconButton(
+      appBar: isChatPage
+          ? null
+          : AppBar(
+              backgroundColor: Colors.white,
+              elevation: 0,
+              automaticallyImplyLeading: false,
+              leading: IconButton(
                 icon: Icon(
-                  isHomePage
-                      ? Icons.menu
-                      : Icons.arrow_back, // Change icon dynamically
+                  isHomePage ? Icons.menu : Icons.arrow_back,
                   color: Colors.black,
                 ),
                 onPressed: () {
                   if (isHomePage) {
-                    // Open menu or navigate to profile
-                    Navigator.pushReplacement(
+                    // Navigate to ProfileScreen
+                    Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => ProfileScreen()),
                     );
                   } else {
-                    // Navigate back to Home Page
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => HomePage()),
-                    );
+                    // Handle back navigation
+                    _handleBackPress();
                   }
                 },
               ),
-            ),
-            //  icon: Icon(Icons.menu, color: Colors.black),
-            //  onPressed: () {
-            //    Navigator.pushReplacement(
-            //     context,
-            //     MaterialPageRoute(builder: (context) => ProfileScreen()),
-            //    );
-            //  },
-            //  ),
-            // ),
-            Expanded(
-              child: Container(
-                height: 45,
-                decoration: BoxDecoration(
-                  color: Colors.grey[100],
-                  borderRadius: BorderRadius.circular(25),
-                ),
-                child: TextField(
-                  decoration: InputDecoration(
-                    hintText: 'Search by Doctor ',
-                    hintStyle: TextStyle(color: Colors.grey[400]),
-                    prefixIcon: Icon(Icons.search, color: Colors.grey[400]),
-                    border: InputBorder.none,
-                    contentPadding:
-                        EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+              title: Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
                   ),
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                          builder: (context) => const Searchpage()),
-                    );
-                  },
-                ),
+                  //  icon: Icon(Icons.menu, color: Colors.black),
+                  //  onPressed: () {
+                  //    Navigator.pushReplacement(
+                  //     context,
+                  //     MaterialPageRoute(builder: (context) => ProfileScreen()),
+                  //    );
+                  //  },
+                  //  ),
+                  // ),
+                  Expanded(
+                    child: Container(
+                      height: 45,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[100],
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                      child: TextField(
+                        decoration: InputDecoration(
+                          hintText: 'Search by Doctor ',
+                          hintStyle: TextStyle(color: Colors.grey[400]),
+                          prefixIcon:
+                              Icon(Icons.search, color: Colors.grey[400]),
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 15),
+                        ),
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                                builder: (context) => const Searchpage()),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 10),
+                  IconButton(
+                    icon: Icon(Icons.notifications_none_outlined,
+                        color: Colors.black),
+                    onPressed: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ProfileScreen()),
+                      );
+                    },
+                  ),
+                ],
               ),
             ),
-            SizedBox(width: 10),
-            IconButton(
-              icon:
-                  Icon(Icons.notifications_none_outlined, color: Colors.black),
-              onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => ProfileScreen()),
-                );
-              },
-            ),
-          ],
-        ),
-      ),
       key: _scaffoldKey,
       backgroundColor: Color(0xFFF8F8FF),
 

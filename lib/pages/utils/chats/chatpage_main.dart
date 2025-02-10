@@ -1,20 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:file_picker/file_picker.dart'; // Import file picker package
-import 'package:intl/intl.dart'; // To format the timestamp
+import 'package:file_picker/file_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:teraflow/pages/utils/videocall/videocall.dart';
 
 class ChatpageMain extends StatefulWidget {
-    final DocumentSnapshot doc;
-    final String recieverEmail;
-
+  final DocumentSnapshot doc;
+  final String recieverEmail;
 
   const ChatpageMain({
-    super.key,
+    Key? key,
     required this.doc,
     required this.recieverEmail,
-  });
+  }) : super(key: key);
 
   @override
   State<ChatpageMain> createState() => _ChatpageMainState();
@@ -23,212 +21,183 @@ class ChatpageMain extends StatefulWidget {
 class _ChatpageMainState extends State<ChatpageMain> {
   final TextEditingController message = TextEditingController();
 
-  // Function to send a message
   void _sendMessage() async {
     if (message.text.isNotEmpty) {
-      final timestamp = DateFormat('yyyy-MM-dd hh:mm a').format(DateTime.now()); // Format timestamp
-       await widget.doc.reference.collection('messages').add(
-        {
-          'message': message.text,
-          'timestamp': timestamp,
-          'sender': FirebaseAuth.instance.currentUser!.email, // You can set this according to the sender
-        });
-         await widget.doc.reference.update(
-                {
-                  "recent_text":message.text,
-                  "lastmessageTimeStamp":timestamp,
-                }
-                );
-      }
-      message.clear(); // Clear the input field
+      final timestamp = DateFormat('yyyy-MM-dd hh:mm a').format(DateTime.now());
+      await widget.doc.reference.collection('messages').add({
+        'message': message.text,
+        'timestamp': timestamp,
+        'sender': FirebaseAuth.instance.currentUser!.email,
+      });
+      await widget.doc.reference.update({
+        "recent_text": message.text,
+        "lastmessageTimeStamp": timestamp,
+      });
+      message.clear();
     }
-  
+  }
 
-  // Function to pick a file
   Future<void> _pickFile() async {
     final result = await FilePicker.platform.pickFiles();
     if (result != null) {
       final file = result.files.first;
-      print("File picked: ${file.name}");
-      // You can handle the file here, such as sending it
+      // Handle file upload here
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    print(widget.doc.reference.collection('messages') );
     return Scaffold(
-      backgroundColor:
-          Colors.blueGrey.shade50, // Background color for the whole screen
-      body: SafeArea(
-        child: Column(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 1,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.deepPurple),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: Row(
           children: [
-            // Top bar with back button, profile image, and video call button
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  IconButton(//back button
-                    icon: const Icon(Icons.arrow_back, color: Colors.black),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                  
-                  const CircleAvatar(//other guy photo or /avatar
-                    backgroundColor: Colors.deepPurple,
-                    child: Icon(Icons.person, color: Colors.white),
-                  ),
-                  
-                  const SizedBox(width: 10),
-                  Expanded(//other guy email
-                    child: Text(
-                      widget.recieverEmail,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                
-                ],
+            CircleAvatar(
+              backgroundColor: Colors.deepPurple[100],
+              radius: 20,
+              child: Text(
+                widget.recieverEmail[0].toUpperCase(),
+                style: TextStyle(color: Colors.deepPurple),
               ),
             ),
-            // Chat messages area with a custom background color
-            Expanded(
-              child: StreamBuilder(
-            stream: widget.doc.reference.collection('messages').orderBy('timestamp',descending: false).snapshots(), 
-          builder: (context, snapshot){
-            if(snapshot.hasData){
-              //print(snapshot.data!.docs);
-              if (snapshot.data?.docs.isEmpty == true){
-                return Text("No messages yet!");
-
-              }
-              
-             
-             return ListView.builder(
-                padding:  EdgeInsets.all(15.0),
-                itemCount: snapshot.data!.docs.length ,
-                itemBuilder: (context, index) {
-                  
-                  DocumentSnapshot msg =snapshot.data!.docs[index];
-                  String timeOnly = msg['timestamp'].split(' ')[1] + ' ' + msg['timestamp']!.split(' ')[2];  
-  
-                  
-                  bool isSender = msg['sender'] ==FirebaseAuth.instance.currentUser!.email; // Check if the message is from the sender
-                  
-                  return Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Align(
-                      alignment: isSender
-                          ? Alignment.centerRight
-                          : Alignment.centerLeft,
-                      child: Column(
-                        crossAxisAlignment: isSender
-                            ? CrossAxisAlignment.end
-                            : CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 8),
-                            decoration: BoxDecoration(
-                              gradient: isSender
-                                  ? LinearGradient(
-                                      colors: [
-                                        Colors.deepPurple.shade300,
-                                        Colors.deepPurple.shade700,
-                                      ],
-                                    )
-                                  : LinearGradient(
-                                      colors: [
-                                        Colors.grey.shade300,
-                                        Colors.grey.shade100,
-                                      ],
-                                    ),
-                              borderRadius: BorderRadius.circular(12),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black26,
-                                  blurRadius: 3,
-                                  offset: Offset(1, 2),
-                                ),
-                              ],
-                            ),
-                            child: Text(
-                              msg['message']!,
-                              style: TextStyle(
-                                color: isSender ? Colors.white : Colors.black,
-                                fontSize: 16,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            timeOnly,
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.grey.shade600,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              );
-
-            }
-            else{
-              return CircularProgressIndicator();
-            }
-            }
-  ),
-  
-  ),
-            // Input area with file picker button and rounded input field
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  // Media Sharing Button
-                  IconButton(
-                    icon: const Icon(Icons.attach_file, color: Colors.grey),
-                    onPressed: _pickFile,
+            SizedBox(width: 10),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  widget.recieverEmail,
+                  style: TextStyle(
+                    color: Colors.black87,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
                   ),
-                  const SizedBox(width: 8),
-                  // Input Field
-                  Expanded(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      child: TextField(
-                        controller: message,
-                        decoration: InputDecoration(
-                          hintText: "Type a message",
-                          border: InputBorder.none,
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 12,
-                          ),
-                        ),
-                      ),
-                    ),
+                ),
+                Text(
+                  'last seen recently',
+                  style: TextStyle(
+                    color: Colors.grey[600],
+                    fontSize: 12,
                   ),
-                  const SizedBox(width: 8),
-                  // Send Button
-                  IconButton(
-                    icon: const Icon(Icons.send, color: Colors.deepPurple),
-                    onPressed: _sendMessage,
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           ],
         ),
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: StreamBuilder(
+              stream: widget.doc.reference
+                  .collection('messages')
+                  .orderBy('timestamp', descending: false)
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return ListView.builder(
+                    padding: EdgeInsets.all(16),
+                    itemCount: snapshot.data!.docs.length,
+                    itemBuilder: (context, index) {
+                      DocumentSnapshot msg = snapshot.data!.docs[index];
+                      bool isSender = msg['sender'] ==
+                          FirebaseAuth.instance.currentUser!.email;
+
+                      return Align(
+                        alignment: isSender
+                            ? Alignment.centerRight
+                            : Alignment.centerLeft,
+                        child: Container(
+                          margin: EdgeInsets.only(
+                            bottom: 8,
+                            left: isSender ? 50 : 0,
+                            right: isSender ? 0 : 50,
+                          ),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 10,
+                          ),
+                          decoration: BoxDecoration(
+                            color: isSender
+                                ? Colors.deepPurple[100]
+                                : Colors.grey[200],
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                msg['message'],
+                                style: TextStyle(color: Colors.black87),
+                              ),
+                              SizedBox(height: 4),
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    msg['timestamp'].split(' ')[1],
+                                    style: TextStyle(
+                                      color: Colors.grey[600],
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                  if (isSender) ...[
+                                    SizedBox(width: 4),
+                                    Icon(
+                                      Icons.done_all,
+                                      size: 16,
+                                      color: Colors.deepPurple,
+                                    ),
+                                  ],
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                }
+                return Center(
+                    child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.deepPurple),
+                ));
+              },
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            color: Colors.grey[100],
+            child: Row(
+              children: [
+                IconButton(
+                  icon: Icon(Icons.attach_file, color: Colors.grey[600]),
+                  onPressed: _pickFile,
+                ),
+                Expanded(
+                  child: TextField(
+                    controller: message,
+                    style: TextStyle(color: Colors.black87),
+                    decoration: InputDecoration(
+                      hintText: 'Message',
+                      hintStyle: TextStyle(color: Colors.grey[600]),
+                      border: InputBorder.none,
+                    ),
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.send, color: Colors.deepPurple),
+                  onPressed: _sendMessage,
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -132,7 +132,7 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('TeraFlow Assistant'),
-        backgroundColor: Colors.deepPurple,
+        backgroundColor: Colors.deepPurple.shade50,
         elevation: 0,
         actions: [
           IconButton(
@@ -232,7 +232,7 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
                   const SizedBox(width: 8),
                   FloatingActionButton(
                     onPressed: () => _handleSubmitted(_textController.text),
-                    backgroundColor: Colors.deepPurple,
+                    backgroundColor: Colors.deepPurple[450],
                     child: const Icon(Icons.send),
                   ),
                 ],

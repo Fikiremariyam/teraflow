@@ -69,9 +69,9 @@ class _CalendarPageState extends State<CalendarPage> {
         appointments = fetchedAppointments;
       });
 
-     //  print("Loaded appointments: $appointments");
+      //  print("Loaded appointments: $appointments");
     } catch (e) {
-     // print("Error loading appointments: $e");
+      // print("Error loading appointments: $e");
     }
   }
 
@@ -113,71 +113,69 @@ class _CalendarPageState extends State<CalendarPage> {
         DateTime(_selectedDay!.year, _selectedDay!.month, _selectedDay!.day);
     List<String> appointmentsForDay = appointments[normalizedDay] ?? [];
 
-    
-        return Container(
-          width: double.infinity,
-          padding: EdgeInsets.all(16.0),
-          margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(16.0),
-            boxShadow: [
-              BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 6.0),
-            ],
-          ),
-          child: appointmentsForDay.isEmpty
-              ? Text(
-                  "No appointments scheduled for this day.",
-                  style: TextStyle(fontSize: 16.0, color: Colors.grey),
-                )
-            :SizedBox(
-                        height: 145, // Adjust this height as needed
-                        child:Container(
-                              margin: const EdgeInsets.symmetric(vertical: 8.0),
-                              padding: const EdgeInsets.all(12.0),
-                              width: double.infinity,
-                              decoration: BoxDecoration(
-                                color: Colors.deepPurple.shade100,
-                                borderRadius: BorderRadius.circular(8.0),
-                                border: Border.all(color: Colors.grey.shade300),
-                              ),
-                              child:  ListView.builder(
-                                  itemCount: appointmentsForDay.length,
-                                  itemBuilder: (context, session) {
-                                    return Row(
-                                      children: [
-                                        Expanded(
-                                          child: Text(
-                                            overflow: TextOverflow.ellipsis,
-                                            appointmentsForDay[session],
-                                            style: TextStyle(fontSize: 16.0),
-                                          ),
-                                        ),
-                                        IconButton(
-                                          icon: const Icon(Icons.videocam, color: Colors.deepPurple),
-                                          onPressed: () {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(builder: (context) => CallPage()),
-                                            );
-                                          },
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                ),
-                              ),
-                              
-        )
-        );
-                                  
+    return Container(
+        width: double.infinity,
+        padding: EdgeInsets.all(16.0),
+        margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16.0),
+          boxShadow: [
+            BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 6.0),
+          ],
+        ),
+        child: appointmentsForDay.isEmpty
+            ? Text(
+                "No appointments scheduled for this day.",
+                style: TextStyle(fontSize: 16.0, color: Colors.grey),
+              )
+            : SizedBox(
+                height: 145, // Adjust this height as needed
+                child: Container(
+                  margin: const EdgeInsets.symmetric(vertical: 8.0),
+                  padding: const EdgeInsets.all(12.0),
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Colors.deepPurple.shade100,
+                    borderRadius: BorderRadius.circular(8.0),
+                    border: Border.all(color: Colors.grey.shade300),
+                  ),
+                  child: ListView.builder(
+                    itemCount: appointmentsForDay.length,
+                    itemBuilder: (context, session) {
+                      return Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              overflow: TextOverflow.ellipsis,
+                              appointmentsForDay[session],
+                              style: TextStyle(fontSize: 16.0),
+                            ),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.videocam,
+                                color: Colors.deepPurple),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => CallPage()),
+                              );
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                ),
+              ));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        color: Colors.grey.shade300, // Set the main background color
+        color: Colors.grey.shade100, // Set the main background color
         child: Column(
           children: [
             Container(
@@ -234,15 +232,12 @@ class _CalendarPageState extends State<CalendarPage> {
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: ElevatedButton(
-                      onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>CategoryPage(),
-                    ),
-                  )
-                  
-                  
-                  ,
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CategoryPage(),
+                  ),
+                ),
                 child: Text("Book a Session"),
                 style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.symmetric(vertical: 16, horizontal: 32),

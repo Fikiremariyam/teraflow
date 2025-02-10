@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:teraflow/pages/SELFHELP/meditation_list.dart';
+import 'package:teraflow/pages/SELFHELP/ResourceListPage.dart';
 
 class SelfhelpCard extends StatelessWidget {
   final String SelfhelpImagePath;
@@ -61,7 +61,7 @@ class SelfhelpCard extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => MeditationListPage()),
+                  MaterialPageRoute(builder: (context) => ResourceListPage()),
                 );
               },
               style: ElevatedButton.styleFrom(
@@ -79,6 +79,6 @@ class SelfhelpCard extends StatelessWidget {
         ),
       ),
     );
-    MeditationListPage();
+    ResourceListPage();
   }
 }

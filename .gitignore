@@ -44,4 +44,10 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
+<<<<<<< HEAD
 .env
+=======
+.env
+
+node_modules/
+>>>>>>> ab3f33181c34ae43fe93e9d4b605da64e8334341

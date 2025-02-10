@@ -1,12 +1,13 @@
 // home_pagete.dart
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:teraflow/pages/splashPage/ProfilePage.dart';
 import 'package:teraflow/pages/utils/chats/chatlist_page.dart';
 import 'package:teraflow/therapist/blog_page.dart';
 import 'package:teraflow/therapist/calendar_therapist.dart';
 import 'package:teraflow/therapist/finance_page.dart';
 import 'package:teraflow/therapist/client_page.dart';
-import 'package:teraflow/therapist/testpage.dart';
+import 'package:teraflow/therapist/payment_page.dart';
 import 'package:teraflow/therapist/therapist_profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -96,6 +97,22 @@ class _HomePagetState extends State<HomePaget> {
                 },
               );
             }).toList(),
+              ListTile(
+              title: ElevatedButton(
+                onPressed: () {
+                  // Navigate to PaymentPage when the button is pressed
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => PaymentPage()),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.deepPurple[200], // Button color
+                  padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
+                ),
+                child: Text('Request Payment'),
+              ),
+            ),
             ListTile(
               leading: Icon(Icons.logout),
               title: Text('Sign Out'),
