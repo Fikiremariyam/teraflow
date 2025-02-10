@@ -106,10 +106,11 @@ class _ChatpageMainState extends State<ChatpageMain> {
                 return Text("No messages yet!");
 
               }
+              
              
              return ListView.builder(
                 padding:  EdgeInsets.all(15.0),
-                itemCount: snapshot.data?.docs.length ?? 0,
+                itemCount: snapshot.data!.docs.length ,
                 itemBuilder: (context, index) {
                   
                   DocumentSnapshot msg =snapshot.data!.docs[index];

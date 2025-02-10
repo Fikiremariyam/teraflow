@@ -1,59 +1,51 @@
 import 'package:flutter/material.dart';
 
 class CategoryCard extends StatelessWidget {
-  final String iconImagePath;
   final String categoryName;
+  final String iconImagePath;
+  final Color backgroundColor;
+  final double borderRadius;
 
-  CategoryCard({
-    required this.iconImagePath,
+  const CategoryCard({
     required this.categoryName,
+    required this.iconImagePath,
+    this.backgroundColor = Colors.white,
+    this.borderRadius = 20,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 25.0),
-      child: Container(
-        width: 120, // Increase width for a larger circular container
-        height: 120,
-        // Increase height to maintain the circular shape
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12), // Keep rounded corners
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.shade400, // Shadow color
-              offset: Offset(2, 4), // Shadow position (X, Y)
-              blurRadius: 6, // Blur intensity
-              spreadRadius: 1, // Spread of the shadow
-            ),
-          ],
-        ),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              // Increased icon size
-              Image.asset(
-                iconImagePath,
-                height: 60, // Increase icon size to 60
-                fit: BoxFit.contain, // Ensure the icon fits well
-              ),
-              SizedBox(
-                height: 8,
-              ),
-              // Increased font size
-              Text(
-                categoryName,
-                style: TextStyle(
-                  fontSize: 14, // Adjust font size for better readability
-                ),
-                textAlign: TextAlign.center, // Center align text
-              ),
-            ],
+    return Container(
+      width: 140,
+      padding: EdgeInsets.all(15),
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(borderRadius),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.1),
+            spreadRadius: 2,
+            blurRadius: 5,
+            offset: Offset(0, 2),
           ),
-        ),
+        ],
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Image.asset(
+            iconImagePath,
+            height: 50,
+          ),
+          SizedBox(height: 10),
+          Text(
+            categoryName,
+            style: TextStyle(
+              fontWeight: FontWeight.w500,
+              fontSize: 16,
+            ),
+          ),
+        ],
       ),
     );
   }

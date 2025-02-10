@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:teraflow/pages/home_page.dart';
 import 'package:teraflow/pages/splashPage/SettingPage.dart';
 import '../splashPage/AccountPage.dart';
 
@@ -14,7 +15,8 @@ class ProfileScreen extends StatelessWidget {
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => Navigator.of(context)
+              .push(MaterialPageRoute(builder: (context) => HomePage())),
         ),
         title: const Text(
           'Profile',

@@ -32,10 +32,10 @@ class _CalendarPageState extends State<CalendarPage> {
       setState(() {
         userEmail = user.email;
       });
-      print("Logged-in user email: $userEmail");
+      // print("Logged-in user email: $userEmail"); //debug
       await _loadAppointments();
     } else {
-      print("No user is logged in.");
+      // print("No user is logged in."); debug
     }
   }
 
@@ -57,8 +57,8 @@ class _CalendarPageState extends State<CalendarPage> {
           .where('therapistEmail', isEqualTo: userEmail)
           .get();
 
-      print("Customer appointments: ${customerSnapshot.docs.length}");
-      print("Therapist appointments: ${therapistSnapshot.docs.length}");
+      // print("Customer appointments: ${customerSnapshot.docs.length}");
+      // print("Therapist appointments: ${therapistSnapshot.docs.length}");
 
       Map<DateTime, List<String>> fetchedAppointments = {};
 
@@ -69,9 +69,9 @@ class _CalendarPageState extends State<CalendarPage> {
         appointments = fetchedAppointments;
       });
 
-      print("Loaded appointments: $appointments");
+     //  print("Loaded appointments: $appointments");
     } catch (e) {
-      print("Error loading appointments: $e");
+     // print("Error loading appointments: $e");
     }
   }
 
@@ -237,24 +237,7 @@ class _CalendarPageState extends State<CalendarPage> {
                       onPressed: () => Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => Scaffold(
-                        appBar: AppBar(
-                          title: Text("Your AppBar"),
-                        ),
-                        bottomNavigationBar: BottomNavigationBar(
-                          items: const <BottomNavigationBarItem>[
-                            BottomNavigationBarItem(
-                              icon: Icon(Icons.home),
-                              label: 'Home',
-                            ),
-                            BottomNavigationBarItem(
-                              icon: Icon(Icons.search),
-                              label: 'Search',
-                            ),
-                          ],
-                        ),
-                        body: CategoryPage(), // CategoryPage content
-                      ),
+                      builder: (context) =>CategoryPage(),
                     ),
                   )
                   

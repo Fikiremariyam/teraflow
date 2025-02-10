@@ -1,4 +1,5 @@
-import 'dart:io';
+/*
+ import 'dart:io';
 
 import 'package:cloudinary_flutter/cloudinary_object.dart';
 import 'package:cloudinary_flutter/image/cld_image.dart';
@@ -12,7 +13,6 @@ import 'package:teraflow/pages/SELFHELP/breathing_exercise.dart';
 import 'package:teraflow/pages/SELFHELP/meditation_list.dart';
 import 'package:teraflow/pages/searchpage.dart';
 import 'package:teraflow/pages/splashPage/ProfilePage.dart';
-
 import 'package:teraflow/util/category_card.dart';
 import 'package:teraflow/util/therapist_card.dart';
 import 'package:teraflow/pages/splashPage/calendar_page.dart';
@@ -154,66 +154,46 @@ class _HomePageState extends State<HomePage> {
   }
 
   @override
-  // Widget build(BuildContext context) {
-
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
+        backgroundColor: Colors.grey[300],
         automaticallyImplyLeading: false,
         title: Row(
           children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: IconButton(
-                icon: Icon(
-                  isHomePage
-                      ? Icons.menu
-                      : Icons.arrow_back, // Change icon dynamically
-                  color: Colors.black,
+            GestureDetector(
+              onTap: () {
+                print("=====================================================");
+                print("button clicked"); // debug code
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ProfileScreen()),
+                );
+              },
+              child: Container(
+                padding: EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.deepPurple[50],
+                  borderRadius: BorderRadius.circular(50),
                 ),
-                onPressed: () {
-                  if (isHomePage) {
-                    // Open menu or navigate to profile
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => ProfileScreen()),
-                    );
-                  } else {
-                    // Navigate back to Home Page
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => HomePage()),
-                    );
-                  }
-                },
+                child: _profilePic(),
               ),
             ),
-            //  icon: Icon(Icons.menu, color: Colors.black),
-            //  onPressed: () {
-            //    Navigator.pushReplacement(
-            //     context,
-            //     MaterialPageRoute(builder: (context) => ProfileScreen()),
-            //    );
-            //  },
-            //  ),
-            // ),
+            SizedBox(width: 8.0),
             Expanded(
               child: Container(
-                height: 45,
+                height: 40.0,
                 decoration: BoxDecoration(
-                  color: Colors.grey[100],
-                  borderRadius: BorderRadius.circular(25),
+                  color: Colors.grey[200],
+                  borderRadius: BorderRadius.circular(12.0),
                 ),
                 child: TextField(
                   decoration: InputDecoration(
-                    hintText: 'Search by Doctor ',
-                    hintStyle: TextStyle(color: Colors.grey[400]),
-                    prefixIcon: Icon(Icons.search, color: Colors.grey[400]),
+                    hintText: 'Search ...',
+                    hintStyle: TextStyle(color: Colors.grey[600]),
+                    prefixIcon:
+                        Icon(Icons.search, color: Colors.deepPurple[200]),
                     border: InputBorder.none,
-                    contentPadding:
-                        EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                   ),
                   onTap: () {
                     Navigator.of(context).push(
@@ -224,24 +204,18 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
-            SizedBox(width: 10),
+            SizedBox(width: 8.0),
             IconButton(
-              icon:
-                  Icon(Icons.notifications_none_outlined, color: Colors.black),
-              onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => ProfileScreen()),
-                );
-              },
+              icon: Icon(Icons.notifications, color: Colors.deepPurple[400]),
+              onPressed: () {},
             ),
           ],
         ),
       ),
       key: _scaffoldKey,
       backgroundColor: Color(0xFFF8F8FF),
-
-      /* drawer: Drawer(
+      // /*
+      drawer: Drawer(
         //a drawer which  contains the user prfile and some of navications
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -386,7 +360,7 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
-       */
+      // */
       body: SafeArea(
         child: IndexedStack(
           index: _selectedIndex,
@@ -428,73 +402,65 @@ class _HomePageState extends State<HomePage> {
                   SizedBox(height: 25),
 
                   // Questionnaire Section
-
-// Update the questionnaire card section
-                  Container(
-                    margin: EdgeInsets.symmetric(horizontal: 25),
-                    padding: EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color:
-                          Color(0xFFE6C7A9), // Tan/beige color from the image
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          flex: 1,
-                          child: Image.asset(
-                            'lib/images/home_page.png', // Add this illustration
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                    child: Container(
+                      padding: EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: const Color.fromARGB(255, 221, 182, 138),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Row(
+                        children: [
+                          Container(
                             height: 120,
+                            width: 120,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage('lib/images/home_page.png'),
+                                fit: BoxFit.cover,
+                              ),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
                           ),
-                        ),
-                        SizedBox(width: 20),
-                        Expanded(
-                          flex: 2,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'How do you feel?',
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black87,
+                          SizedBox(width: 20),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'How do you feel?',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
                                 ),
-                              ),
-                              SizedBox(height: 8),
-                              Text(
-                                'Fill out your questionnaire card right now',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.black54,
+                                SizedBox(height: 12),
+                                Text(
+                                  'Fill out your questionnaire card right now',
+                                  style: TextStyle(fontSize: 14),
                                 ),
-                              ),
-                              SizedBox(height: 12),
-                              Container(
-                                width: double.infinity,
-                                padding: EdgeInsets.symmetric(vertical: 12),
-                                decoration: BoxDecoration(
-                                  color: Color(
-                                      0xFF9D7EE0), // Purple color from the image
-                                  borderRadius: BorderRadius.circular(25),
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    'Get Started',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w500,
+                                SizedBox(height: 12),
+                                Container(
+                                  padding: EdgeInsets.all(12),
+                                  decoration: BoxDecoration(
+                                    color: Colors.deepPurple[300],
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      'Get Started',
+                                      style: TextStyle(color: Colors.white),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                   ),
-
                   SizedBox(height: 20),
 
                   // Search Section
@@ -519,54 +485,37 @@ class _HomePageState extends State<HomePage> {
                   SizedBox(height: 40),
 
                   // Categories Section
-                  // Update the category cards
-                  Container(
-                    height: 120,
-                    child: ListView(
-                      scrollDirection: Axis.horizontal,
-                      padding: EdgeInsets.symmetric(horizontal: 25),
-                      children: [
-                        CategoryCard(
-                          categoryName: 'Meditation',
-                          iconImagePath:
-                              'lib/icons/meditation.png', // Update with new illustration
-                          backgroundColor: Colors.white,
-                          borderRadius: 20,
-                        ),
-                        SizedBox(width: 15),
-                        CategoryCard(
-                          categoryName: 'Community',
-                          iconImagePath:
-                              'lib/icons/community.png', // Update with new illustration
-                          backgroundColor: Colors.white,
-                          borderRadius: 20,
-                        ),
-                        SizedBox(width: 15),
-                        CategoryCard(
-                          categoryName: 'Exercise',
-                          iconImagePath:
-                              'lib/icons/exercise.png', // Update with new illustration
-                          backgroundColor: Colors.white,
-                          borderRadius: 20,
-                        ),
-                        SizedBox(width: 15),
-                        CategoryCard(
-                          categoryName: 'Journaling',
-                          iconImagePath: 'lib/icons/journaling.png',
-                          backgroundColor: Colors.white,
-                          borderRadius: 20,
-                        ),
-                        SizedBox(width: 15),
-                        CategoryCard(
-                          categoryName: 'Time',
-                          iconImagePath: 'lib/icons/time.png',
-                          backgroundColor: Colors.white,
-                          borderRadius: 20,
-                        ),
-                      ],
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      height: 100,
+                      child: ListView(
+                        scrollDirection: Axis.horizontal,
+                        children: [
+                          CategoryCard(
+                            categoryName: 'Meditation',
+                            iconImagePath: 'lib/icons/meditation.png',
+                          ),
+                          CategoryCard(
+                            categoryName: 'Community',
+                            iconImagePath: 'lib/icons/community.png',
+                          ),
+                          CategoryCard(
+                            categoryName: 'Exercise',
+                            iconImagePath: 'lib/icons/exercise.png',
+                          ),
+                          CategoryCard(
+                            categoryName: 'Journaling',
+                            iconImagePath: 'lib/icons/journaling.png',
+                          ),
+                          CategoryCard(
+                            categoryName: 'Time',
+                            iconImagePath: 'lib/icons/time.png',
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-
                   SizedBox(height: 25),
 
                   // Therapist Section
@@ -597,7 +546,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   SizedBox(height: 20),
                   SizedBox(
-                    height: 300,
+                    height: 200,
                     child: ListView(
                       scrollDirection: Axis.horizontal,
                       children: [
@@ -606,8 +555,6 @@ class _HomePageState extends State<HomePage> {
                           rating: '4.9',
                           therapistName: 'Dr. Amla Douge',
                           therapistProfession: 'Therapist',
-                          experience: '15 years of experience',
-                          onTap: () {},
                         ),
                         SizedBox(width: 10),
                         TherapistCard(
@@ -615,8 +562,6 @@ class _HomePageState extends State<HomePage> {
                           rating: '4.8',
                           therapistName: 'Dr. John Smith',
                           therapistProfession: 'Psychologist',
-                          experience: '5 years of experience',
-                          onTap: () {},
                         ),
                         SizedBox(width: 10),
                         TherapistCard(
@@ -624,8 +569,6 @@ class _HomePageState extends State<HomePage> {
                           rating: '4.8',
                           therapistName: 'Dr. John Smith',
                           therapistProfession: 'Psychologist',
-                          experience: '10 years of experience',
-                          onTap: () {},
                         ),
                         SizedBox(width: 10),
                         TherapistCard(
@@ -633,8 +576,6 @@ class _HomePageState extends State<HomePage> {
                           rating: '4.8',
                           therapistName: 'Dr. John Smith',
                           therapistProfession: 'Psychologist',
-                          experience: '',
-                          onTap: () {},
                         ),
                         SizedBox(width: 10),
                         TherapistCard(
@@ -642,8 +583,6 @@ class _HomePageState extends State<HomePage> {
                           rating: '4.7',
                           therapistName: 'Dr. Jane Doe',
                           therapistProfession: 'Counselor',
-                          experience: '',
-                          onTap: () {},
                         ),
                       ],
                     ),
@@ -673,49 +612,40 @@ class _HomePageState extends State<HomePage> {
           color: Colors.white,
         ),
       ),
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.1),
-              spreadRadius: 0,
-              blurRadius: 10,
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0),
+        child: GNav(
+          backgroundColor: Colors.white,
+          color: const Color.fromARGB(255, 97, 97, 97),
+          activeColor: Colors.deepPurple.shade500,
+          tabBackgroundColor: Colors.deepPurple.shade100,
+          duration: Duration(milliseconds: 900),
+          gap: 8,
+          padding: EdgeInsets.all(16),
+          selectedIndex: _selectedIndex,
+          onTabChange: _onNavBarTap,
+          tabs: const [
+            GButton(
+              icon: Icons.home,
+              text: 'Home',
+            ),
+            GButton(
+              icon: Icons.chat,
+              text: 'Chat',
+            ),
+            GButton(
+              icon: Icons.calendar_month,
+              text: 'Calendar',
+            ),
+            GButton(
+              icon: Icons.mediation,
+              text: 'Self-help',
             ),
           ],
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
-          child: GNav(
-            gap: 8,
-            activeColor: Color(0xFF9D7EE0), // Purple color from the image
-            color: Colors.grey[700],
-            iconSize: 24,
-            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-            duration: Duration(milliseconds: 400),
-            tabBackgroundColor: Color(0xFF9D7EE0).withOpacity(0.1),
-            tabs: [
-              GButton(
-                icon: Icons.home_outlined,
-                text: 'Home',
-              ),
-              GButton(
-                icon: Icons.chat_bubble_outline,
-                text: 'Chat',
-              ),
-              GButton(
-                icon: Icons.calendar_today_outlined,
-                text: 'Calendar',
-              ),
-              GButton(
-                icon: Icons.mediation,
-                text: 'Self-help',
-              ),
-            ],
-            selectedIndex: _selectedIndex,
-            onTabChange: _onNavBarTap,
-          ),
         ),
       ),
     );
   }
 }
+
+*/
