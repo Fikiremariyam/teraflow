@@ -21,7 +21,7 @@ void main() async {
   // Ensure Flutter widgets are initialized
   WidgetsFlutterBinding.ensureInitialized();
   // firebase intialazing
-  await Firebase.initializeApp();
+ // await Firebase.initializeApp();
   //cloudinary inilazing
 
   try {
