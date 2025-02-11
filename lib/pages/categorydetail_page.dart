@@ -112,7 +112,7 @@ class CategoryDetailPage extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder: (context) =>
-                              TherapistPortfolioPage(therapist: therapist),
+                              TherapistPortfolioPage(therapistEmail: 'therapist'),
                         ),
                       );
                     },

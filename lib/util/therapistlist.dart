@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:teraflow/pages/therapistprofile_page.dart';
 import 'package:teraflow/util/therapist_card.dart';
 
 class Therapistlist extends StatefulWidget {
@@ -30,16 +31,26 @@ class _TherapistlistState extends State<Therapistlist> {
             itemCount: items.length,
             itemBuilder: (context,index){
               var  current_user = items[index].data();
-              return  TherapistCard(
-                          therapistImagePublicId: current_user['profile_image '] ?? "cld-sample-4",
-                          rating: current_user['rating'] ?? '  rating',
-                          therapistName: current_user['fullName:'] ?? ' user name ',
-                          therapistProfession: current_user['title'] ?? ' title ',
-                          experience: current_user['expirance'] ??  ' expiranvce',
-                          onTap: () {
-                            
-                          },
-                        );
+              return  GestureDetector(
+                onTap: (){
+                  print("you have clicked");
+                  MaterialPageRoute(
+                            builder: (context) =>
+                                TherapistPortfolioPage(therapistEmail: current_user['email']),
+                          );
+
+                },
+                child: TherapistCard(
+                            therapistImagePublicId: current_user['profile_image '] ?? "cld-sample-4",
+                            rating: current_user['rating'] ?? '  rating',
+                            therapistName: current_user['fullName:'] ?? ' user name ',
+                            therapistProfession: current_user['title'] ?? ' title ',
+                            experience: current_user['expirance'] ??  ' expiranvce',
+                            onTap: () {
+                               
+                            },
+                          ),
+              );
                         //SizedBox(width: 10),
                       }
             ),

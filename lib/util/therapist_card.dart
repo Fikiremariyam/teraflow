@@ -1,6 +1,7 @@
 import 'package:cloudinary_flutter/image/cld_image.dart';
 import 'package:cloudinary_url_gen/cloudinary.dart';
 import 'package:flutter/material.dart';
+import 'package:teraflow/pages/therapistprofile_page.dart';
 
 class TherapistCard extends StatelessWidget {
   final String therapistImagePublicId;
@@ -35,7 +36,15 @@ class TherapistCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: (){
+           Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              TherapistPortfolioPage(therapistEmail: 'therapist'),
+                        ),
+                      );
+      },
       child: Container(
         width: 200,
         margin: const EdgeInsets.only(right: 16),

@@ -9,13 +9,13 @@ import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:teraflow/chatbot/chatbot_screen.dart';
 import 'package:teraflow/pages/SELFHELP/breathing_exercise.dart';
-import 'package:teraflow/pages/SELFHELP/meditation_list.dart';
+//import 'package:teraflow/pages/SELFHELP/meditation_list.dart';
 import 'package:teraflow/pages/searchpage.dart';
 import 'package:teraflow/pages/splashPage/ProfilePage.dart';
 import 'package:teraflow/pages/splashPage/calendar_page.dart';
 import 'package:teraflow/util/category_card.dart';
 import 'package:teraflow/util/therapist_card.dart';
-import 'package:teraflow/pages/calendar_page.dart';
+//import 'package:teraflow/pages/calendar_page.dart';
 import 'package:teraflow/pages/utils/chats/chatlist_page.dart';
 import 'package:teraflow/pages/utils/chats/chatpage_main.dart';
 import 'package:teraflow/pages/SELFHELP/selfhelp_page.dart';
@@ -547,7 +547,7 @@ class _WebHomePageState extends State<WebHomePage> {
                       scrollDirection: Axis.horizontal,
                       children: [
                         TherapistCard(
-                          therapistImagePath: 'lib/images/doctor1.jpg',
+                          therapistImagePublicId: 'lib/images/doctor1.jpg',
                           rating: '4.9',
                           therapistName: 'Dr. Amla Douge',
                           therapistProfession: 'Therapist',
@@ -556,7 +556,7 @@ class _WebHomePageState extends State<WebHomePage> {
                         ),
                         SizedBox(width: 10),
                         TherapistCard(
-                          therapistImagePath: 'lib/images/doctor2.jpg',
+                          therapistImagePublicId: 'lib/images/doctor2.jpg',
                           rating: '4.8',
                           therapistName: 'Dr. John Smith',
                           therapistProfession: 'Psychologist',
@@ -565,7 +565,7 @@ class _WebHomePageState extends State<WebHomePage> {
                         ),
                         SizedBox(width: 10),
                         TherapistCard(
-                          therapistImagePath: 'lib/images/doctor2.jpg',
+                          therapistImagePublicId: 'lib/images/doctor2.jpg',
                           rating: '4.8',
                           therapistName: 'Dr. John Smith',
                           therapistProfession: 'Psychologist',
@@ -574,7 +574,7 @@ class _WebHomePageState extends State<WebHomePage> {
                         ),
                         SizedBox(width: 10),
                         TherapistCard(
-                          therapistImagePath: 'lib/images/doctor2.jpg',
+                          therapistImagePublicId: 'lib/images/doctor2.jpg',
                           rating: '4.8',
                           therapistName: 'Dr. John Smith',
                           therapistProfession: 'Psychologist',
@@ -583,7 +583,7 @@ class _WebHomePageState extends State<WebHomePage> {
                         ),
                         SizedBox(width: 10),
                         TherapistCard(
-                          therapistImagePath: 'lib/images/doctor1.jpg',
+                          therapistImagePublicId: 'lib/images/doctor1.jpg',
                           rating: '4.7',
                           therapistName: 'Dr. Jane Doe',
                           therapistProfession: 'Counselor',

@@ -1,8 +1,34 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:teraflow/util/bookschedule_popup.dart';
 
 class TherapistPortfolioPage extends StatelessWidget {
-  final Map<String, dynamic> therapist;
+  
+  List<dynamic> _department = [];
+  Map<String, dynamic> therapist = {};
+  //fetching user data 
+  Future<Map<String, String>> getuserdata(email) async {
+    String? userEmail = email;
+
+    if (userEmail == null) {
+      print("No logged-in user");
+      return {};
+    }
+
+    DocumentSnapshot user = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(userEmail)
+        .get();
+
+    if (user.exists && user.data() != null) {
+      Map<String, dynamic> data = user.data() as Map<String, dynamic>;
+      return data.map((key, value) => MapEntry(key, value.toString()));
+    }
+    return {};
+  }
+  
+  final String therapistEmail;
 
   // List of categories for services
   final List<Map<String, String>> categories = [
@@ -14,10 +40,14 @@ class TherapistPortfolioPage extends StatelessWidget {
     {"icon": "lib/images/doctors.png", "name": "Specialized Therapy"},
   ];
 
-  TherapistPortfolioPage({required this.therapist, Key? key}) : super(key: key);
+  TherapistPortfolioPage({required this.therapistEmail, Key? key}) : super(key: key);
 
+    void  populateuserDAta() async{
+      therapist = await getuserdata(therapistEmail);
+    }
   @override
   Widget build(BuildContext context) {
+     populateuserDAta();
     return Scaffold(
       backgroundColor: Colors.grey[300],
       body: Padding(
