@@ -27,6 +27,7 @@ import 'package:path_provider/path_provider.dart';
 
 import 'package:cloudinary_url_gen/cloudinary.dart';
 import 'package:cloudinary_flutter/image/cld_image.dart';
+import 'package:teraflow/util/therapistlist.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -607,57 +608,8 @@ class _HomePageState extends State<HomePage> {
                   SizedBox(height: 20),
                   SizedBox(
                     height: 300,
-                    child: ListView(
-                      scrollDirection: Axis.horizontal,
-                      children: [
-                        TherapistCard(
-                          therapistImagePath: 'lib/images/doctor1.jpg',
-                          rating: '4.9',
-                          therapistName: 'Dr. Amla Douge',
-                          therapistProfession: 'Therapist',
-                          experience: '15 years of experience',
-                          onTap: () {},
-                        ),
-                        SizedBox(width: 10),
-                        TherapistCard(
-                          therapistImagePath: 'lib/images/doctor2.jpg',
-                          rating: '4.8',
-                          therapistName: 'Dr. John Smith',
-                          therapistProfession: 'Psychologist',
-                          experience: '5 years of experience',
-                          onTap: () {},
-                        ),
-                        SizedBox(width: 10),
-                        TherapistCard(
-                          therapistImagePath: 'lib/images/doctor2.jpg',
-                          rating: '4.8',
-                          therapistName: 'Dr. John Smith',
-                          therapistProfession: 'Psychologist',
-                          experience: '10 years of experience',
-                          onTap: () {},
-                        ),
-                        SizedBox(width: 10),
-                        TherapistCard(
-                          therapistImagePath: 'lib/images/doctor2.jpg',
-                          rating: '4.8',
-                          therapistName: 'Dr. John Smith',
-                          therapistProfession: 'Psychologist',
-                          experience: '',
-                          onTap: () {},
-                        ),
-                        SizedBox(width: 10),
-                        TherapistCard(
-                          therapistImagePath: 'lib/images/doctor1.jpg',
-                          rating: '4.7',
-                          therapistName: 'Dr. Jane Doe',
-                          therapistProfession: 'Counselor',
-                          experience: '',
-                          onTap: () {},
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+                    child: Therapistlist(),
+              )],
               ),
             ),
 

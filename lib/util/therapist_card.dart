@@ -1,7 +1,9 @@
+import 'package:cloudinary_flutter/image/cld_image.dart';
+import 'package:cloudinary_url_gen/cloudinary.dart';
 import 'package:flutter/material.dart';
 
 class TherapistCard extends StatelessWidget {
-  final String therapistImagePath;
+  final String therapistImagePublicId;
   final String rating;
   final String therapistName;
   final String therapistProfession;
@@ -10,13 +12,25 @@ class TherapistCard extends StatelessWidget {
 
   const TherapistCard({
     Key? key,
-    required this.therapistImagePath,
+    required this.therapistImagePublicId,
     required this.rating,
     required this.therapistName,
     required this.therapistProfession,
     required this.experience,
     required this.onTap,
   }) : super(key: key);
+
+  Widget _profilePic() {
+    final cloudinary = Cloudinary.fromCloudName(cloudName: "dd8qfpth2");
+
+    return CldImageWidget(
+      cloudinary: cloudinary,
+      publicId: therapistImagePublicId,
+      width: 200,
+      height: 150,
+      fit: BoxFit.cover,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,12 +56,7 @@ class TherapistCard extends StatelessWidget {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-              child: Image.asset(
-                therapistImagePath,
-                height: 120,
-                width: double.infinity,
-                fit: BoxFit.cover,
-              ),
+              child: _profilePic(),
             ),
             Padding(
               padding: const EdgeInsets.all(16),
@@ -118,3 +127,4 @@ class TherapistCard extends StatelessWidget {
     );
   }
 }
+

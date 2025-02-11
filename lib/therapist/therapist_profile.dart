@@ -164,7 +164,7 @@ class _TherapistProfileState extends State<TherapistProfile> {
           'gender': "F",
           'address': _addressController.text,
           'background':_backgroundController.text,
-          'department': _department
+          'department': ["Personal Therapy", "Family Therapy", "Workplace Therapy", "Group Therapy", "Couples Therapy", "Specialized Therapy"]
         });
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text("Profile updated successfully!")),
