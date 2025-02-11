@@ -12,34 +12,10 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LogInPageState extends State<LoginPage> {
-  final emailController = TextEditingController(); // Change to email controller
+  final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
   bool isPasswordVisible = false;
-
-// a funciton to show the status of the message after we clicked it
-
-  void showSuccessMessage(BuildContext context, String? successMessage) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Success'),
-          content: Text('You have logged in successfully!'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('OK'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-// to show error message
 
   void showAuthResult(BuildContext context, String? errorMessage) {
     if (errorMessage != null) {
@@ -81,103 +57,68 @@ class _LogInPageState extends State<LoginPage> {
     }
   }
 
-// a funciton which  wich do the log in funcnality
-
-  void logUserIn(BuildContext content) async {
-    String email = emailController.text; // Change to email
-    String password = passwordController.text;
-    try {
-      await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: email!, password: password!);
-
-      showAuthResult(context, null);
-      DocumentSnapshot userDoc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc('email')
-          .get();
-      print(userDoc);
-      if (mounted) {
-        var role = FirebaseFirestore.instance
-            .collection('users')
-            .doc(FirebaseAuth.instance.currentUser!.uid)
-            .get();
-        print(role);
-        Navigator.pushReplacementNamed(context, "/login");
-      }
-    } on FirebaseAuthException catch (error) {
-      // Authentication failed
-      if (error is FirebaseAuthException) {
-        if (error.code == 'wrong-password') {
-          showAuthResult(context, 'wrong password.');
-        } else if (error.code == 'invalid-email') {
-          showAuthResult(
-              context, 'there is no account registerd with this email ');
-        } else if (error.code == 'invalid-credential') {
-          showAuthResult(context, 'wrong emai or password .');
-        } else {
-          showAuthResult(context, 'An unexpected error occurred.');
-        }
-      } else {
-        showAuthResult(context, 'An unexpected exeption  occurred.');
-      }
-    }
-    ;
-  }
-/*
-  void showAuthResult(BuildContext context, String? errorMessage) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(errorMessage == null ? 'Success' : 'Error'),
-          content: Text(errorMessage ?? 'Authentication Successful'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('OK'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   void logUserIn(BuildContext context) async {
+    String email = emailController.text.trim();
+    String password = passwordController.text.trim();
+
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: emailController.text,
-        password: passwordController.text,
+      // Attempt to sign in the user
+      UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
       );
 
-      showAuthResult(context, null);
+      User? user = userCredential.user; // Get the authenticated user
+      if (user == null) {
+        showAuthResult(context, "Authentication failed. Please try again.");
+        return;
+      }
 
-      if (mounted) {
-        var role = await FirebaseFirestore.instance
-            .collection('users')
-            .doc(FirebaseAuth.instance.currentUser!.uid)
-            .get();
-        print(role);
-        Navigator.pushReplacementNamed(context, "/home");
+      // Get the user's email and use it to fetch data from Firestore
+      String userEmail = user.email!;
+      print("User Email: $userEmail");
+
+      // Fetch user data from Firestore using the email
+      QuerySnapshot userSnapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .where('email', isEqualTo: userEmail) // Query by email
+          .get();
+
+      if (userSnapshot.docs.isNotEmpty) {
+        DocumentSnapshot userDoc = userSnapshot.docs
+            .first; // Get the first document (if there are multiple matches)
+        var role = userDoc['role'];
+        print("User role: $role");
+
+        // Navigate based on the role
+        if (mounted) {
+          if (role == "Customer") {
+            Navigator.pushReplacementNamed(context, "/Customer");
+          } else if (role == "Therapist") {
+            Navigator.pushReplacementNamed(context, "/Therapist");
+          } else {
+            showAuthResult(context, "Role not found. Please contact support.");
+          }
+        }
+      } else {
+        showAuthResult(context, "User data not found in Firestore.");
       }
     } on FirebaseAuthException catch (error) {
-      String errorMessage;
-      switch (error.code) {
-        case 'wrong-password':
-          errorMessage = 'Wrong password.';
-          break;
-        case 'invalid-email':
-          errorMessage = 'There is no account registered with this email.';
-          break;
-        case 'invalid-credential':
-          errorMessage = 'Wrong email or password.';
-          break;
-        default:
-          errorMessage = 'An unexpected error occurred.';
+      // Handle authentication exceptions
+      if (error.code == 'wrong-password') {
+        showAuthResult(context, 'Wrong password.');
+      } else if (error.code == 'invalid-email') {
+        showAuthResult(context, 'No account registered with this email.');
+      } else if (error.code == 'invalid-credential') {
+        showAuthResult(context, 'Wrong email or password.');
+      } else {
+        showAuthResult(context, 'An unexpected error occurred.');
       }
-      showAuthResult(context, errorMessage);
+    } catch (e) {
+      showAuthResult(context, 'An unexpected exception occurred.');
     }
   }
-*/
 
   @override
   Widget build(BuildContext context) {
@@ -201,112 +142,123 @@ class _LogInPageState extends State<LoginPage> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Welcome back!',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 32),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      body: Center(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: 500),
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _socialButton('lib/images/google.png'),
-                _socialButton('lib/images/apple.png'),
-              ],
-            ),
-            const SizedBox(height: 24),
-            const Row(
-              children: [
-                Expanded(child: Divider()),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
-                  child: Text('OR', style: TextStyle(color: Colors.grey)),
-                ),
-                Expanded(child: Divider()),
-              ],
-            ),
-            const SizedBox(height: 24),
-            TextField(
-              controller: emailController,
-              decoration: const InputDecoration(
-                labelText: 'Email',
-                prefixIcon: Icon(Icons.email_outlined),
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: passwordController,
-              obscureText: !isPasswordVisible,
-              decoration: InputDecoration(
-                labelText: 'Password',
-                prefixIcon: const Icon(Icons.lock_outline),
-                suffixIcon: IconButton(
-                  icon: Icon(
-                    isPasswordVisible ? Icons.visibility_off : Icons.visibility,
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      isPasswordVisible = !isPasswordVisible;
-                    });
-                  },
-                ),
-                border: const OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 24),
-            Align(
-              alignment: Alignment.centerRight,
-              child: TextButton(
-                onPressed: () {},
-                child: const Text(
-                  'Forgot Password?',
-                  style: TextStyle(color: Colors.deepPurple),
-                ),
-              ),
-            ),
-            const SizedBox(height: 24),
-            ElevatedButton(
-              onPressed: () => logUserIn(context),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.deepPurple,
-                minimumSize: Size(double.infinity, 50),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              child: const Text('Login', style: TextStyle(color: Colors.white)),
-            ),
-            const SizedBox(height: 24),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text(
-                  'Don\'t have an account? ',
-                  style: TextStyle(color: Colors.grey),
-                ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/signup');
-                  },
-                  child: const Text(
-                    'Sign Up',
+                // Center the "Welcome back!" text
+                const Center(
+                  child: Text(
+                    'Welcome back!',
                     style: TextStyle(
-                      color: Colors.deepPurple,
+                      fontSize: 24,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
+                const SizedBox(height: 32),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    _socialButton('lib/images/google.png'),
+                    _socialButton('lib/images/apple.png'),
+                  ],
+                ),
+                const SizedBox(height: 24),
+                const Row(
+                  children: [
+                    Expanded(child: Divider()),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      child: Text('OR', style: TextStyle(color: Colors.grey)),
+                    ),
+                    Expanded(child: Divider()),
+                  ],
+                ),
+                const SizedBox(height: 24),
+                TextField(
+                  controller: emailController,
+                  decoration: const InputDecoration(
+                    labelText: 'Email',
+                    prefixIcon: Icon(Icons.email_outlined),
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: passwordController,
+                  obscureText: !isPasswordVisible,
+                  decoration: InputDecoration(
+                    labelText: 'Password',
+                    prefixIcon: const Icon(Icons.lock_outline),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        isPasswordVisible
+                            ? Icons.visibility_off
+                            : Icons.visibility,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          isPasswordVisible = !isPasswordVisible;
+                        });
+                      },
+                    ),
+                    border: const OutlineInputBorder(),
+                  ),
+                ),
+                const SizedBox(height: 24),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                    onPressed: () {},
+                    child: const Text(
+                      'Forgot Password?',
+                      style: TextStyle(color: Colors.deepPurple),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 24),
+                ElevatedButton(
+                  onPressed: () => logUserIn(context),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.deepPurple,
+                    minimumSize: Size(double.infinity, 50),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: const Text('Login',
+                      style: TextStyle(color: Colors.white)),
+                ),
+                const SizedBox(height: 24),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'Don\'t have an account? ',
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/signup');
+                      },
+                      child: const Text(
+                        'Sign Up',
+                        style: TextStyle(
+                          color: Colors.deepPurple,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
-          ],
+          ),
         ),
       ),
     );

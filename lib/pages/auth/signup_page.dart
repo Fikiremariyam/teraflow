@@ -134,193 +134,204 @@ class _SignupPageState extends State<SignupPage> {
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Create account and access all services',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 32),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        child: Center(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: 400), // Maximum width for web
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SquareTile(imagePath: 'lib/images/google.png'),
-                const SizedBox(width: 16),
-                SquareTile(imagePath: 'lib/images/apple.png'),
-              ],
-            ),
-            const SizedBox(height: 24),
-            const Row(
-              children: [
-                Expanded(child: Divider()),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
-                  child: Text('OR', style: TextStyle(color: Colors.grey)),
-                ),
-                Expanded(child: Divider()),
-              ],
-            ),
-            const SizedBox(height: 24),
-            DropdownButtonFormField<String>(
-              value: _role,
-              decoration: const InputDecoration(
-                labelText: 'I am a',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.person_outline),
-              ),
-              items: _roles
-                  .map((type) =>
-                      DropdownMenuItem(value: type, child: Text(type)))
-                  .toList(),
-              onChanged: (value) => setState(() => _role = value!),
-            ),
-            const SizedBox(height: 16),
-            MyTextfield(
-              controller: nameController,
-              hintText: 'Full Name',
-              obscureText: false,
-              prefixIcon: Icon(Icons.person_outline),
-            ),
-            const SizedBox(height: 16),
-            const Text('Gender', style: TextStyle(color: Colors.grey)),
-            Row(
-              children: [
-                Expanded(
-                  child: RadioListTile(
-                    title: const Text('Female'),
-                    value: 'Female',
-                    groupValue: _selectedGender,
-                    onChanged: (value) =>
-                        setState(() => _selectedGender = value!),
-                  ),
-                ),
-                Expanded(
-                  child: RadioListTile(
-                    title: const Text('Male'),
-                    value: 'Male',
-                    groupValue: _selectedGender,
-                    onChanged: (value) =>
-                        setState(() => _selectedGender = value!),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              readOnly: true,
-              onTap: () async {
-                final DateTime? picked = await showDatePicker(
-                  context: context,
-                  initialDate:
-                      DateTime.now().subtract(const Duration(days: 365 * 13)),
-                  firstDate: DateTime(1900),
-                  lastDate: DateTime.now(),
-                );
-                if (picked != null) {
-                  setState(() => _selectedDate = picked);
-                }
-              },
-              decoration: const InputDecoration(
-                labelText: 'Date of Birth',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.calendar_today),
-              ),
-              controller: TextEditingController(
-                text: _selectedDate?.toLocal().toString().split(' ')[0] ?? '',
-              ),
-            ),
-            const SizedBox(height: 8),
-            const Text(
-              'You must be 13 or older to create an account',
-              style: TextStyle(color: Colors.grey, fontSize: 12),
-            ),
-            const SizedBox(height: 16),
-            MyTextfield(
-              controller: emailController,
-              hintText: 'Email',
-              obscureText: false,
-              prefixIcon: Icon(Icons.email_outlined),
-            ),
-            const SizedBox(height: 16),
-            MyTextfield(
-                controller: phoneController,
-                hintText: 'Phone Number',
-                obscureText: false,
-                prefixIcon: Icon(Icons.phone_outlined)),
-            const SizedBox(height: 16),
-            MyTextfield(
-              controller: passwordController,
-              hintText: 'Password',
-              obscureText: !_isPasswordVisible,
-              prefixIcon: Icon(Icons.lock_outline),
-              suffixIcon: IconButton(
-                icon: Icon(
-                  _isPasswordVisible ? Icons.visibility_off : Icons.visibility,
-                ),
-                onPressed: () {
-                  setState(() => _isPasswordVisible = !_isPasswordVisible);
-                },
-              ),
-            ),
-            const SizedBox(height: 24),
-            Row(
-              children: [
-                Checkbox(
-                  value: _acceptedTerms,
-                  onChanged: (value) => setState(() => _acceptedTerms = value!),
-                  activeColor: Colors.deepPurple,
-                ),
-                Expanded(
-                  child: RichText(
-                    text: const TextSpan(
-                      style: TextStyle(color: Colors.black),
-                      children: [
-                        TextSpan(text: 'I agree to TeraFlow '),
-                        TextSpan(
-                          text: 'Terms of Service',
-                          style: TextStyle(color: Colors.deepPurple),
-                        ),
-                        TextSpan(text: ' and '),
-                        TextSpan(
-                          text: 'Privacy Policy',
-                          style: TextStyle(color: Colors.deepPurple),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 24),
-            MyButton(
-              onTab: () => registerUser(context),
-              label: 'Sign Up',
-            ),
-            const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'Have an account? ',
-                  style: TextStyle(color: Colors.grey[700]),
-                ),
-                GestureDetector(
-                  onTap: () => Navigator.pushNamed(context, '/login'),
-                  child: const Text(
-                    'Login',
+                const Center(
+                  child: Text(
+                    'Create account ',
                     style: TextStyle(
-                      color: Colors.deepPurple,
+                      fontSize: 24,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
+                const SizedBox(height: 32),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    SquareTile(imagePath: 'lib/images/google.png'),
+                    const SizedBox(width: 16),
+                    SquareTile(imagePath: 'lib/images/apple.png'),
+                  ],
+                ),
+                const SizedBox(height: 24),
+                const Row(
+                  children: [
+                    Expanded(child: Divider()),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      child: Text('OR', style: TextStyle(color: Colors.grey)),
+                    ),
+                    Expanded(child: Divider()),
+                  ],
+                ),
+                const SizedBox(height: 24),
+                DropdownButtonFormField<String>(
+                  value: _role,
+                  decoration: const InputDecoration(
+                    labelText: 'I am a',
+                    border: OutlineInputBorder(),
+                    prefixIcon: Icon(Icons.person_outline),
+                  ),
+                  items: _roles
+                      .map((type) =>
+                          DropdownMenuItem(value: type, child: Text(type)))
+                      .toList(),
+                  onChanged: (value) => setState(() => _role = value!),
+                ),
+                const SizedBox(height: 16),
+                MyTextfield(
+                  controller: nameController,
+                  hintText: 'Full Name',
+                  obscureText: false,
+                  prefixIcon: Icon(Icons.person_outline),
+                ),
+                const SizedBox(height: 16),
+                const Text('Gender', style: TextStyle(color: Colors.grey)),
+                Row(
+                  children: [
+                    Expanded(
+                      child: RadioListTile(
+                        title: const Text('Female'),
+                        value: 'Female',
+                        groupValue: _selectedGender,
+                        onChanged: (value) =>
+                            setState(() => _selectedGender = value!),
+                      ),
+                    ),
+                    Expanded(
+                      child: RadioListTile(
+                        title: const Text('Male'),
+                        value: 'Male',
+                        groupValue: _selectedGender,
+                        onChanged: (value) =>
+                            setState(() => _selectedGender = value!),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  readOnly: true,
+                  onTap: () async {
+                    final DateTime? picked = await showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now()
+                          .subtract(const Duration(days: 365 * 13)),
+                      firstDate: DateTime(1900),
+                      lastDate: DateTime.now(),
+                    );
+                    if (picked != null) {
+                      setState(() => _selectedDate = picked);
+                    }
+                  },
+                  decoration: const InputDecoration(
+                    labelText: 'Date of Birth',
+                    border: OutlineInputBorder(),
+                    prefixIcon: Icon(Icons.calendar_today),
+                  ),
+                  controller: TextEditingController(
+                    text:
+                        _selectedDate?.toLocal().toString().split(' ')[0] ?? '',
+                  ),
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  'You must be 13 or older to create an account',
+                  style: TextStyle(color: Colors.grey, fontSize: 12),
+                ),
+                const SizedBox(height: 16),
+                MyTextfield(
+                  controller: emailController,
+                  hintText: 'Email',
+                  obscureText: false,
+                  prefixIcon: Icon(Icons.email_outlined),
+                ),
+                const SizedBox(height: 16),
+                MyTextfield(
+                    controller: phoneController,
+                    hintText: 'Phone Number',
+                    obscureText: false,
+                    prefixIcon: Icon(Icons.phone_outlined)),
+                const SizedBox(height: 16),
+                MyTextfield(
+                  controller: passwordController,
+                  hintText: 'Password',
+                  obscureText: !_isPasswordVisible,
+                  prefixIcon: Icon(Icons.lock_outline),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _isPasswordVisible
+                          ? Icons.visibility_off
+                          : Icons.visibility,
+                    ),
+                    onPressed: () {
+                      setState(() => _isPasswordVisible = !_isPasswordVisible);
+                    },
+                  ),
+                ),
+                const SizedBox(height: 24),
+                Row(
+                  children: [
+                    Checkbox(
+                      value: _acceptedTerms,
+                      onChanged: (value) =>
+                          setState(() => _acceptedTerms = value!),
+                      activeColor: Colors.deepPurple,
+                    ),
+                    Expanded(
+                      child: RichText(
+                        text: const TextSpan(
+                          style: TextStyle(color: Colors.black),
+                          children: [
+                            TextSpan(text: 'I agree to TeraFlow '),
+                            TextSpan(
+                              text: 'Terms of Service',
+                              style: TextStyle(color: Colors.deepPurple),
+                            ),
+                            TextSpan(text: ' and '),
+                            TextSpan(
+                              text: 'Privacy Policy',
+                              style: TextStyle(color: Colors.deepPurple),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 24),
+                MyButton(
+                  onTab: () => registerUser(context),
+                  label: 'Sign Up',
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Have an account? ',
+                      style: TextStyle(color: Colors.grey[700]),
+                    ),
+                    GestureDetector(
+                      onTap: () => Navigator.pushNamed(context, '/login'),
+                      child: const Text(
+                        'Login',
+                        style: TextStyle(
+                          color: Colors.deepPurple,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
-          ],
+          ),
         ),
       ),
     );
