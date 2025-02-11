@@ -77,7 +77,29 @@ class _MyAppState extends State<MyApp> {
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       routes: {
-        '/Onboarding': (context) => OnboardingScreen(),
+        '/Onboarding': (context) => FirebaseAuth.instance.currentUser == null
+            ? OnboardingScreen()
+            : FutureBuilder(
+                future: FirebaseFirestore.instance
+                    .collection('users')
+                    .doc(FirebaseAuth.instance.currentUser!.email)
+                    .get(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                  var role = snapshot.data!.get('role');
+                  print("+++++++++++++++++++++++++");
+                  print(role);
+
+                  if (role == "Customer") {
+                    return HomePage();
+                  } else {
+                    return HomePaget();
+                  }
+                }),
+          
+
         '/welcome': (context) => WelcomeScreen(),
         '/login': (context) => FirebaseAuth.instance.currentUser == null
             ? LoginPage()

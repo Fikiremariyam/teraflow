@@ -1,10 +1,46 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:teraflow/pages/home_page.dart';
 import 'package:teraflow/pages/splashPage/SettingPage.dart';
 import '../splashPage/AccountPage.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
+  
   const ProfileScreen({super.key});
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+
+    var username = TextEditingController();
+    var phonenumber = TextEditingController();
+
+    // to get user data
+    void getusercred() async {
+
+    var docSnapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.email)
+        .get();
+    String usernameholder = docSnapshot.data()?['username'] ?? 'Meron ';
+    String phoneno =
+        docSnapshot.data()?['phonenumber'] ?? 'enter your  phone  no';
+    setState(() {
+      username.text = usernameholder;
+      phonenumber.text = phoneno;
+    });
+  }
+
+
+  @override
+  void initState() {
+    //function to run then ever the page is loaded
+    super.initState();
+    getusercred();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +86,7 @@ class ProfileScreen extends StatelessWidget {
                   ),
                   const SizedBox(width: 16),
                   Text(
-                    'Meron Bahru',
+                    username.text,
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 20,
