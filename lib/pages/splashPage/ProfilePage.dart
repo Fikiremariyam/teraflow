@@ -1,7 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloudinary_flutter/image/cld_image.dart';
+import 'package:cloudinary_url_gen/cloudinary.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:teraflow/pages/home_page.dart';
+import 'package:teraflow/pages/payment_and_orders.dart';
 import 'package:teraflow/pages/splashPage/SettingPage.dart';
 import '../splashPage/AccountPage.dart';
 
@@ -17,6 +20,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     var username = TextEditingController();
     var phonenumber = TextEditingController();
+
+    // getting profile pic 
+     Widget _profilePic() {
+    final cloudinary = Cloudinary.fromCloudName(cloudName: "dd8qfpth2");
+
+    return ClipOval(
+      child: CldImageWidget(
+        cloudinary: cloudinary,
+        publicId: "cld-sample-4",
+        width: 60,
+        height: 60,
+        fit: BoxFit.cover,
+      ),
+    );
+  }
+  
 
     // to get user data
     void getusercred() async {
@@ -50,6 +69,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
+          
           icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.of(context)
               .push(MaterialPageRoute(builder: (context) => HomePage())),
@@ -78,10 +98,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
               margin: const EdgeInsets.all(16),
               child: Row(
                 children: [
-                  const CircleAvatar(
+                   CircleAvatar(
                     radius: 30,
                     backgroundColor: Colors.white,
-                    child: Icon(Icons.person_outline,
+                    child:  _profilePic() ?? Icon(Icons.person_outline,
                         color: Colors.grey, size: 40),
                   ),
                   const SizedBox(width: 16),
@@ -129,12 +149,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
               iconColor: Colors.red,
               title: 'Bookmarks',
               subtitle: 'Your bookmarked article and product',
+             
             ),
             _buildMenuItem(
               icon: Icons.payment_outlined,
               iconColor: Colors.purple,
               title: 'Order & Payment History',
               subtitle: 'See your payment info',
+               onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) =>  PaymentAndOrders()),
+              ),
             ),
             _buildMenuItem(
               icon: Icons.settings_outlined,

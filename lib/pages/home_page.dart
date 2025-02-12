@@ -198,15 +198,7 @@ class _HomePageState extends State<HomePage> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                   ),
-                  //  icon: Icon(Icons.menu, color: Colors.black),
-                  //  onPressed: () {
-                  //    Navigator.pushReplacement(
-                  //     context,
-                  //     MaterialPageRoute(builder: (context) => ProfileScreen()),
-                  //    );
-                  //  },
-                  //  ),
-                  // ),
+                  
                   Expanded(
                     child: Container(
                       height: 45,
@@ -241,6 +233,7 @@ class _HomePageState extends State<HomePage> {
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
+                          // to navigate to the notfiaciton screen 
                             builder: (context) => ProfileScreen()),
                       );
                     },
@@ -437,9 +430,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   SizedBox(height: 25),
 
-                  // Questionnaire Section
-
-// Update the questionnaire card section
+           
                   Container(
                     margin: EdgeInsets.symmetric(horizontal: 25),
                     padding: EdgeInsets.all(20),

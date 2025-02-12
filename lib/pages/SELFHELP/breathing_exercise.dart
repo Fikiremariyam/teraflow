@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:get/get.dart';
 import 'dart:convert';
-import 'package:flutter/services.dart'; // Required for loading assets
-import 'package:teraflow/util/custom_video_player.dart';
+import 'package:flutter/services.dart'; 
 
 class BreathingExerciseDetailPage extends StatefulWidget {
   const BreathingExerciseDetailPage({super.key});
@@ -23,58 +22,6 @@ class _BreathingExerciseDetailPageState
       late FlickManager flickmanager;
 
   
-  void _initializeVideo()  async{
-    if (_videoData == null || _videoData!.isEmpty) {
-     
-      return;
-
-    }
-    _videoPlayerController = VideoPlayerController.asset(_videoData![_currentVideoIndex]['videoUrl']);
-    _videoPlayerController.initialize().then((_) {
-      setState(() {
-        
-      });
-    }).catchError((error) {
-      print("============================================Error initializing video: $error");
-      Get.snackbar(
-        'Error',
-        'Failed to load video',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
-    });
-  }
-
-
-  Future<void> _loadVideoData() async {
-    try {
-      final String response = await rootBundle.loadString('assets/video_data.json'); // Load JSON file
-      final List<dynamic> decodedData = json.decode(response);
-
-
-      setState(() {
-        _videoData = List<Map<String, dynamic>>.from(decodedData);
-      });
-
-      if (_videoData != null && _videoData!.isNotEmpty) {
-       
-        _initializeVideo();
-      } else {
-        throw Exception("No video data found.");
-      }
-    } catch (e) {
-      print("Error loading video data: $e");
-      Get.snackbar(
-        'Error',
-        'Failed to load video data',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
-    }
-  }
-
   @override
   void initState() {
     super.initState();
@@ -84,15 +31,6 @@ class _BreathingExerciseDetailPageState
         VideoPlayerController.asset("assets/video-1.mp4"));
         
   }
-/*
-
-  @override
-  void dispose() {
-    if (_videoPlayerController != null) {
-    _videoPlayerController.dispose();
-  }
-    super.dispose();
-  } */
 
   @override
   Widget build(BuildContext context) {
@@ -121,14 +59,7 @@ class _BreathingExerciseDetailPageState
                       color: Colors.deepPurple.shade100,
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    /**
-                     child: _videoPlayerController.value.isInitialized
-                        ? CustomVideoPlayer(
-                            controller: _videoPlayerController,
-                            onNextVideo: (){},
-                            onPreviousVideo: (){}
-                          )
-                        : const Center(child: CircularProgressIndicator()),*/
+                    
                   child: FlickVideoPlayer(flickManager: flickmanager),
                   ),
                 ),
@@ -139,7 +70,7 @@ class _BreathingExerciseDetailPageState
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        //_videoData![_currentVideoIndex]['title'],
+                     
                         "title",
                         style: const TextStyle(
                           fontSize: 24,
@@ -148,7 +79,7 @@ class _BreathingExerciseDetailPageState
                       ),
                       const SizedBox(height: 16),
                       Text(
-                      //  _videoData![_currentVideoIndex]['description'],
+                   
                         "discription",
                         style: const TextStyle(
                           fontSize: 16,

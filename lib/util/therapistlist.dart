@@ -31,6 +31,7 @@ class _TherapistlistState extends State<Therapistlist> {
             itemCount: items.length,
             itemBuilder: (context,index){
               var  current_user = items[index].data();
+              
               return  GestureDetector(
                 onTap: (){
               
@@ -43,9 +44,9 @@ class _TherapistlistState extends State<Therapistlist> {
                 child: TherapistCard(
                             therapistImagePublicId: current_user['profile_image '] ?? "cld-sample-4",
                             rating: current_user['rating'] ?? '  rating',
-                            therapistName: current_user['fullName:'] ?? ' user name ',
+                            therapistName: current_user['fullName'] ?? ' user name not found ',
                             therapistProfession: current_user['title'] ?? ' title ',
-                            experience: current_user['expirance'] ??  ' expiranvce',
+                            experience: current_user['expirance'] ??  ' 3 yrs',
                             onTap: () {
                                
                             },
