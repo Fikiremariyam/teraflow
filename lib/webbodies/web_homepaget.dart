@@ -106,12 +106,8 @@ class _WebHomePagetState extends State<WebHomePaget> {
                       onPressed: () {
                         Navigator.push(
                           context,
-<<<<<<< HEAD
                           MaterialPageRoute(
-                              builder: (context) => PaymentPage()),
-=======
-                          MaterialPageRoute(builder: (context) => CalendarTherapist()),
->>>>>>> 3250b08f2b11a5a5923d7a6bd32f6912f7b00cd0
+                              builder: (context) => CalendarTherapist()),
                         );
                       },
                       style: ElevatedButton.styleFrom(
