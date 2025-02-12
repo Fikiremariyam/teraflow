@@ -5,11 +5,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:teraflow/pages/home_page.dart';
 import 'package:teraflow/pages/payment_and_orders.dart';
+import 'package:teraflow/pages/splashPage/CustomerPaymetn_Page.dart';
 import 'package:teraflow/pages/splashPage/SettingPage.dart';
 import '../splashPage/AccountPage.dart';
 
 class ProfileScreen extends StatefulWidget {
-  
   const ProfileScreen({super.key});
 
   @override
@@ -17,12 +17,11 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  var username = TextEditingController();
+  var phonenumber = TextEditingController();
 
-    var username = TextEditingController();
-    var phonenumber = TextEditingController();
-
-    // getting profile pic 
-     Widget _profilePic() {
+  // getting profile pic
+  Widget _profilePic() {
     final cloudinary = Cloudinary.fromCloudName(cloudName: "dd8qfpth2");
 
     return ClipOval(
@@ -35,11 +34,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
     );
   }
-  
 
-    // to get user data
-    void getusercred() async {
-
+  // to get user data
+  void getusercred() async {
     var docSnapshot = await FirebaseFirestore.instance
         .collection('users')
         .doc(FirebaseAuth.instance.currentUser!.email)
@@ -52,7 +49,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       phonenumber.text = phoneno;
     });
   }
-
 
   @override
   void initState() {
@@ -69,7 +65,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          
           icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.of(context)
               .push(MaterialPageRoute(builder: (context) => HomePage())),
@@ -98,11 +93,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
               margin: const EdgeInsets.all(16),
               child: Row(
                 children: [
-                   CircleAvatar(
+                  CircleAvatar(
                     radius: 30,
                     backgroundColor: Colors.white,
-                    child:  _profilePic() ?? Icon(Icons.person_outline,
-                        color: Colors.grey, size: 40),
+                    child: _profilePic() ??
+                        Icon(Icons.person_outline,
+                            color: Colors.grey, size: 40),
                   ),
                   const SizedBox(width: 16),
                   Text(
@@ -149,16 +145,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
               iconColor: Colors.red,
               title: 'Bookmarks',
               subtitle: 'Your bookmarked article and product',
-             
             ),
             _buildMenuItem(
               icon: Icons.payment_outlined,
               iconColor: Colors.purple,
               title: 'Order & Payment History',
               subtitle: 'See your payment info',
-               onTap: () => Navigator.push(
+              onTap: () => Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) =>  PaymentAndOrders()),
+                MaterialPageRoute(builder: (context) => CustomerPaymentPage()),
               ),
             ),
             _buildMenuItem(

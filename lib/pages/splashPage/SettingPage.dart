@@ -50,7 +50,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.dark_mode, size: 25),
                 const SizedBox(width: 8),
                 Switch(
                   value: _darkModeEnabled,
@@ -125,9 +124,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: ElevatedButton(
-              onPressed: () async{
-                 await FirebaseAuth.instance.signOut();
-                 Navigator.pushNamed(context, '/Onboarding');
+              onPressed: () async {
+                await FirebaseAuth.instance.signOut();
+                Navigator.pushNamed(context, '/Onboarding');
               },
               child: const Text('Logout'),
               style: ElevatedButton.styleFrom(
