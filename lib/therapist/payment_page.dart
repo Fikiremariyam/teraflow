@@ -3,6 +3,11 @@ import 'package:flutter/services.dart';
 import 'package:teraflow/services/payment/api_service.dart';
 
 class PaymentPage extends StatefulWidget {
+  final String? email;
+  final String? totalAmount;
+
+  PaymentPage({this.email, this.totalAmount});
+
   @override
   _PaymentPageState createState() => _PaymentPageState();
 }
@@ -12,7 +17,15 @@ class _PaymentPageState extends State<PaymentPage> {
   final TextEditingController amountController = TextEditingController();
   final TextEditingController reasonController = TextEditingController();
   String? paymentLink;
-  bool isLoading = false; // To track the loading state
+  bool isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Pre-fill the email and total amount with default values if null
+    emailController.text = widget.email ?? "";
+    amountController.text = widget.totalAmount ?? "";
+  }
 
   // Function to generate payment link
   Future<void> generatePaymentLink() async {
@@ -20,13 +33,13 @@ class _PaymentPageState extends State<PaymentPage> {
       isLoading = true; // Set loading state to true when the process starts
     });
 
-    print(" Starting Payment Initialization...");
+    print("Starting Payment Initialization...");
     final String email = emailController.text.trim();
     final String amount = amountController.text.trim();
     final String reason = reasonController.text.trim();
 
     if (email.isEmpty || amount.isEmpty || reason.isEmpty) {
-      print(" ERROR: Missing email, amount, or reason.");
+      print("ERROR: Missing email, amount, or reason.");
       setState(() {
         isLoading = false; // Reset loading state
       });
@@ -51,7 +64,7 @@ class _PaymentPageState extends State<PaymentPage> {
           isLoading = false; // Reset loading state
         });
       } else {
-        print(" ERROR: Failed to generate payment link.");
+        print("ERROR: Failed to generate payment link.");
         setState(() {
           isLoading = false; // Reset loading state
         });
@@ -60,22 +73,13 @@ class _PaymentPageState extends State<PaymentPage> {
         );
       }
     } catch (e) {
-      print(" Exception during payment initialization: $e");
+      print("Exception during payment initialization: $e");
       setState(() {
         isLoading = false; // Reset loading state
       });
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
             content: Text("An error occurred during payment initialization.")),
-      );
-    }
-  }
-
-  void copyToClipboard() {
-    if (paymentLink != null) {
-      Clipboard.setData(ClipboardData(text: paymentLink!));
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Payment link copied!")),
       );
     }
   }
@@ -114,9 +118,10 @@ class _PaymentPageState extends State<PaymentPage> {
                   backgroundColor: Color(0xFF9B4D96), // Lighter deep purple
                   padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
                   textStyle: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white), // White text for the button
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white, // White text for the button
+                  ),
                 ), // Disable button while loading
                 child: isLoading
                     ? CircularProgressIndicator() // Show loading indicator
@@ -147,7 +152,14 @@ class _PaymentPageState extends State<PaymentPage> {
                     IconButton(
                       icon: Icon(Icons.copy,
                           color: Color(0xFF9B4D96)), // Lighter purple icon
-                      onPressed: copyToClipboard,
+                      onPressed: () {
+                        if (paymentLink != null) {
+                          Clipboard.setData(ClipboardData(text: paymentLink!));
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text("Payment link copied!")),
+                          );
+                        }
+                      },
                     ),
                   ],
                 ),

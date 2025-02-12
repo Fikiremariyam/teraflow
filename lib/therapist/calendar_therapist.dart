@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:teraflow/therapist/payment_page.dart';
 
 class CalendarTherapist extends StatefulWidget {
   @override
@@ -15,7 +16,13 @@ class _CalendarTherapistState extends State<CalendarTherapist> {
   DateTime? _selectedDay;
   CalendarFormat _calendarFormat = CalendarFormat.month;
   TextEditingController _timeController = TextEditingController();
-  TextEditingController _emailController = TextEditingController();
+  TextEditingController emailController =
+      TextEditingController(); // Customer email
+  TextEditingController priceController = TextEditingController();
+  List<DateTime> selectedAppointments = []; // Store selected sessions
+
+  String? customerEmail;
+  double? totalAmount;
 
   @override
   void initState() {
@@ -62,139 +69,204 @@ class _CalendarTherapistState extends State<CalendarTherapist> {
     }
   }
 
-  void _addAppointment() async {
-    if (_selectedDay == null) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text("Please select a date")));
-      return;
-    }
-
-    if (_timeController.text.isEmpty) {
+  void _addMultipleAppointments(
+      List<Map<String, dynamic>> appointments, String email) async {
+    if (appointments.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Please enter the appointment time")));
+          SnackBar(content: Text("Please select at least one date")));
       return;
     }
 
-    if (_emailController.text.isEmpty) {
+    if (email.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Please enter the customer's email")));
       return;
     }
 
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text("No user logged in.")));
+      return;
+    }
+
+    String therapistEmail = user.email!;
+
     try {
-      String time = _timeController.text.trim();
-      String email = _emailController.text.trim();
+      for (var appointment in appointments) {
+        DateTime date = appointment['date'];
+        String time = appointment['timeController'].text.trim();
 
-      User? user = FirebaseAuth.instance.currentUser;
-      if (user == null) {
-        throw FormatException("No user is logged in.");
+        if (time.isEmpty) continue; // Skip empty time slots
+
+        String dateTimeString = "${date.toIso8601String().split("T")[0]} $time";
+        DateTime appointmentDateTime = DateFormat("yyyy-MM-dd hh:mm a")
+            .parse(dateTimeString, true)
+            .toUtc();
+
+        Map<String, dynamic> appointmentData = {
+          "customerEmail": email,
+          "appointmentDateTime": appointmentDateTime,
+          "therapistEmail": therapistEmail,
+        };
+
+        await FirebaseFirestore.instance
+            .collection('appointments')
+            .add(appointmentData);
       }
-      String therapistEmail = user.email!;
-
-      String dateTimeString =
-          "${_selectedDay!.toIso8601String().split("T")[0]} ${_timeController.text.trim()}";
-      DateTime appointmentDateTime =
-          DateFormat("yyyy-MM-dd hh:mm a").parse(dateTimeString, true).toUtc();
-
-      Map<String, dynamic> appointmentData = {
-        "customerEmail": email,
-        "appointmentDateTime": appointmentDateTime,
-        "therapistEmail": therapistEmail,
-      };
-
-      await FirebaseFirestore.instance
-          .collection('appointments')
-          .add(appointmentData);
 
       await _fetchAppointments();
 
-      _timeController.clear();
-      _emailController.clear();
-
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Appointment added successfully!")));
-
-      Navigator.pop(context);
+          SnackBar(content: Text("Appointments added successfully!")));
     } catch (e) {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(e.toString())));
     }
   }
 
-  Future<void> _showCancelConfirmationDialog(String docId) async {
+  Future<void> _showAddAppointmentDialog() async {
+    List<Map<String, dynamic>> selectedAppointments = [];
+    TextEditingController priceController = TextEditingController();
+
     showDialog(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          title: Text("Cancel Appointment"),
-          content: Text("Are you sure you want to cancel this appointment?"),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text("No"),
-            ),
-            TextButton(
-              onPressed: () async {
-                Navigator.pop(context); // Close the dialog
-                await _cancelAppointment(docId);
-              },
-              child: Text("Yes"),
-            ),
-          ],
-        );
-      },
-    );
-  }
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            return AlertDialog(
+              title: Text('Add Multiple Appointments'),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TextField(
+                      controller: emailController,
+                      decoration: InputDecoration(
+                        labelText: 'Customer Email',
+                        hintText: 'Enter customer email',
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    TextField(
+                      controller: priceController,
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        labelText: 'Price per session (Birr)',
+                        prefixText: 'ETB ',
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Column(
+                      children:
+                          selectedAppointments.asMap().entries.map((entry) {
+                        int index = entry.key;
+                        return Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                "${DateFormat('yyyy-MM-dd').format(entry.value['date'])}",
+                                style: TextStyle(fontSize: 16),
+                              ),
+                            ),
+                            SizedBox(width: 10),
+                            Expanded(
+                              child: TextField(
+                                controller: entry.value['timeController'],
+                                decoration: InputDecoration(
+                                  labelText: 'Time (10:30 AM)',
+                                ),
+                              ),
+                            ),
+                            IconButton(
+                              icon: Icon(Icons.remove_circle,
+                                  color: Colors.deepPurple),
+                              onPressed: () {
+                                setDialogState(() {
+                                  selectedAppointments.removeAt(index);
+                                });
+                              },
+                            ),
+                          ],
+                        );
+                      }).toList(),
+                    ),
+                    SizedBox(height: 10),
+                    TextButton(
+                      onPressed: () async {
+                        DateTime? pickedDate = await showDatePicker(
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime(2020),
+                          lastDate: DateTime(2030),
+                        );
 
-  Future<void> _cancelAppointment(String docId) async {
-    try {
-      await FirebaseFirestore.instance
-          .collection('appointments')
-          .doc(docId)
-          .delete();
-      await _fetchAppointments();
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Appointment canceled successfully!")));
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Error canceling appointment: $e")));
-    }
-  }
-
-  void _showAddAppointmentDialog() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text('Add Appointment'),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  controller: _timeController,
-                  decoration: InputDecoration(
-                      labelText: 'Appointment Time (e.g., 10:30 AM)'),
+                        if (pickedDate != null) {
+                          setDialogState(() {
+                            selectedAppointments.add({
+                              "date": pickedDate,
+                              "timeController": TextEditingController(),
+                            });
+                          });
+                        }
+                      },
+                      child: Text("Add Another Date"),
+                    ),
+                  ],
                 ),
-                TextField(
-                  controller: _emailController,
-                  decoration: InputDecoration(labelText: 'Customer Email'),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text('Cancel'),
+                ),
+                TextButton(
+                  onPressed: () async {
+                    if (emailController.text.trim().isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                            content: Text("Please enter a customer email.")),
+                      );
+                      return;
+                    }
+                    if (priceController.text.trim().isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                            content: Text("Please enter the session price.")),
+                      );
+                      return;
+                    }
+                    if (selectedAppointments.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                            content: Text(
+                                "Please select at least one session date.")),
+                      );
+                      return;
+                    }
+                    double pricePerSession =
+                        double.tryParse(priceController.text.trim()) ?? 0;
+                    double totalAmount =
+                        pricePerSession * selectedAppointments.length;
+
+                    // Redirect to PaymentPage without passing email or total amount
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => PaymentPage(
+                          email: emailController.text.trim(),
+                          totalAmount: totalAmount.toString(),
+                        ),
+                      ),
+                    );
+                  },
+                  child: Text('Add Appointments'),
                 ),
               ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: _addAppointment,
-              child: Text('Add Appointment'),
-            ),
-          ],
+            );
+          },
         );
       },
     );
@@ -250,85 +322,14 @@ class _CalendarTherapistState extends State<CalendarTherapist> {
                           _selectedDay = selectedDay;
                           _focusedDay = focusedDay;
                         });
-                        _fetchAppointments();
                       },
-                      eventLoader: (day) => _getAppointmentsForDay(day),
-                      calendarStyle: CalendarStyle(
-                        todayDecoration: BoxDecoration(
-                          color: Colors.deepPurple.shade200,
-                          shape: BoxShape.circle,
-                        ),
-                        selectedDecoration: BoxDecoration(
-                          color: Colors.deepPurple,
-                          shape: BoxShape.circle,
-                        ),
-                        todayTextStyle: TextStyle(
-                          color: Colors.white,
-                        ),
-                        selectedTextStyle: TextStyle(
-                          color: Colors.white,
-                        ),
-                      ),
                     ),
                   ),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(12),
-                        topRight: Radius.circular(12),
-                      ),
-                    ),
-                    child: ListView(
-                      shrinkWrap: true,
-                      children:
-                          _getAppointmentsForDay(_selectedDay ?? _focusedDay)
-                              .map((appointment) => Card(
-                                    margin: EdgeInsets.symmetric(vertical: 6),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    elevation: 3,
-                                    child: ListTile(
-                                      contentPadding: EdgeInsets.symmetric(
-                                          vertical: 8, horizontal: 12),
-                                      title: Text(
-                                        "${appointment['time']} - ${appointment['customerEmail']}",
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                      trailing: IconButton(
-                                        icon: Icon(Icons.cancel,
-                                            color: Colors.deepPurple.shade400),
-                                        onPressed: () =>
-                                            _showCancelConfirmationDialog(
-                                                appointment['docId']),
-                                      ),
-                                    ),
-                                  ))
-                              .toList(),
-                    ),
+                  ElevatedButton(
+                    onPressed: _showAddAppointmentDialog,
+                    child: Text("Add Appointments"),
                   ),
                 ],
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: ElevatedButton(
-              onPressed: _showAddAppointmentDialog,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
-                side: BorderSide(color: Colors.deepPurple),
-              ),
-              child: Text(
-                'Add Appointment',
-                style: TextStyle(
-                  color: Colors.deepPurple,
-                ),
               ),
             ),
           ),

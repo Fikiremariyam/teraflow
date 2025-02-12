@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:teraflow/util/bookschedule_popup.dart';
 
 class TherapistPortfolioPage extends StatelessWidget {
-  
   List<dynamic> _department = [];
   Map<String, dynamic> therapist = {};
-  //fetching user data 
+
+  // Fetching user data
   Future<Map<String, String>> getuserdata(email) async {
     String? userEmail = email;
 
@@ -27,7 +27,7 @@ class TherapistPortfolioPage extends StatelessWidget {
     }
     return {};
   }
-  
+
   final String therapistEmail;
 
   // List of categories for services
@@ -40,15 +40,16 @@ class TherapistPortfolioPage extends StatelessWidget {
     {"icon": "lib/images/doctors.png", "name": "Specialized Therapy"},
   ];
 
-  TherapistPortfolioPage({required this.therapistEmail, Key? key}) : super(key: key);
+  TherapistPortfolioPage({required this.therapistEmail, Key? key})
+      : super(key: key);
 
-    void  populateuserDAta() async{
-      therapist = await getuserdata(therapistEmail);
-    }
-    
+  void populateuserData() async {
+    therapist = await getuserdata(therapistEmail);
+  }
+
   @override
   Widget build(BuildContext context) {
-     populateuserDAta();
+    populateuserData();
     return Scaffold(
       backgroundColor: Colors.grey[300],
       body: Padding(
@@ -128,8 +129,7 @@ class TherapistPortfolioPage extends StatelessWidget {
                           top: -2, // Negative value for overlap effect
                           child: CircleAvatar(
                             backgroundImage: AssetImage(
-                              therapist['image'] ?? 'assets/profile.jpg',
-                            ),
+                                therapist['image'] ?? 'assets/profile.jpg'),
                             radius: 30,
                           ),
                         ),
@@ -146,9 +146,7 @@ class TherapistPortfolioPage extends StatelessWidget {
                             context: context,
                             builder: (BuildContext context) {
                               return BookschedulePopup(
-                                therapistName: therapistName,
-                                doctorsemail : therapist['email'] ?? '' 
-                              );
+                                  therapistName: therapistName, doctorsemail: '',);
                             },
                           );
                         },
@@ -158,10 +156,8 @@ class TherapistPortfolioPage extends StatelessWidget {
                               horizontal: 30, vertical: 12),
                           textStyle: TextStyle(fontSize: 16),
                         ),
-                        child: Text(
-                          'Book a Schedule',
-                          style: TextStyle(color: Colors.white),
-                        ),
+                        child: Text('Book a Schedule',
+                            style: TextStyle(color: Colors.white)),
                       ),
                     ),
                   ],
@@ -198,16 +194,14 @@ class TherapistPortfolioPage extends StatelessWidget {
                 'Services',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
-              // SizedBox(height: 4),
               GridView.builder(
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2, // Two columns
+                  crossAxisCount: 2,
                   crossAxisSpacing: 16.0,
                   mainAxisSpacing: 16.0,
-                  childAspectRatio:
-                      1, // Square aspect ratio for each service tile
+                  childAspectRatio: 1,
                 ),
                 itemCount: categories.length,
                 itemBuilder: (context, index) {
@@ -226,10 +220,8 @@ class TherapistPortfolioPage extends StatelessWidget {
                     padding: EdgeInsets.symmetric(horizontal: 30, vertical: 12),
                     textStyle: TextStyle(fontSize: 16),
                   ),
-                  child: Text(
-                    'Send Request',
-                    style: TextStyle(color: Colors.white),
-                  ),
+                  child: Text('Send Request',
+                      style: TextStyle(color: Colors.white)),
                 ),
               ),
               SizedBox(height: 25.0),
@@ -240,22 +232,41 @@ class TherapistPortfolioPage extends StatelessWidget {
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 10.0),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    blogCard('How to Manage Stress and Anxiety', 'Jan 1, 2025',
-                        'Stress is a natural response to challenges, but when it becomes chronic, it can affect your physical and mental health. Learn techniques to manage stress effectively...'),
-                    blogCard(
-                        'Overcoming Fear: Tips for Personal Growth',
-                        'Feb 15, 2025',
-                        'Fear can hold us back, but it doesn’t have to. Discover strategies to face your fears and grow stronger from them...'),
-                    blogCard(
-                        'The Power of Therapy for Mental Health',
-                        'Mar 10, 2025',
-                        'Therapy is a powerful tool for managing mental health. It can help you work through difficult emotions and improve your overall well-being...'),
-                  ],
-                ),
+
+              // Fetch and display blogs using FutureBuilder
+              FutureBuilder<List<Map<String, dynamic>>>(
+                future: fetchBlogs(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator();
+                  }
+
+                  if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  }
+
+                  if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return Text('This therapist hasn\'t written anything yet.');
+                  }
+
+                  // If data is available, display blogs
+                  List<Map<String, dynamic>> blogs = snapshot.data!;
+                  return SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: blogs.map((blog) {
+                        return blogCard(
+                          blog['title'] ?? 'No Title',
+                          blog['timestamp'] ?? 'No Date',
+                          blog['content'] ?? 'No Content',
+                          blog['author'] ?? 'Unknown Author',
+                          blog['category'] ?? 'No Category',
+                          blog['likes'] ?? 0,
+                        );
+                      }).toList(),
+                    ),
+                  );
+                },
               ),
             ],
           ),
@@ -264,118 +275,77 @@ class TherapistPortfolioPage extends StatelessWidget {
     );
   }
 
-  // Helper widget to create testimonial cards with images
-  Widget testimonialCard(
-      String client, String comment, int rating, String imagePath) {
-    return Card(
-      margin: EdgeInsets.symmetric(horizontal: 8.0),
-      child: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Column(
-          children: [
-            // Rating at the top
-            Row(
-              children: List.generate(
-                5,
-                (index) => Icon(
-                  Icons.star,
-                  color: index < rating ? Colors.amber : Colors.grey[300],
-                  size: 16.0,
-                ),
-              ),
-            ),
-            SizedBox(height: 10.0),
-            // Comment in the middle with max two sentences
-            Text(
-              comment,
-              style: TextStyle(color: Colors.grey[600]),
-              maxLines: 2, // Limit the comment to two lines
-              overflow: TextOverflow.ellipsis, // Add ellipsis if text overflows
-            ),
-            SizedBox(height: 10.0),
-            // Profile picture and name at the bottom right
-            Align(
-              alignment: Alignment.bottomRight,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  CircleAvatar(
-                    backgroundImage: AssetImage(imagePath),
-                    radius: 20, // Adjust the size of the profile picture
-                  ),
-                  SizedBox(width: 8.0),
-                  Text(
-                    client,
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  // Fetch blogs from Firestore
+  Future<List<Map<String, dynamic>>> fetchBlogs() async {
+    try {
+      QuerySnapshot blogSnapshot = await FirebaseFirestore.instance
+          .collection('blogs') // Replace with your collection name
+          .where('authorId',
+              isEqualTo:
+                  therapistEmail) // Fetch blogs written by this therapist
+          .orderBy('timestamp', descending: true)
+          .get();
 
-  // Helper widget to create service icons (square tiles with backgrounds)
-  Widget serviceIcon(String iconPath, String title) {
-    return Card(
-      color: Colors.deepPurple[200], // Updated background color
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset(iconPath, width: 60, height: 60),
-            SizedBox(height: 8.0),
-            Text(
-              title,
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
-      ),
-    );
+      List<Map<String, dynamic>> blogs = blogSnapshot.docs.map((doc) {
+        return {
+          'author': doc['author'],
+          'authorId': doc['authorId'],
+          'category': doc['category'],
+          'content': doc['content'],
+          'likes': doc['likes'],
+          'timestamp': doc['timestamp'].toDate().toString(),
+          'title': doc['title'],
+        };
+      }).toList();
+      return blogs;
+    } catch (e) {
+      print("Error fetching blogs: $e");
+      return [];
+    }
   }
 
   // Helper widget for blog cards
-  Widget blogCard(String title, String date, String description) {
+  Widget blogCard(String title, String date, String description, String author,
+      String category, int likes) {
     return Container(
-      width: 230, // Fixed width
-      height: 150, // Set a fixed height
+      width: 230,
+      height: 180,
       child: Card(
-        color: Colors.white, // Add a background color to the card
+        color: Colors.white,
         margin: EdgeInsets.symmetric(horizontal: 8.0),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment:
-                MainAxisAlignment.spaceBetween, // Distribute space
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              // Title at the top
               Text(
                 title,
                 style:
                     TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
               ),
               SizedBox(height: 8),
-              // Body description below the title
               Expanded(
                 child: Text(
                   description,
-                  style: TextStyle(
-                      color: Colors.black), // Lighten the text for description
-                  maxLines: 3, // Limit the number of lines for description
-                  overflow:
-                      TextOverflow.ellipsis, // Add ellipsis if text overflows
+                  style: TextStyle(color: Colors.black),
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
-              // Date aligned at the bottom right
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'By $author',
+                    style: TextStyle(color: Colors.grey[600], fontSize: 12),
+                  ),
+                  Text(
+                    '$category | $likes Likes',
+                    style: TextStyle(color: Colors.grey[600], fontSize: 12),
+                  ),
+                ],
+              ),
               Align(
                 alignment: Alignment.bottomRight,
                 child: Text(
@@ -385,6 +355,69 @@ class TherapistPortfolioPage extends StatelessWidget {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  // Helper widget for testimonial cards
+  Widget testimonialCard(
+      String clientName, String testimonial, int rating, String imagePath) {
+    return Card(
+      margin: EdgeInsets.symmetric(horizontal: 8.0),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            CircleAvatar(
+              radius: 30.0,
+              backgroundImage: AssetImage(imagePath),
+            ),
+            SizedBox(height: 8.0),
+            Text(
+              clientName,
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            Text(testimonial),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(
+                rating,
+                (index) => Icon(
+                  Icons.star,
+                  color: Colors.amber,
+                  size: 16.0,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Helper widget for service icons
+  Widget serviceIcon(String iconPath, String serviceName) {
+    return Card(
+      elevation: 5.0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Column(
+          children: [
+            Image.asset(
+              iconPath,
+              width: 50.0,
+              height: 50.0,
+            ),
+            SizedBox(height: 8.0),
+            Text(
+              serviceName,
+              textAlign: TextAlign.center,
+            ),
+          ],
         ),
       ),
     );
