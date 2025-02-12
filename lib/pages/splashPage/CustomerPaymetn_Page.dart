@@ -8,16 +8,21 @@ class CustomerPaymentPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: const Text(
+          'Payment',
+          style: TextStyle(color: Colors.black, fontSize: 20),
+        ),
+      ),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Text(
-              'My Payments',
-              //style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ),
           Expanded(
             child: _buildPaymentsList(context),
           ),
