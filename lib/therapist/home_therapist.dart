@@ -62,7 +62,7 @@ class _HomePagetState extends State<HomePaget> {
       ClientPage(),
       CalendarTherapist(),
       ChatPage(),
-      //BlogPage(),
+      BlogPage(),
       FinancePage(),
       ProfileScreen()
     ];
@@ -97,7 +97,7 @@ class _HomePagetState extends State<HomePaget> {
                 },
               );
             }).toList(),
-              ListTile(
+            ListTile(
               title: ElevatedButton(
                 onPressed: () {
                   // Navigate to PaymentPage when the button is pressed

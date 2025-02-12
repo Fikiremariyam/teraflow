@@ -85,7 +85,8 @@ class _WebHomePagetState extends State<WebHomePaget> {
                     currentAccountPicture: CircleAvatar(
                       backgroundImage: _profileImage != null
                           ? FileImage(_profileImage!)
-                          : AssetImage('lib/images/doctor1.jpg') as ImageProvider,
+                          : AssetImage('lib/images/doctor1.jpg')
+                              as ImageProvider,
                     ),
                   ),
                   ..._titles.asMap().entries.map((entry) {
@@ -105,12 +106,14 @@ class _WebHomePagetState extends State<WebHomePaget> {
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => PaymentPage()),
+                          MaterialPageRoute(
+                              builder: (context) => PaymentPage()),
                         );
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.deepPurple[200], // Button color
-                        padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 40, vertical: 12),
                       ),
                       child: Text('Request Payment'),
                     ),

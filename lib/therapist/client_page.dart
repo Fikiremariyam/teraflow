@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:teraflow/pages/payment_page.dart';
-
+import 'package:teraflow/pages/splashPage/ProfilePage.dart';
 
 class ClientPage extends StatelessWidget {
   @override
@@ -18,7 +18,7 @@ class ClientPage extends StatelessWidget {
                 // Navigate to PaymentPage when the button is pressed
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => PaymentPage()),
+                  MaterialPageRoute(builder: (context) => ProfileScreen()),
                 );
               },
               child: Text('Request Payment'),
