@@ -3,6 +3,7 @@ import 'package:cloudinary_flutter/cloudinary_object.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
+import 'package:teraflow/pages/admindashboard.dart';
 import 'package:teraflow/pages/home_page.dart';
 import 'package:teraflow/pages/auth/login_page.dart';
 import 'package:teraflow/pages/auth/signup_page.dart';
@@ -59,22 +60,50 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> determineInitialRoute() async {
     User? user = FirebaseAuth.instance.currentUser;
+
     if (user != null) {
+      String userEmail = user.email!;
+      print("Current Logged-in Email: $userEmail");
+
       DocumentSnapshot userDoc = await FirebaseFirestore.instance
           .collection('users')
-          .doc(user.email) // Using email of the logged-in user
+          .doc(userEmail)
           .get();
+
       if (userDoc.exists) {
-        String role = userDoc.get('role');
-        setState(() {
-          initialRoute = (role == "Customer") ? '/Customer' : '/Therapist';
-        });
+        print("User document found in Firestore!");
+
+        Map<String, dynamic>? userData =
+            userDoc.data() as Map<String, dynamic>?;
+        if (userData != null && userData.containsKey('role')) {
+          String role = userData['role'];
+          print("User Role Retrieved from Firestore: $role");
+
+          setState(() {
+            if (role == "Customer") {
+              initialRoute = '/Customer';
+            } else if (role == "Therapist") {
+              initialRoute = '/Therapist';
+            } else if (role == "Admin") {
+              initialRoute = '/AdminDashboard';
+            } else {
+              initialRoute = '/login';
+            }
+          });
+        } else {
+          print("Role not found in Firestore document.");
+          setState(() {
+            initialRoute = '/login';
+          });
+        }
       } else {
+        print("User document not found for email: $userEmail");
         setState(() {
           initialRoute = '/login';
         });
       }
     } else {
+      print("No user is logged in.");
       setState(() {
         initialRoute = '/Onboarding';
       });
@@ -103,6 +132,7 @@ class _MyAppState extends State<MyApp> {
               mobile: HomePaget(),
               desktop: WebHomePaget(), // Web version for therapist
             ),
+        '/AdminDashboard': (context) => AdminDashboard(), // Admin dashboard
       },
       onUnknownRoute: (settings) => MaterialPageRoute(
         builder: (context) => Scaffold(
