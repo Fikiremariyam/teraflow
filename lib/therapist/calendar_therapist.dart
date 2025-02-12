@@ -70,7 +70,9 @@ class _CalendarTherapistState extends State<CalendarTherapist> {
   }
 
   void _addMultipleAppointments(
+
       List<Map<String, dynamic>> appointments, String email) async {
+        
     if (appointments.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Please select at least one date")));
@@ -191,9 +193,12 @@ class _CalendarTherapistState extends State<CalendarTherapist> {
                         );
                       }).toList(),
                     ),
+
+                    //adding another bar date
                     SizedBox(height: 10),
                     TextButton(
                       onPressed: () async {
+                        
                         DateTime? pickedDate = await showDatePicker(
                           context: context,
                           initialDate: DateTime.now(),
@@ -246,16 +251,15 @@ class _CalendarTherapistState extends State<CalendarTherapist> {
                       );
                       return;
                     }
-                    double pricePerSession =
-                        double.tryParse(priceController.text.trim()) ?? 0;
-                    double totalAmount =
-                        pricePerSession * selectedAppointments.length;
+                    double pricePerSession = double.tryParse(priceController.text.trim()) ?? 0;
+                    double totalAmount = pricePerSession * selectedAppointments.length;
 
                     // Redirect to PaymentPage without passing email or total amount
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => PaymentPage(
+                          appointmentlist :appointments,
                           email: emailController.text.trim(),
                           totalAmount: totalAmount.toString(),
                         ),
@@ -263,6 +267,7 @@ class _CalendarTherapistState extends State<CalendarTherapist> {
                     );
                   },
                   child: Text('Add Appointments'),
+
                 ),
               ],
             );
