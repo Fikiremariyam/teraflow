@@ -9,10 +9,12 @@ import 'package:teraflow/pages/utils/chats/chatlist_page.dart';
 import 'package:teraflow/pages/utils/chats/chatpage_main.dart';
 class BookschedulePopup extends StatefulWidget {
   final String therapistName;
+  final String doctorsemail ;
 
   const BookschedulePopup({
     super.key,
     required this.therapistName,
+    required this.doctorsemail,
   });
   @override
   _BookschedulePopupState createState() => _BookschedulePopupState();
@@ -150,7 +152,7 @@ void createappontiment(context,doctoremail  )async{
                     onPressed: () {
                       String message = messageController.text;
                       //     Navigator.of(context).push(MaterialPageRoute(builder: (context)=> ChatPage()));
-                      createappontiment(context,"doctoraselefech@gmail.com");
+                      createappontiment(context,widget.doctorsemail);
                       Navigator.of(context).push(MaterialPageRoute(builder: (context)=> HomePage()));
                     },
                     child: Text("Send Message"),

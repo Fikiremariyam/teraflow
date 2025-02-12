@@ -33,7 +33,7 @@ class _TherapistlistState extends State<Therapistlist> {
               var  current_user = items[index].data();
               return  GestureDetector(
                 onTap: (){
-                  print("you have clicked");
+              
                   MaterialPageRoute(
                             builder: (context) =>
                                 TherapistPortfolioPage(therapistEmail: current_user['email']),

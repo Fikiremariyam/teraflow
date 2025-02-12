@@ -45,6 +45,7 @@ class TherapistPortfolioPage extends StatelessWidget {
     void  populateuserDAta() async{
       therapist = await getuserdata(therapistEmail);
     }
+    
   @override
   Widget build(BuildContext context) {
      populateuserDAta();
@@ -57,52 +58,8 @@ class TherapistPortfolioPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Search and Notification Bar
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16.0, 40.0, 16.0, 16.0),
-                child: Row(
-                  children: [
-                    CircleAvatar(
-                      backgroundImage: AssetImage('assets/profile.jpg'),
-                      radius: 20,
-                    ),
-                    SizedBox(width: 8.0),
-                    Expanded(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.grey[200],
-                          borderRadius: BorderRadius.circular(12.0),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black26,
-                              blurRadius: 5.0,
-                              offset: Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: TextField(
-                          decoration: InputDecoration(
-                            hintText: 'Search ...',
-                            hintStyle: TextStyle(color: Colors.grey[600]),
-                            prefixIcon: Icon(Icons.search,
-                                color: Colors.deepPurple[200]),
-                            contentPadding:
-                                EdgeInsets.symmetric(vertical: 10.0),
-                            border: InputBorder.none,
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: 8.0),
-                    IconButton(
-                      icon: Icon(Icons.notifications,
-                          color: Colors.deepPurple[200]),
-                      onPressed: () {},
-                    ),
-                  ],
-                ),
-              ),
-
-              SizedBox(height: 2.0),
+             
+              SizedBox(height: 50.0),
 
               // Profile Section (with minimized profile pic and rearranged details)
               Container(
@@ -190,6 +147,7 @@ class TherapistPortfolioPage extends StatelessWidget {
                             builder: (BuildContext context) {
                               return BookschedulePopup(
                                 therapistName: therapistName,
+                                doctorsemail : therapist['email'] ?? '' 
                               );
                             },
                           );

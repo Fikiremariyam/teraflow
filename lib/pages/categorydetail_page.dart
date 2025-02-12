@@ -1,7 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloudinary_flutter/image/cld_image.dart';
+import 'package:cloudinary_url_gen/cloudinary.dart';
 import 'package:flutter/material.dart';
 import 'package:teraflow/pages/therapistprofile_page.dart';
 
-class CategoryDetailPage extends StatelessWidget {
+class CategoryDetailPage extends StatefulWidget {
   final String categoryName;
   final String iconPath;
 
@@ -11,6 +14,51 @@ class CategoryDetailPage extends StatelessWidget {
     Key? key,
   }) : super(key: key);
 
+  @override
+  State<CategoryDetailPage> createState() => _CategoryDetailPageState();
+}
+
+class _CategoryDetailPageState extends State<CategoryDetailPage> {
+  List<Map<String, dynamic>>? users;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUsers();
+  }
+
+  void fetchUsers() async {
+    QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .where('role', isEqualTo: "Therapist")
+        .get();
+
+    List<Map<String, dynamic>> usersData = snapshot.docs
+        .map((doc) => doc.data() as Map<String, dynamic>)
+        .toList();
+
+    List<Map<String, dynamic>> filteredUsers = usersData
+        .where((user) => (user['department'] as List<dynamic>).contains(widget.categoryName))
+        .toList();
+
+    setState(() {
+      users = filteredUsers;
+    });
+  }
+ 
+  Widget _profilePic() {
+    final cloudinary = Cloudinary.fromCloudName(cloudName: "dd8qfpth2");
+
+    return ClipOval(
+      child: CldImageWidget(
+        cloudinary: cloudinary,
+        publicId: "cld-sample-4",
+        width: 60,
+        height: 60,
+        fit: BoxFit.cover,
+      ),
+    );
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,13 +73,13 @@ class CategoryDetailPage extends StatelessWidget {
             child: Column(
               children: [
                 Image.asset(
-                  iconPath,
+                  widget.iconPath,
                   height: 100,
                   width: 100,
                 ),
                 SizedBox(height: 16.0),
                 Text(
-                  categoryName,
+                  widget.categoryName,
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
@@ -43,86 +91,75 @@ class CategoryDetailPage extends StatelessWidget {
 
           // ListView
           Expanded(
-            child: ListView.builder(
-              padding: EdgeInsets.symmetric(horizontal: 16.0),
-              itemCount: 10, // Number of therapists
-              itemBuilder: (context, index) {
-                Map<String, dynamic> therapist = {
-                  'name': 'Therapist ${index + 1}',
-                  'image':
-                      'assets/profile.jpg', // Replace with actual therapist images
-                  'rating': 4.5,
-                  'note':
-                      'Therapist ${index + 1} has over 10 years of experience in family and personal therapy.',
-                  'services': [
-                    'Personal Counseling',
-                    'Family Therapy',
-                    'Group Therapy',
-                    'Couples Therapy'
-                  ],
-                  'contact': 'therapist${index + 1}@email.com',
-                };
+            child: users == null
+                ? Center(child: CircularProgressIndicator())
+                : ListView.builder(
+                    padding: EdgeInsets.symmetric(horizontal: 16.0),
+                    itemCount: users!.length,
+                    itemBuilder: (context, index) {
+                      Map<String, dynamic> therapist = users![index];
+                      print(therapist);
+                      return Card(
+                        margin: EdgeInsets.symmetric(vertical: 8.0),
+                        child: ListTile(
+                          leading:_profilePic(),
 
-                return Card(
-                  margin: EdgeInsets.symmetric(vertical: 8.0),
-                  child: ListTile(
-                    leading: CircleAvatar(
-                      backgroundImage: AssetImage(therapist['image']!),
-                      radius: 30,
-                    ),
-                    title: Text(
-                      therapist['name']!,
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(height: 4.0),
-                        Row(
-                          children: List.generate(
-                            5,
-                            (starIndex) => Icon(
-                              Icons.star,
-                              color: starIndex < therapist['rating']!.toInt()
-                                  ? Colors.amber
-                                  : Colors.grey[300],
-                              size: 16.0,
-                            ),
+                          title: Text(
+                            therapist['fullName'] ?? 'name ',
+                            style: TextStyle(fontWeight: FontWeight.bold),
                           ),
-                        ),
-                        SizedBox(height: 8.0),
-                        Text(
-                          "A Note from Therapist",
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(height: 4.0),
-                        Text(
-                          therapist['note']!,
-                          style: TextStyle(color: Colors.grey[600]),
-                        ),
-                      ],
-                    ),
-                    trailing: Icon(
-                      Icons.arrow_forward_ios,
-                      color: Colors.deepPurple[200],
-                    ),
-                    onTap: () {
-                      // Pass the therapist data when navigating
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              TherapistPortfolioPage(therapistEmail: 'therapist'),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(height: 4.0),
+                               Row(
+                                children: List.generate(
+                                  5,
+                                  (starIndex) => Icon(
+                                    Icons.star,
+                                    color: starIndex < (double.tryParse(therapist['rating'].toString())?.toInt() ?? 0)
+                                        ? Colors.amber
+                                        : Colors.grey[300],
+                                    size: 16.0,
+                                  ),
+                                ),
+                              ),
+                             
+                              SizedBox(height: 8.0),
+                              Text(
+                                "A Note from Therapist",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(height: 4.0),
+                              Text(
+                                therapist['note'] ?? 'note abcd',
+                                style: TextStyle(color: Colors.grey[600]),
+                              ),
+                            ],
+                          ),
+                          trailing: Icon(
+                            Icons.arrow_forward_ios,
+                            color: Colors.deepPurple[200],
+                          ),
+                          onTap: () {
+                            // Pass the therapist data when navigating
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => TherapistPortfolioPage(
+                                  therapistEmail: therapist['email'] ?? 'email',
+                                ),
+                              ),
+                            );
+                          },
                         ),
                       );
                     },
                   ),
-                );
-              },
-            ),
           ),
         ],
       ),
     );
   }
 }
+
