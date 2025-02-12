@@ -64,7 +64,7 @@ class _HomePagetState extends State<HomePaget> {
       ChatPage(),
       BlogPage(),
       FinancePage(),
-      ProfileScreen()
+      //ProfileScreen()
     ];
 
     return Scaffold(
@@ -103,7 +103,7 @@ class _HomePagetState extends State<HomePaget> {
                   // Navigate to PaymentPage when the button is pressed
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => PaymentPage()),
+                    MaterialPageRoute(builder: (context) => CalendarTherapist()),
                   );
                 },
                 style: ElevatedButton.styleFrom(

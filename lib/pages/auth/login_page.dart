@@ -98,6 +98,10 @@ class _LogInPageState extends State<LoginPage> {
             Navigator.pushReplacementNamed(context, "/Customer");
           } else if (role == "Therapist") {
             Navigator.pushReplacementNamed(context, "/Therapist");
+          } else if (role == "Admin") {
+            // Admin role condition
+            Navigator.pushReplacementNamed(
+                context, "/AdminDashboard"); // Admin navigation
           } else {
             showAuthResult(context, "Role not found. Please contact support.");
           }

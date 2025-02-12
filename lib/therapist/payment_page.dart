@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:teraflow/services/payment/api_service.dart';
 
 class PaymentPage extends StatefulWidget {
+  Map<DateTime, List<Map<String, dynamic>>> appointmentlist;
   final String? email;
   final String? totalAmount;
 
-  PaymentPage({this.email, this.totalAmount});
+  PaymentPage({this.email, this.totalAmount, required this.appointmentlist});
 
   @override
   _PaymentPageState createState() => _PaymentPageState();
@@ -111,6 +113,45 @@ class _PaymentPageState extends State<PaymentPage> {
             _buildTextField(
                 reasonController, "Reason for Payment", Icons.description),
             SizedBox(height: 20),
+            Column(
+                children: widget.appointmentlist.entries.map((entry) {
+                  DateTime dateKey = entry.key;
+                  List<Map<String, dynamic>> appointments = entry.value;
+
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Display the date as a header
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: Text(
+                          DateFormat('yyyy-MM-dd').format(dateKey),
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      // Iterate through the list of appointments for this date
+                      ...appointments.asMap().entries.map((subEntry) {
+                        int index = subEntry.key;
+                        Map<String, dynamic> appointment = subEntry.value;
+
+                        return Row(
+                          children: [
+                            Expanded(
+                              child: TextField(
+                                controller: appointment['timeController'],
+                                decoration: InputDecoration(
+                                  labelText: 'Time (10:30 AM)',
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      }).toList(),
+                    ],
+                  );
+                }).toList(),
+              ),
+SizedBox(height: 20,),
             Center(
               child: ElevatedButton(
                 onPressed: isLoading ? null : generatePaymentLink,
