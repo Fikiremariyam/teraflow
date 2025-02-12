@@ -129,8 +129,8 @@ class _MyAppState extends State<MyApp> {
               desktop: WebHomePage(), // Web version for customer
             ),
         '/Therapist': (context) => ResponsiveWidget(
-              mobile: HomePaget(),
-              desktop: WebHomePaget(), // Web version for therapist
+              mobile: HomePaget(selectedindex: 0,),
+              desktop: WebHomePaget( ), // Web version for therapist
             ),
         '/AdminDashboard': (context) => AdminDashboard(), // Admin dashboard
       },

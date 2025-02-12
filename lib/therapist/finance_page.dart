@@ -1,10 +1,58 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class FinancePage extends StatelessWidget {
-  const FinancePage({Key? key}) : super(key: key);
+class FinancePage extends StatefulWidget {
+ FinancePage({Key? key}) : super(key: key);
 
   @override
+  State<FinancePage> createState() => _FinancePageState();
+}
+
+class _FinancePageState extends State<FinancePage> {
+
+    List<Map<String, dynamic>> paymentrequests= [];
+
+    void fetchUsers() async {
+          QuerySnapshot snapshot = await FirebaseFirestore.instance
+              .collection('paymentrequest')
+              .where('doctoremail', isEqualTo: FirebaseAuth.instance.currentUser!.email)
+              .get();
+
+          List<Map<String, dynamic>> paumentrequestlist = snapshot.docs
+              .map((doc) => doc.data() as Map<String, dynamic>)
+              .toList();
+
+
+          setState(() {
+            paymentrequests = paumentrequestlist;
+          });
+  }
+ 
+  
+
+  final mockData = [
+          {
+            'name': 'Dr. Sarah Wilson',
+            'username': '@drsarah',
+            'id': '#TH-2245',
+            'sessions': '4 sessions',
+            'schedule': 'Feb 15, 2:00 PM',
+            'amount': '\$400.00',
+            'status': 'pending'
+          },
+        ];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fetchUsers();
+    print(paymentrequests);
+  }
+  @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
       body: Column(
         children: [
@@ -17,60 +65,20 @@ class FinancePage extends StatelessWidget {
   }
 
   Widget _buildPaymentsList() {
+    
+    if (paymentrequests.length <=0){
+      return Center(
+        child: Text("no payment history"));
+    }
+
     return ListView.builder(
       padding: const EdgeInsets.all(16),
-      itemCount: 5, // Replace with actual data length
+      itemCount: paymentrequests.length , // Replace with actual data length
       itemBuilder: (context, index) {
         // This is mock data. Replace with your actual data source
-        final mockData = [
-          {
-            'name': 'Dr. Sarah Wilson',
-            'username': '@drsarah',
-            'id': '#TH-2245',
-            'sessions': '4 sessions',
-            'schedule': 'Feb 15, 2:00 PM',
-            'amount': '\$400.00',
-            'status': 'pending'
-          },
-          {
-            'name': 'Dr. Michael Chen',
-            'username': '@drchen',
-            'id': '#TH-2244',
-            'sessions': '2 sessions',
-            'schedule': 'Feb 12, 3:30 PM',
-            'amount': '\$200.00',
-            'status': 'paid'
-          },
-          {
-            'name': 'Dr. Emily Brown',
-            'username': '@drbrown',
-            'id': '#TH-2243',
-            'sessions': '1 session',
-            'schedule': 'Feb 10, 11:00 AM',
-            'amount': '\$100.00',
-            'status': 'cancelled'
-          },
-          {
-            'name': 'Dr. John Smith',
-            'username': '@drsmith',
-            'id': '#TH-2242',
-            'sessions': '3 sessions',
-            'schedule': 'Feb 8, 1:00 PM',
-            'amount': '\$300.00',
-            'status': 'pending'
-          },
-          {
-            'name': 'Dr. Lisa Johnson',
-            'username': '@drjohnson',
-            'id': '#TH-2241',
-            'sessions': '2 sessions',
-            'schedule': 'Feb 5, 4:00 PM',
-            'amount': '\$200.00',
-            'status': 'paid'
-          },
-        ];
+        
 
-        final payment = mockData[index];
+        final payment = paymentrequests[index];
 
         return Card(
           margin: const EdgeInsets.only(bottom: 16),
@@ -86,11 +94,11 @@ class FinancePage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          payment['name']!,
+                          payment['doctoremail'] ?? "payment" ,
                           style: Theme.of(context).textTheme.titleMedium,
                         ),
                         Text(
-                          payment['username']!,
+                          payment['client:'] ?? "username",
                           style: Theme.of(context).textTheme.bodySmall,
                         ),
                       ],
@@ -105,16 +113,16 @@ class FinancePage extends StatelessWidget {
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
-                        payment['id']!,
+                        "id",
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 16),
-                _buildInfoRow('Sessions', payment['sessions']!),
-                _buildInfoRow('Schedule', payment['schedule']!),
-                _buildInfoRow('Amount', payment['amount']!),
+                _buildInfoRow('Sessions', payment['sessions'].length.toString() ?? "sessions"),
+                _buildInfoRow('Schedule', payment['sessions'][0].toString() ?? "scedule" ),
+                _buildInfoRow('Amount', payment['amount'] ?? "scedule "),
                 const SizedBox(height: 16),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -125,13 +133,13 @@ class FinancePage extends StatelessWidget {
                         vertical: 6,
                       ),
                       decoration: BoxDecoration(
-                        color: _getStatusColor(payment['status']!),
+                        color: _getStatusColor(payment['status'] ?? "status"),
                         borderRadius: BorderRadius.circular(16),
                       ),
                       child: Text(
-                        payment['status']!.toUpperCase(),
+                        payment['status'] ?? "status ".toUpperCase(),
                         style: TextStyle(
-                          color: _getStatusTextColor(payment['status']!),
+                          color: _getStatusTextColor(payment['status'] ?? "status"),
                           fontSize: 12,
                         ),
                       ),

@@ -12,12 +12,17 @@ import 'package:teraflow/therapist/therapist_profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class HomePaget extends StatefulWidget {
+  int? selectedindex;
+  
+
+  HomePaget({this.selectedindex,});
+
   @override
   _HomePagetState createState() => _HomePagetState();
 }
 
 class _HomePagetState extends State<HomePaget> {
-  int _selectedIndex = 0;
+  late int _selectedIndex = 0;
   File? _profileImage;
   String _name = "Dr. Amla Douge";
   String _email = "therapist@theraflow.com";
@@ -26,6 +31,7 @@ class _HomePagetState extends State<HomePaget> {
   void initState() {
     super.initState();
     _fetchUserEmail();
+    _selectedIndex = widget.selectedindex ?? 0 ; 
   }
 
   void _fetchUserEmail() {

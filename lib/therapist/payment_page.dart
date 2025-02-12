@@ -1,10 +1,16 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:teraflow/pages/home_page.dart';
 import 'package:teraflow/services/payment/api_service.dart';
+import 'package:teraflow/therapist/finance_page.dart';
+import 'package:teraflow/therapist/home_therapist.dart';
 
 class PaymentPage extends StatefulWidget {
-  Map<DateTime, List<Map<String, dynamic>>> appointmentlist;
+  List<Map<String, dynamic>> appointmentlist;
   final String? email;
   final String? totalAmount;
 
@@ -27,6 +33,39 @@ class _PaymentPageState extends State<PaymentPage> {
     // Pre-fill the email and total amount with default values if null
     emailController.text = widget.email ?? "";
     amountController.text = widget.totalAmount ?? "";
+    
+  }
+  void createpaymentrequest(doctoremail,clientemail,amount,sessions,paymentLink) async{
+   
+    List<Map<String, dynamic>> formattedSessions = widget.appointmentlist.map((appointment) {
+  return {
+    'date': DateFormat('yyyy-MM-dd').format(appointment['date']), // Convert DateTime to String
+    'time': appointment['timeController'].text // Extract text from TextEditingController
+  };
+}).toList();
+
+    var data ={
+          'client': clientemail,
+          'doctoremail':doctoremail,
+          'amount':amount,
+          'sessions':formattedSessions,
+         'paymentLink': paymentLink,
+          'status':'created'
+        };
+        try{
+      DocumentReference newchat = await FirebaseFirestore.instance.collection('paymentrequest').add(data);
+        
+            Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => HomePaget(selectedindex:  5,)),
+                  );}
+        catch(e){
+          print("the error is "); 
+          print(e.toString());
+        }
+   
+
+
   }
 
   // Function to generate payment link
@@ -63,7 +102,11 @@ class _PaymentPageState extends State<PaymentPage> {
         print("Payment Link Received: $link");
         setState(() {
           paymentLink = link;
-          isLoading = false; // Reset loading state
+          isLoading = false; // Reset loading state;
+          var sessions =widget.appointmentlist;
+          
+          createpaymentrequest( FirebaseAuth.instance.currentUser!.email, email, amount, sessions, paymentLink);
+
         });
       } else {
         print("ERROR: Failed to generate payment link.");
@@ -113,32 +156,22 @@ class _PaymentPageState extends State<PaymentPage> {
             _buildTextField(
                 reasonController, "Reason for Payment", Icons.description),
             SizedBox(height: 20),
-            Column(
-                children: widget.appointmentlist.entries.map((entry) {
-                  DateTime dateKey = entry.key;
-                  List<Map<String, dynamic>> appointments = entry.value;
-
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Display the date as a header
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: Text(
-                          DateFormat('yyyy-MM-dd').format(dateKey),
-                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      // Iterate through the list of appointments for this date
-                      ...appointments.asMap().entries.map((subEntry) {
-                        int index = subEntry.key;
-                        Map<String, dynamic> appointment = subEntry.value;
-
+                                Column(
+                      children:
+                          widget.appointmentlist.asMap().entries.map((entry) {
+                        int index = entry.key;
                         return Row(
                           children: [
                             Expanded(
+                              child: Text(
+                                "${DateFormat('yyyy-MM-dd').format(entry.value['date'])}",
+                                style: TextStyle(fontSize: 16),
+                              ),
+                            ),
+                            SizedBox(width: 10),
+                            Expanded(
                               child: TextField(
-                                controller: appointment['timeController'],
+                                controller: entry.value['timeController'],
                                 decoration: InputDecoration(
                                   labelText: 'Time (10:30 AM)',
                                 ),
@@ -147,11 +180,9 @@ class _PaymentPageState extends State<PaymentPage> {
                           ],
                         );
                       }).toList(),
-                    ],
-                  );
-                }).toList(),
-              ),
-SizedBox(height: 20,),
+                    ),
+
+            SizedBox(height: 20,),
             Center(
               child: ElevatedButton(
                 onPressed: isLoading ? null : generatePaymentLink,
@@ -166,7 +197,12 @@ SizedBox(height: 20,),
                 ), // Disable button while loading
                 child: isLoading
                     ? CircularProgressIndicator() // Show loading indicator
-                    : Text("Generate Payment Link"),
+                    : Text("send a request",
+                    style: TextStyle(
+
+                      
+                      color: Color.fromARGB(233, 90, 185, 241)
+                    ),),
               ),
             ),
             SizedBox(height: 20),

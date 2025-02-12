@@ -85,6 +85,7 @@ class _SignupPageState extends State<SignupPage> {
           break;
         case 'email-already-in-use':
           errorMessage = 'Email is already in use.';
+          print("+++++++++++++++++++++++++++++++++++++++++=");
           break;
         default:
           errorMessage = 'An unexpected error occurred.';

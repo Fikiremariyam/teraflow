@@ -72,7 +72,7 @@ class _CalendarTherapistState extends State<CalendarTherapist> {
   void _addMultipleAppointments(
 
       List<Map<String, dynamic>> appointments, String email) async {
-        
+
     if (appointments.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Please select at least one date")));
@@ -259,7 +259,7 @@ class _CalendarTherapistState extends State<CalendarTherapist> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => PaymentPage(
-                          appointmentlist :appointments,
+                          appointmentlist :selectedAppointments,
                           email: emailController.text.trim(),
                           totalAmount: totalAmount.toString(),
                         ),
