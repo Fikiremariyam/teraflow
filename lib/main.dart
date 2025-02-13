@@ -15,8 +15,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloudinary_flutter/cloudinary_context.dart';
 import 'package:cloudinary_url_gen/cloudinary.dart';
-import 'package:teraflow/webbodies/web_homepage.dart';
-import 'package:teraflow/webbodies/web_homepaget.dart';
 import 'package:teraflow/widget/responsive_widget.dart';
 import 'firebase_options.dart';
 
@@ -124,13 +122,29 @@ class _MyAppState extends State<MyApp> {
         '/welcome': (context) => WelcomeScreen(),
         '/login': (context) => LoginPage(),
         '/signup': (context) => SignupPage(),
-        '/Customer': (context) => ResponsiveWidget(
-              mobile: HomePage(),
-              desktop: WebHomePage(), // Web version for customer
+        '/Customer': (context) => WillPopScope(
+              onWillPop: () async {
+                return false; // Prevent back button from logging out
+              },
+              child: ResponsiveWidget(
+                mobile: HomePage(),
+                // desktop: WebHomePage(), // Web version for customer
+              ),
             ),
+<<<<<<< Updated upstream
         '/Therapist': (context) => ResponsiveWidget(
               mobile: HomePaget(selectedindex: 0,),
               desktop: WebHomePaget( ), // Web version for therapist
+=======
+        '/Therapist': (context) => WillPopScope(
+              onWillPop: () async {
+                return false; // Prevent back button from logging out
+              },
+              child: ResponsiveWidget(
+                mobile: HomePaget(),
+                // desktop: WebHomePaget(), // Web version for therapist
+              ),
+>>>>>>> Stashed changes
             ),
         '/AdminDashboard': (context) => AdminDashboard(), // Admin dashboard
       },
