@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:teraflow/pages/home_page.dart';
 
 class CustomerPaymentPage extends StatefulWidget {
   const CustomerPaymentPage({Key? key}) : super(key: key);
@@ -219,10 +220,7 @@ class _CustomerPaymentPageState extends State<CustomerPaymentPage> {
   }
 
 void _submitandstore(payment) async {
-
-    
-
-   
+  print('Submit button pressed');
 
     try {
       String time = payment['scedule'].text.trim();
@@ -355,8 +353,9 @@ void _submitandstore(payment) async {
               child: const Text('Submit'),
               onPressed: () {
                 // Implement submit functionality here
-                print('Submit button pressed');
-                _submitandstore(payment);
+                
+                //_submitandstore(payment);
+                Navigator.pushReplacementNamed(context, "/login");
                 Navigator.of(context).pop();
               },
             ),

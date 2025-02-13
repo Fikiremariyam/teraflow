@@ -42,7 +42,7 @@ class _TherapistlistState extends State<Therapistlist> {
 
                 },
                 child: TherapistCard(
-                            therapistImagePublicId: current_user['profile_image '] ?? "cld-sample-4",
+                            therapistImagePublicId:  "doctorprofile",
                             rating: current_user['rating'] ?? '  rating',
                             therapistName: current_user['fullName'] ?? ' user name not found ',
                             therapistProfession: current_user['title'] ?? ' title ',

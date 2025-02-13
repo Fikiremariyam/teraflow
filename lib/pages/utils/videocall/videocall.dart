@@ -28,7 +28,7 @@ class _CallPageState extends State<CallPage> {
       appID: appID, 
       appSign: appSign,
       callID: "fghjkl", 
-      userID: FirebaseAuth.instance.currentUser!.email ?? "hi", // You can set this according to the sende. , 
+      userID:  "hi", // You can set this according to the sende. , 
       userName: "userName",
        config: ZegoUIKitPrebuiltCallConfig.oneOnOneVideoCall());
   

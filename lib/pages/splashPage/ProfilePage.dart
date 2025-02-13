@@ -24,15 +24,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget _profilePic() {
     final cloudinary = Cloudinary.fromCloudName(cloudName: "dd8qfpth2");
 
-    return ClipOval(
-      child: CldImageWidget(
-        cloudinary: cloudinary,
-        publicId: "cld-sample-4",
-        width: 60,
-        height: 60,
-        fit: BoxFit.cover,
-      ),
-    );
+   return ClipOval(
+  child: Image.asset(
+    "assets/profile.jpg",
+    fit: BoxFit.cover, // Optional: Adjusts how the image fits inside the oval
+    width: 50,  // Optional: Set width
+    height: 50, // Optional: Set height
+  ),
+);
+
   }
 
   // to get user data

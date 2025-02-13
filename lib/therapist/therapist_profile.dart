@@ -1,5 +1,7 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloudinary_flutter/image/cld_image.dart';
+import 'package:cloudinary_url_gen/cloudinary.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -154,6 +156,7 @@ class _TherapistProfileState extends State<TherapistProfile> {
 
   void _saveProfile()async {
     
+    
     await FirebaseFirestore.instance
             .collection('users')
             .doc(FirebaseAuth.instance.currentUser!.email)
@@ -176,6 +179,7 @@ class _TherapistProfileState extends State<TherapistProfile> {
 
     
     //print(userdata);
+        final cloudinary = Cloudinary.fromCloudName(cloudName: "dd8qfpth2");
 
 
 
@@ -195,10 +199,19 @@ class _TherapistProfileState extends State<TherapistProfile> {
                       alignment: Alignment.bottomRight,
                       children: [
                         //profile pic 
-                        CircleAvatar(
-                          radius: 50,
-                          backgroundImage: NetworkImage('https://hebbkx1anhila5yf.public.blob.vercel-storage.com/upwork-app-redesign-feQnAPzPpxoQTpxfa77mNm6SRdqgQB.png'),
-                        ),
+                       CircleAvatar(
+  radius: 50,
+  child: ClipOval( // Ensure the image is clipped to a circle
+    child: CldImageWidget(
+      cloudinary: cloudinary,
+      publicId: "doctorprofile",
+      width: 100,
+      height: 100,
+      fit: BoxFit.cover, // Use cover for better aspect ratio fit
+    ),
+  ),
+),
+
                         // editing profile pic
                         Container(
                           padding: EdgeInsets.all(4),

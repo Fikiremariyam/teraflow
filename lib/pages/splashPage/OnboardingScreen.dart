@@ -16,9 +16,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   final List<Map<String, String>> _pages = [
     {
-      'title': 'Track and Monitor Your Health',
+      'title': 'Enhance Your Well-being with TeraFlow',
       'description':
-          'Track your period, monitor pregnancy, and receive medication reminders for informed decisions with accurate data.',
+          'Access therapy, track progress, and manage appointments effortlessly. Stay connected and in control of your mental wellness journey',
       'illustration': 'lib/images/undraw_modern-design_yur1.svg',
     },
     {
@@ -28,10 +28,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       'illustration': 'lib/images/undraw_uploading_nu4x.svg',
     },
     {
-      'title': 'Access to Health Information',
+      'title': 'Support, Guidance, and Growth',
       'description':
-          'Confidentially access a library of health videos, blogs, and audio to help you make informed decisions about your well-being',
-      'illustration': 'lib/images/boardingscreen1.png',
+          'Find the right therapy, stay on top of your progress, and access self-help tools—all in one place with TeraFlow.',
+      'illustration': 'lib/images/undraw_modern-design_yur1.svg',
     },
   ];
   @override

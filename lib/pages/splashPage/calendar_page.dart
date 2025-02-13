@@ -48,12 +48,12 @@ class _CalendarPageState extends State<CalendarPage> {
 
       // Queries for customer and therapist appointments
       QuerySnapshot customerSnapshot = await firestore
-          .collection('verfiedappointments')
+          .collection('appointments')
           .where('customerEmail', isEqualTo: userEmail)
           .get();
 
       QuerySnapshot therapistSnapshot = await firestore
-          .collection('verfiedappointments')
+          .collection('appointments')
           .where('therapistEmail', isEqualTo: userEmail)
           .get();
 
@@ -130,7 +130,7 @@ class _CalendarPageState extends State<CalendarPage> {
                 style: TextStyle(fontSize: 16.0, color: Colors.grey),
               )
             : SizedBox(
-                height: 145, // Adjust this height as needed
+                height: 155, // Adjust this height as needed
                 child: Container(
                   margin: const EdgeInsets.symmetric(vertical: 8.0),
                   padding: const EdgeInsets.all(12.0),

@@ -27,7 +27,7 @@ class TherapistCard extends StatelessWidget {
     return CldImageWidget(
       cloudinary: cloudinary,
       publicId: therapistImagePublicId,
-      width: 200,
+      width: 100,
       height: 150,
       fit: BoxFit.cover,
     );
