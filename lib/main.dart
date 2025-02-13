@@ -131,22 +131,24 @@ class _MyAppState extends State<MyApp> {
                 // desktop: WebHomePage(), // Web version for customer
               ),
             ),
-<<<<<<< Updated upstream
-        '/Therapist': (context) => ResponsiveWidget(
-              mobile: HomePaget(selectedindex: 0,),
-              desktop: WebHomePaget( ), // Web version for therapist
-=======
         '/Therapist': (context) => WillPopScope(
               onWillPop: () async {
-                return false; // Prevent back button from logging out
+                return false;
               },
               child: ResponsiveWidget(
-                mobile: HomePaget(),
+                mobile: HomePaget(
+                  selectedindex: 0,
+                ),
                 // desktop: WebHomePaget(), // Web version for therapist
               ),
->>>>>>> Stashed changes
             ),
-        '/AdminDashboard': (context) => AdminDashboard(), // Admin dashboard
+        '/AdminDashboard': (context) => WillPopScope(
+              onWillPop: () async {
+                return false;
+              },
+              child: AdminDashboard(), // Admin dashboard
+            ),
+// Admin dashboard
       },
       onUnknownRoute: (settings) => MaterialPageRoute(
         builder: (context) => Scaffold(
