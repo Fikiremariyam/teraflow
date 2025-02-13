@@ -14,6 +14,7 @@ import 'package:teraflow/pages/SELFHELP/breathing_exercise.dart';
 import 'package:teraflow/pages/SELFHELP/ResourceListPage.dart';
 import 'package:teraflow/pages/searchpage.dart';
 import 'package:teraflow/pages/splashPage/ProfilePage.dart';
+import 'package:teraflow/pages/splashPage/notification_page.dart';
 
 import 'package:teraflow/util/category_card.dart';
 import 'package:teraflow/util/therapist_card.dart';
@@ -201,7 +202,6 @@ class _HomePageState extends State<HomePage> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                   ),
-                  
                   Expanded(
                     child: Container(
                       height: 45,
@@ -236,8 +236,8 @@ class _HomePageState extends State<HomePage> {
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                          // to navigate to the notfiaciton screen 
-                            builder: (context) => ProfileScreen()),
+                            // to navigate to the notfiaciton screen
+                            builder: (context) => NotificationsPage()),
                       );
                     },
                   ),
@@ -433,7 +433,6 @@ class _HomePageState extends State<HomePage> {
                   ),
                   SizedBox(height: 25),
 
-           
                   Container(
                     margin: EdgeInsets.symmetric(horizontal: 25),
                     padding: EdgeInsets.all(20),
@@ -603,7 +602,8 @@ class _HomePageState extends State<HomePage> {
                   SizedBox(
                     height: 300,
                     child: Therapistlist(),
-              )],
+                  )
+                ],
               ),
             ),
 

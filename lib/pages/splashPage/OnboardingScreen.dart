@@ -35,16 +35,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     },
   ];
   @override
-void initState() {
-  super.initState();
+  void initState() {
+    super.initState();
 
-  WidgetsBinding.instance.addPostFrameCallback((_) {
-    if (FirebaseAuth.instance.currentUser != null) {
-      Navigator.pushNamed(context, '/login');
-    }
-  });
-}
-
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (FirebaseAuth.instance.currentUser != null) {
+        Navigator.pushNamed(context, '/login');
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
