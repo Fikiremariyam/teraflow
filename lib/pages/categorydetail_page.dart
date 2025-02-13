@@ -28,6 +28,7 @@ class _CategoryDetailPageState extends State<CategoryDetailPage> {
   }
 
   void fetchUsers() async {
+    print("+++++++++++++++++++++++++++++");
     QuerySnapshot snapshot = await FirebaseFirestore.instance
         .collection('users')
         .where('role', isEqualTo: "Therapist")
@@ -37,12 +38,11 @@ class _CategoryDetailPageState extends State<CategoryDetailPage> {
         .map((doc) => doc.data() as Map<String, dynamic>)
         .toList();
 
-    List<Map<String, dynamic>> filteredUsers = usersData
-        .where((user) => (user['department'] as List<dynamic>).contains(widget.categoryName))
-        .toList();
+    print(usersData);
+    print(widget.categoryName);
 
     setState(() {
-      users = filteredUsers;
+      users = usersData;
     });
   }
  

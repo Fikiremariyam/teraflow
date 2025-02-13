@@ -48,12 +48,12 @@ class _CalendarPageState extends State<CalendarPage> {
 
       // Queries for customer and therapist appointments
       QuerySnapshot customerSnapshot = await firestore
-          .collection('appointments')
+          .collection('verfiedappointments')
           .where('customerEmail', isEqualTo: userEmail)
           .get();
 
       QuerySnapshot therapistSnapshot = await firestore
-          .collection('appointments')
+          .collection('verfiedappointments')
           .where('therapistEmail', isEqualTo: userEmail)
           .get();
 

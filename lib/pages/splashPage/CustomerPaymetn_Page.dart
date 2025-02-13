@@ -1,9 +1,48 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 
-class CustomerPaymentPage extends StatelessWidget {
+class CustomerPaymentPage extends StatefulWidget {
   const CustomerPaymentPage({Key? key}) : super(key: key);
+
+  @override
+  State<CustomerPaymentPage> createState() => _CustomerPaymentPageState();
+}
+
+class _CustomerPaymentPageState extends State<CustomerPaymentPage> {
+
+    List<Map<String, dynamic>> paymentrequests= [];
+
+     void fetchUsers() async {
+      
+          QuerySnapshot snapshot = await FirebaseFirestore.instance
+              .collection('paymentrequest')
+              .where('client', isEqualTo: FirebaseAuth.instance.currentUser!.email)
+              .get();
+
+          List<Map<String, dynamic>> paumentrequestlist = snapshot.docs
+              .map((doc) => doc.data() as Map<String, dynamic>)
+              .toList();
+
+
+          setState(() {
+            paymentrequests = paumentrequestlist;
+          });
+          print(paumentrequestlist);
+  }
+ 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fetchUsers();
+    print(paymentrequests.length);
+    print(paymentrequests);
+  }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -33,45 +72,20 @@ class CustomerPaymentPage extends StatelessWidget {
 
   Widget _buildPaymentsList(BuildContext context) {
     // This is mock data. Replace with your actual data source
-    final mockData = [
-      {
-        'name': 'Dr. Sarah Wilson',
-        'username': '@drsarah',
-        'id': '#TH-2245',
-        'sessions': '4 sessions',
-        'schedule': 'Feb 15, 2:00 PM',
-        'amount': '\$400.00',
-        'status': 'pending',
-        'description':
-            'Cognitive Behavioral Therapy sessions for anxiety management.'
-      },
-      {
-        'name': 'Dr. Michael Chen',
-        'username': '@drchen',
-        'id': '#TH-2244',
-        'sessions': '2 sessions',
-        'schedule': 'Feb 12, 3:30 PM',
-        'amount': '\$200.00',
-        'status': 'completed',
-        'description': 'Follow-up sessions for stress reduction techniques.'
-      },
-      {
-        'name': 'Dr. Emily Brown',
-        'username': '@drbrown',
-        'id': '#TH-2243',
-        'sessions': '1 session',
-        'schedule': 'Feb 10, 11:00 AM',
-        'amount': '\$100.00',
-        'status': 'cancelled',
-        'description': 'Initial consultation for depression treatment.'
-      },
-    ];
-
-    return ListView.builder(
+    if (paymentrequests.length <1){
+      return Center(
+        child: Text(
+          "this account has not payment history"
+        ),
+        
+      );
+    }
+    return 
+    ListView.builder(
       padding: const EdgeInsets.all(16),
-      itemCount: mockData.length,
+      itemCount: paymentrequests.length,
       itemBuilder: (context, index) {
-        final payment = mockData[index];
+          final payment = paymentrequests[index];
 
         return Card(
           margin: const EdgeInsets.only(bottom: 16),
@@ -88,11 +102,11 @@ class CustomerPaymentPage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          payment['name']!,
+                          payment['doctoremail'] ?? "doctor",
                           style: Theme.of(context).textTheme.titleMedium,
                         ),
                         Text(
-                          payment['username']!,
+                          payment['client']?? "client ",
                           style: Theme.of(context).textTheme.bodySmall,
                         ),
                       ],
@@ -103,13 +117,13 @@ class CustomerPaymentPage extends StatelessWidget {
                         vertical: 6,
                       ),
                       decoration: BoxDecoration(
-                        color: _getStatusColor(payment['status']!),
+                        color: _getStatusColor(payment['status']),
                         borderRadius: BorderRadius.circular(16),
                       ),
                       child: Text(
-                        payment['status']!.toUpperCase(),
+                        payment['status'] ?? " none",
                         style: TextStyle(
-                          color: _getStatusTextColor(payment['status']!),
+                          color: _getStatusTextColor(payment['status']?? "none"),
                           fontSize: 12,
                         ),
                       ),
@@ -117,32 +131,30 @@ class CustomerPaymentPage extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 16),
-                _buildInfoRow('ID', payment['id']!),
-                _buildInfoRow('Sessions', payment['sessions']!),
-                _buildInfoRow('Schedule', payment['schedule']!),
-                _buildInfoRow('Amount', payment['amount']!),
+                _buildInfoRow('ID', payment['id'] ?? "id"),
+                _buildInfoRow('Sessions', payment['sessions'].length.toString() ?? "sitejennan"),
+                _buildInfoRow('Schedule', payment['sessions'].toString() ?? "dscsdcsdvvs"),
+                 _buildInfoRow('Amount', payment['amount'] ?? "asdvfsdvd"),
                 const SizedBox(height: 8),
                 Text(
                   'Description:',
                   style: Theme.of(context).textTheme.titleSmall,
                 ),
                 Text(
-                  payment['description']!,
+                  payment['description'] ?? "for sessions ",
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 const SizedBox(height: 16),
-                if (payment['status'] == 'pending')
+                if (payment['status'] == 'created')
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       ElevatedButton(
-                        onPressed: () =>
-                            _showPaymentLinkDialog(context, payment),
+                        onPressed: () =>_showPaymentLinkDialog(context, payment),
                         child: const Text('Pay Now'),
                       ),
                       ElevatedButton(
-                        onPressed: () =>
-                            _showCompletePaymentDialog(context, payment),
+                        onPressed: () => _showCompletePaymentDialog(context, payment),
                         child: const Text('Complete Payment'),
                       ),
                     ],
@@ -206,9 +218,48 @@ class CustomerPaymentPage extends StatelessWidget {
     }
   }
 
-  void _showPaymentLinkDialog(
-      BuildContext context, Map<String, String> payment) {
-    final paymentLink = 'https://example.com/pay/${payment['id']}';
+void _submitandstore(payment) async {
+
+    
+
+   
+
+    try {
+      String time = payment['scedule'].text.trim();
+      String email = payment[''].text.trim();
+
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user == null) {
+        throw FormatException("No user is logged in.");
+      }
+      String therapistEmail = user.email!;
+
+      String dateTimeString ="${payment['dateandtime']!.toIso8601String().split("T")[0]} ${payment['time'].text.trim()}";
+      DateTime appointmentDateTime =DateFormat("yyyy-MM-dd hh:mm a").parse(dateTimeString, true).toUtc();
+
+      Map<String, dynamic> appointmentData = {
+        "customerEmail": payment['custmor'],
+        "appointmentDateTime": appointmentDateTime,
+        "therapistEmail": payment['appointmentDateTime'],
+      };
+
+      await FirebaseFirestore.instance
+          .collection('verfiedappointments')
+          .add(appointmentData);
+
+
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Appointment added successfully!")));
+
+      Navigator.pop(context);
+    } catch (e) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(e.toString())));
+    }
+  }
+
+  void _showPaymentLinkDialog(BuildContext context, Map<String, dynamic> payment) {
+    final paymentLink = 'https://example.com/pay/${payment['id'] ?? "none"}';
 
     showDialog(
       context: context,
@@ -221,10 +272,10 @@ class CustomerPaymentPage extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildInfoRow('Therapist', payment['name']!),
-                _buildInfoRow('Sessions', payment['sessions']!),
-                _buildInfoRow('Schedule', payment['schedule']!),
-                _buildInfoRow('Amount', payment['amount']!),
+            _buildInfoRow('ID', payment['id'] ?? "id"),
+                _buildInfoRow('Sessions', payment['sessions'].length.toString() ?? "sitejennan"),
+                _buildInfoRow('Schedule', payment['sessions'].toString() ?? "dscsdcsdvvs"),
+                 _buildInfoRow('Amount', payment['amount'] ?? "asdvfsdvd"),
                 const SizedBox(height: 16),
                 const Text('Payment Link:'),
                 const SizedBox(height: 8),
@@ -258,7 +309,7 @@ class CustomerPaymentPage extends StatelessWidget {
   }
 
   void _showCompletePaymentDialog(
-      BuildContext context, Map<String, String> payment) {
+      BuildContext context, Map<String, dynamic> payment) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -270,10 +321,10 @@ class CustomerPaymentPage extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildInfoRow('Therapist', payment['name']!),
-                _buildInfoRow('Sessions', payment['sessions']!),
-                _buildInfoRow('Schedule', payment['schedule']!),
-                _buildInfoRow('Amount', payment['amount']!),
+                _buildInfoRow('ID', payment['id'] ?? "id"),
+                _buildInfoRow('Sessions', payment['sessions'].length.toString() ?? "sitejennan"),
+                _buildInfoRow('Schedule', payment['sessions'].toString() ?? "dscsdcsdvvs"),
+                 _buildInfoRow('Amount', payment['amount'] ?? "asdvfsdvd"),
                 const SizedBox(height: 16),
                 const Text('Please attach a screenshot of your payment:'),
                 const SizedBox(height: 16),
@@ -305,6 +356,7 @@ class CustomerPaymentPage extends StatelessWidget {
               onPressed: () {
                 // Implement submit functionality here
                 print('Submit button pressed');
+                _submitandstore(payment);
                 Navigator.of(context).pop();
               },
             ),

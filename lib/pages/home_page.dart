@@ -81,10 +81,13 @@ class _HomePageState extends State<HomePage> {
     return CircleAvatar(
       radius: 50,
       backgroundColor: Colors.grey,
-      child: CldImageWidget(
-        cloudinary: cloudinary, // Pass Cloudinary instance
-        publicId: "cld-sample-4",
-      ),
+      child: 
+      Image.asset(
+          "assets/profile.jpg",
+          width: 200, // Optional: Adjust width
+          height: 200, // Optional: Adjust height
+          fit: BoxFit.cover, // Adjust how image fits
+        ),
     );
   }
 

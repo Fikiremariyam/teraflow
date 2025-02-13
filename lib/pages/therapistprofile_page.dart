@@ -146,7 +146,7 @@ class TherapistPortfolioPage extends StatelessWidget {
                             context: context,
                             builder: (BuildContext context) {
                               return BookschedulePopup(
-                                  therapistName: therapistName, doctorsemail: '',);
+                                  therapistName: therapistName, doctorsemail: therapistEmail,);
                             },
                           );
                         },
