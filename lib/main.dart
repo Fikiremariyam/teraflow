@@ -49,19 +49,12 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   String initialRoute = '/Onboarding';
-
-  @override
-  void initState() {
-    super.initState();
-    determineInitialRoute();
-  }
-
+  
   Future<void> determineInitialRoute() async {
     User? user = FirebaseAuth.instance.currentUser;
 
     if (user != null) {
       String userEmail = user.email!;
-      print("Current Logged-in Email: $userEmail");
 
       DocumentSnapshot userDoc = await FirebaseFirestore.instance
           .collection('users')
@@ -69,10 +62,9 @@ class _MyAppState extends State<MyApp> {
           .get();
 
       if (userDoc.exists) {
-        print("User document found in Firestore!");
-
-        Map<String, dynamic>? userData =
-            userDoc.data() as Map<String, dynamic>?;
+        
+        Map<String, dynamic>? userData = userDoc.data() as Map<String, dynamic>?;
+        
         if (userData != null && userData.containsKey('role')) {
           String role = userData['role'];
           print("User Role Retrieved from Firestore: $role");
@@ -101,13 +93,19 @@ class _MyAppState extends State<MyApp> {
         });
       }
     } else {
-      print("No user is logged in.");
+    
       setState(() {
         initialRoute = '/Onboarding';
       });
     }
   }
 
+
+  @override
+  void initState() {
+    super.initState();
+    determineInitialRoute();
+  }
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

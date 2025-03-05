@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:teraflow/pages/home_page.dart';
 import 'package:teraflow/util/selfhelp_card.dart';
-import 'package:teraflow/pages/searchpage.dart';
+import 'package:teraflow/util/searchpage.dart';
 
 class SelfHelpPage extends StatelessWidget {
   const SelfHelpPage({super.key});

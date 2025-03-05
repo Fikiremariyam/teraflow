@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:teraflow/pages/category_page.dart';
-import 'package:teraflow/pages/utils/videocall/videocall.dart';
+import 'package:teraflow/util/videocall/videocall.dart';
 
 class CalendarPage extends StatefulWidget {
   @override

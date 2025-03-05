@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:teraflow/pages/payment_page.dart';
 import 'package:teraflow/pages/splashPage/ProfilePage.dart';
 
 class ClientPage extends StatelessWidget {

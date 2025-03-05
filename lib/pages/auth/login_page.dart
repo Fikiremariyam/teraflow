@@ -5,7 +5,6 @@ import 'package:teraflow/components/square_tile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:form_validator/form_validator.dart';
-import 'package:teraflow/util/beautful_loadingscreen.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -90,7 +89,7 @@ class _LogInPageState extends State<LoginPage> {
         DocumentSnapshot userDoc = userSnapshot.docs
             .first; // Get the first document (if there are multiple matches)
         var role = userDoc['role'];
-        print("User role: $role");
+     
 
         // Navigate based on the role
         if (mounted) {

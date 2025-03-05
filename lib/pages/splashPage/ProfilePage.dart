@@ -4,7 +4,7 @@ import 'package:cloudinary_url_gen/cloudinary.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:teraflow/pages/home_page.dart';
-import 'package:teraflow/pages/payment_and_orders.dart';
+import 'package:teraflow/util/payment_and_orders.dart';
 import 'package:teraflow/pages/splashPage/CustomerPaymetn_Page.dart';
 import 'package:teraflow/pages/splashPage/SettingPage.dart';
 import '../splashPage/AccountPage.dart';

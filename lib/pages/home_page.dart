@@ -12,15 +12,15 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:teraflow/chatbot/chatbot_screen.dart';
 import 'package:teraflow/pages/SELFHELP/breathing_exercise.dart';
 import 'package:teraflow/pages/SELFHELP/ResourceListPage.dart';
-import 'package:teraflow/pages/searchpage.dart';
+import 'package:teraflow/util/searchpage.dart';
 import 'package:teraflow/pages/splashPage/ProfilePage.dart';
 import 'package:teraflow/pages/splashPage/notification_page.dart';
 
 import 'package:teraflow/util/category_card.dart';
 import 'package:teraflow/util/therapist_card.dart';
 import 'package:teraflow/pages/splashPage/calendar_page.dart';
-import 'package:teraflow/pages/utils/chats/chatlist_page.dart';
-import 'package:teraflow/pages/utils/chats/chatpage_main.dart';
+import 'package:teraflow/util/chats/chatlist_page.dart';
+import 'package:teraflow/util/chats/chatpage_main.dart';
 import 'package:teraflow/pages/SELFHELP/selfhelp_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';

@@ -5,8 +5,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:teraflow/pages/home_page.dart';
-import 'package:teraflow/pages/utils/chats/chatlist_page.dart';
-import 'package:teraflow/pages/utils/chats/chatpage_main.dart';
+import 'package:teraflow/util/chats/chatlist_page.dart';
+import 'package:teraflow/util/chats/chatpage_main.dart';
 class BookschedulePopup extends StatefulWidget {
   final String therapistName;
   final String doctorsemail ;

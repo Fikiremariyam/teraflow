@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:teraflow/pages/utils/chats/chatpage_main.dart';
+import 'package:teraflow/util/chats/chatpage_main.dart';
 
 
 class Searchpage extends StatefulWidget {
