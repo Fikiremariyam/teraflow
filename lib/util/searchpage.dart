@@ -51,120 +51,173 @@ void messageFunction(context,doc) async{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:AppBar(
-        title: Text("Search For A  psyctist "),
-        flexibleSpace: Container(
-    decoration: BoxDecoration(
-      gradient: LinearGradient(
-        colors: [Colors.blue, Colors.purple],
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-      ),
-    ),
-  ),
-  ) ,
-        body: Column(
-        children: [
-
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: "Enter user name",
-              ),
-              onChanged: (val){
-                username=val;
-                setState(() {// to refresh the state of ther name 
+      
+       backgroundColor: Colors.transparent,
+  
+        body: Container(
+          decoration: BoxDecoration(
                   
-                });
-              },
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color.fromARGB(99, 0, 0, 0).withOpacity(0.1),
+                      blurRadius: 10,
+                    ),
+                  ],
+                ),
+          child: Column(
+            
+          children: [
+            SizedBox(
+              height: 40,
             ),
-          ),
-           
-          if (username != null)
-          if (username!.length > 3) FutureBuilder<QuerySnapshot>(
-            future: FirebaseFirestore.instance.collection('users').where('email',isEqualTo: username).get(),// passed the search result to the snapshot
-            builder: (context,snapshot){
-              for (var doc in snapshot.data!.docs) {
-                //print("searched data");
-               //print(doc.id); // Prints the document ID
-              //print(doc.data()); // Prints the document data as a map
-                  }
-              
-              var filtered = snapshot.data!.docs.where((doc){
-                return doc['email'] != FirebaseAuth.instance.currentUser!.email;//exluding the seracers email 
+          
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                decoration: BoxDecoration(
+                color: Colors.white, // Opaque white container
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 10,
+                  ),
+                ],
+              ),
+                child: TextField(
+                  decoration: InputDecoration(
+                    fillColor: Colors.white,
+                    
+                    border: OutlineInputBorder(),
+                    labelText: "Enter user name",
+                  ),
+                  onChanged: (val){
+                    username=val;
+                    setState(() {// to refresh the state of ther name 
+                      
+                    });
+                  },
+                ),
+              ),
+            ),
+             Container(
+                 decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.75), // Transparent white background
+                    borderRadius: BorderRadius.circular(10), // Optional: Rounded corners
+                  ),
+                 
+                constraints: BoxConstraints(
+                    minWidth: double.infinity,
+                  minHeight: 500, // Minimum height of 25px
+                ),
+                child: (username != null)?
+            FutureBuilder<QuerySnapshot>(
+            future: FirebaseFirestore.instance
+                .collection('users')
+                .where('email', isEqualTo: username)
+                .get(), // passed the search result to the snapshot
+            builder: (context, snapshot) {
+              var filtered = snapshot.data!.docs
+                  .where((doc) =>
+                      doc['email'] != FirebaseAuth.instance.currentUser!.email)
+                  .toList();
+
+              if (filtered.isEmpty) {
+                return Center(
+                  child: Container(
+                    padding: EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.5),
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 10,
+                        ),
+                      ],
+                    ),
+                    child: Text("No users found"),
+                  ),
+                );
               }
-              ).toList();
-              
-             if(filtered.isEmpty ?? false){
-                  return Text("No user Found!");
-                }
-              return Expanded(
-                child: ListView.builder(
-                  itemCount: filtered.length ?? 0,
-                  itemBuilder: (context,index){
-                    DocumentSnapshot doc = filtered[index];
-                  
+
+              return ListView.builder(
+                shrinkWrap: true, // Allows the ListView to take only the space it needs
+                physics: NeverScrollableScrollPhysics(), // Disable scrolling for the parent ListView
+                itemCount: filtered.length ?? 0,
+                itemBuilder: (context, index) {
+                  DocumentSnapshot doc = filtered[index];
+
                   return ListTile(
                     leading: IconButton(
-                      onPressed: () => {messageFunction(context,doc)}
-                      ,
-                      icon: Icon(Icons.chat),color: Colors.indigo,
+                      onPressed: () => {messageFunction(context, doc)},
+                      icon: Icon(Icons.chat),
+                      color: Colors.indigo,
                     ),
-                     title: Text(doc['email']),
-                      trailing: FutureBuilder<DocumentSnapshot>(
-                        future: doc.reference.collection('followers').doc(FirebaseAuth.instance.currentUser!.email).get() ,
-                         builder: (context,snapshot){
-
-                          if (snapshot.hasData){
-                            if (snapshot.data?.exists ?? false){
-                              return ElevatedButton(
-                                onPressed: ()async{
-                                  await doc.reference.collection('followers').doc(FirebaseAuth.instance.currentUser!.email).delete();
-                                setState(() async{
-
-                                }); // to refresh  the state it rebuild the whole app **not recomnded in production level apps          
-
-
-                                },
-                                child: Text("Un Follow")
-                                );
-
-                            };
-
+                    title: Text(doc['email']),
+                    trailing: FutureBuilder<DocumentSnapshot>(
+                      future: doc.reference
+                          .collection('followers')
+                          .doc(FirebaseAuth.instance.currentUser!.email)
+                          .get(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          if (snapshot.data?.exists ?? false) {
+                            return ElevatedButton(
+                              onPressed: () async {
+                                await doc.reference
+                                    .collection('followers')
+                                    .doc(FirebaseAuth.instance.currentUser!.email)
+                                    .delete();
+                                setState(() {});
+                              },
+                              child: Text("Un Follow"),
+                            );
                           }
-                            return ElevatedButton(onPressed: () async {
-                             await   doc.reference.collection('followers').doc(FirebaseAuth.instance.currentUser!.email).set(
-                                {
-                                  'followed by ': FirebaseAuth.instance.currentUser?.email,
-                                  'time':DateTime.now(),
+                        }
 
-                                }// here we  are regstering the current email we have logeed in to to the followrs section for the searched account 
-                                // improvemrnt : we can register the followed accouint to the cureent email  people i follow section 
-                              );
+                        return ElevatedButton(
+                          onPressed: () async {
+                            await doc.reference
+                                .collection('followers')
+                                .doc(FirebaseAuth.instance.currentUser!.email)
+                                .set({
+                              'followed by ': FirebaseAuth.instance.currentUser?.email,
+                              'time': DateTime.now(),
+                            });
 
-                              setState(() {});
-                            },
-                             child: Text("Follow")
-                             );
-                          
-                         })
-                     
+                            setState(() {});
+                          },
+                          child: Text("Follow"),
+                        );
+                      },
+                    ),
                   );
-                
-                }),
+                },
               );
-
-
-
-
-            },),
-             
-        
-        ],
+            },
+          )
+:Center(
+                child: Container(
+                  padding: EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.5),
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 10,
+                    ),
+                  ],
+                  ),
+                  child: Text("Enter a user name"),
+                ),
+                ),
+              )
+              ],
+        ),
       ),
-    
     );
   
   }

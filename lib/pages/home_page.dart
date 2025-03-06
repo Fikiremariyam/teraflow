@@ -36,9 +36,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  
   int _selectedIndex = 0;
-  final GlobalKey<ScaffoldState> _scaffoldKey =
-      GlobalKey<ScaffoldState>(); // Create a GlobalKey for Scaffold
+  final GlobalKey<ScaffoldState> _scaffoldKey =GlobalKey<ScaffoldState>(); // Create a GlobalKey for Scaffold
   var username = TextEditingController();
   var phonenumber = TextEditingController();
 
@@ -169,6 +169,7 @@ class _HomePageState extends State<HomePage> {
   // Widget build(BuildContext context) {
 
   Widget build(BuildContext context) {
+
     bool isHomePage = _selectedIndex == 0;
     bool isChatPage = _selectedIndex == 1;
 
@@ -221,8 +222,14 @@ class _HomePageState extends State<HomePage> {
                         ),
                         onTap: () {
                           Navigator.of(context).push(
-                            MaterialPageRoute(
-                                builder: (context) => const Searchpage()),
+                              PageRouteBuilder(
+                                opaque: false, // This makes the page transparent
+                                
+                                pageBuilder: (context, animation, secondaryAnimation) => const Searchpage(),
+                                transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                  return FadeTransition(opacity: animation, child: child); // Optional fade-in effect
+                                },
+                              ),
                           );
                         },
                       ),

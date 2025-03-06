@@ -30,8 +30,7 @@ void main() async {
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  CloudinaryContext.cloudinary =
-      Cloudinary.fromCloudName(cloudName: "dd8qfpth2");
+  CloudinaryContext.cloudinary = Cloudinary.fromCloudName(cloudName: "dd8qfpth2");
   final cloudinary = CloudinaryObject.fromCloudName(cloudName: "dd8qfpth2");
 
   runApp(ChangeNotifierProvider(
@@ -48,9 +47,10 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String initialRoute = '/Onboarding';
+  String initialRoute = "none";
   
   Future<void> determineInitialRoute() async {
+
     User? user = FirebaseAuth.instance.currentUser;
 
     if (user != null) {
@@ -93,7 +93,7 @@ class _MyAppState extends State<MyApp> {
         });
       }
     } else {
-    
+    print("==============================================it is null ======================");
       setState(() {
         initialRoute = '/Onboarding';
       });
@@ -108,6 +108,10 @@ class _MyAppState extends State<MyApp> {
   }
   @override
   Widget build(BuildContext context) {
+      if (initialRoute == "none") {
+      
+      return const Center(child: CircularProgressIndicator());
+    }
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       initialRoute: initialRoute,
