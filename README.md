@@ -10,6 +10,17 @@ JAVA : 19.0.2
 
 Features 
 teraflow is  online health care app that specalizes on psyctry sevice given using vieo/audio 
+Tera-Flow is a revolutionary platform designed for individuals seeking psychological advice and therapy while ensuring complete privacy. It connects users with professional therapists for periodic therapy sessions, offering a safe and confidential space for mental well-being.
+
+Our AI-driven sentiment analysis and mood-tracking models provide personalized insights, helping users navigate their mental health journey through interactive sessions and chatbot assistance.
+
+Key Features:
+✅ Video Therapy Sessions – Connect with licensed professionals for guided support.
+✅ Professional Blogging – A space for experts to share insights and mental health resources.
+✅ Self-Therapy Sessions – Interactive tools for personal growth and mindfulness.
+✅ Chapa Payment Integration – Secure and seamless transactions for therapy sessions.
+
+Tera-Flow is redefining accessible and personalized mental healthcare. 🚀
 
 ---
 
