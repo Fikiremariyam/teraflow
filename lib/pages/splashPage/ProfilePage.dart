@@ -41,7 +41,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         .collection('users')
         .doc(FirebaseAuth.instance.currentUser!.email)
         .get();
-    String usernameholder = docSnapshot.data()?['username'] ?? 'Meron ';
+    String usernameholder = docSnapshot.data()?['username'] ?? FirebaseAuth.instance.currentUser!.email!;
     String phoneno =
         docSnapshot.data()?['phonenumber'] ?? 'enter your  phone  no';
     setState(() {

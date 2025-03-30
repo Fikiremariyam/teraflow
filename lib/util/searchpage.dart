@@ -112,16 +112,16 @@ void messageFunction(context,doc) async{
                   minHeight: 500, // Minimum height of 25px
                 ),
                 child: (username != null)?
-            FutureBuilder<QuerySnapshot>(
-            future: FirebaseFirestore.instance
-                .collection('users')
-                .where('email', isEqualTo: username)
-                .get(), // passed the search result to the snapshot
-            builder: (context, snapshot) {
-              var filtered = snapshot.data!.docs
-                  .where((doc) =>
-                      doc['email'] != FirebaseAuth.instance.currentUser!.email)
-                  .toList();
+                  FutureBuilder<QuerySnapshot>(
+                  future: FirebaseFirestore.instance
+                      .collection('users')
+                      .where('email', isEqualTo: username)
+                      .get(), // passed the search result to the snapshot
+                  builder: (context, snapshot) {
+                    var filtered = snapshot.data!.docs
+                        .where((doc) =>
+                            doc['email'] != FirebaseAuth.instance.currentUser!.email)
+                        .toList();
 
               if (filtered.isEmpty) {
                 return Center(
