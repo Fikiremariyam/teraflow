@@ -33,7 +33,7 @@ Tera-Flow is redefining accessible and personalized mental healthcare. 🚀
 
 | Splash Screen      | Home Screen       | Feature Screen     |
 |--------------------|-------------------|--------------------|
-| ![Splash](tera%20flow%20post/image2.png) |![Splash](tera%20flow%20post/image3.png) | ![Feature](feature.png) |
+| ![Splash](tera%20flow%20post/image2.png) |![Splash](tera%20flow%20post/image3.png) | ![Splash](tera%20flow%20post/image5.png)|
 
 ---
 
