@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:teraflow/components/my_button.dart';
+import 'package:teraflow/resources/components/My_button.dart';
 import 'package:teraflow/resources/components/my_textfield.dart';
 import 'package:teraflow/resources/components/square_tile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';

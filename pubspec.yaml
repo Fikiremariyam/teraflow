@@ -73,8 +73,8 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - lib/icons/
-    - lib/images/
+    - lib/resources/icons/
+    - lib/resources/images/
     - assets/
     - assets/tera-flow-cb.json
     - assets/resources.json

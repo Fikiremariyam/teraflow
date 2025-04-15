@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:teraflow/resources/components/ListButton.dart';
-import 'package:teraflow/components/my_button.dart';
+import 'package:teraflow/resources/components/my_button.dart';
 
 class TherapistProfile extends StatefulWidget {
   final Function(File, String) onProfileInfoChanged;
