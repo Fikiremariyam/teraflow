@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:teraflow/pages/home_page.dart';
+import 'package:teraflow/pages/clientpages/home_page.dart';
 
 class CustomerPaymentPage extends StatefulWidget {
   const CustomerPaymentPage({Key? key}) : super(key: key);

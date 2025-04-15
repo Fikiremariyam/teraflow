@@ -3,8 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:teraflow/pages/category_page.dart';
-import 'package:teraflow/util/videocall/videocall.dart';
+import 'package:teraflow/pages/clientpages/category_page.dart';
+import 'package:teraflow/features/videocall/videocall.dart';
 
 class CalendarPage extends StatefulWidget {
   @override
