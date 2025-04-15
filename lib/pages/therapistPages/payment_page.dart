@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:teraflow/pages/clientpages/home_page.dart';
-import 'package:teraflow/services/api_service.dart';
+import 'package:teraflow/features/services/api_service.dart';
 
 import 'package:teraflow/pages/therapistPages/finance_page.dart';
 import 'package:teraflow/pages/therapistPages/home_therapist.dart';

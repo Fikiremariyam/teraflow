@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:teraflow/features/auth/signup_page.dart';
-import '../../features/auth/login_page.dart';
+import '../../../features/auth/login_page.dart';
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});

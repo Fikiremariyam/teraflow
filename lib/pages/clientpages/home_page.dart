@@ -13,12 +13,12 @@ import 'package:teraflow/features/chatbot/chatbot_screen.dart';
 import 'package:teraflow/features/SELFHELP/breathing_exercise.dart';
 import 'package:teraflow/features/SELFHELP/ResourceListPage.dart';
 import 'package:teraflow/pages/clientpages/searchpage.dart';
-import 'package:teraflow/pages/splashPage/ProfilePage.dart';
-import 'package:teraflow/pages/splashPage/notification_page.dart';
+import 'package:teraflow/pages/clientpages/splashPage/ProfilePage.dart';
+import 'package:teraflow/pages/clientpages/splashPage/notification_page.dart';
 
 import 'package:teraflow/pages/clientpages/category_card.dart';
 import 'package:teraflow/pages/clientpages/therapist_card.dart';
-import 'package:teraflow/pages/splashPage/calendar_page.dart';
+import 'package:teraflow/pages/clientpages/splashPage/calendar_page.dart';
 import 'package:teraflow/features/chats/chatlist_page.dart';
 import 'package:teraflow/features/chats/chatpage_main.dart';
 import 'package:teraflow/features/SELFHELP/selfhelp_page.dart';

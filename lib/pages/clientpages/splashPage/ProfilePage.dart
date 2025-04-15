@@ -5,9 +5,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:teraflow/pages/clientpages/home_page.dart';
 import 'package:teraflow/features/payment/payment_and_orders.dart';
-import 'package:teraflow/pages/splashPage/CustomerPaymetn_Page.dart';
-import 'package:teraflow/pages/splashPage/SettingPage.dart';
-import '../splashPage/AccountPage.dart';
+import 'package:teraflow/pages/clientpages/splashPage/CustomerPaymetn_Page.dart';
+import 'package:teraflow/pages/clientpages/splashPage/SettingPage.dart';
+import 'AccountPage.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});

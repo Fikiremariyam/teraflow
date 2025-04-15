@@ -1,10 +1,10 @@
 // home_pagete.dart
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:teraflow/pages/splashPage/ProfilePage.dart';
+import 'package:teraflow/pages/clientpages/splashPage/ProfilePage.dart';
 import 'package:teraflow/features/chats/chatlist_page.dart';
 import 'package:teraflow/pages/therapistPages/blog_page.dart';
-import 'package:teraflow/pages/therapistPages/calendar_therapist.dart';
+import 'package:teraflow/features/Calander/calendar_therapist.dart';
 import 'package:teraflow/pages/therapistPages/finance_page.dart';
 import 'package:teraflow/pages/therapistPages/client_page.dart';
 import 'package:teraflow/pages/therapistPages/payment_page.dart';
