@@ -7,6 +7,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:form_validator/form_validator.dart';
 
 class LoginPage extends StatefulWidget {
+  final String? email;
+  final String? password;
+
+  LoginPage({this.email, this.password});
+
   @override
   _LogInPageState createState() => _LogInPageState();
 }
@@ -14,6 +19,17 @@ class LoginPage extends StatefulWidget {
 class _LogInPageState extends State<LoginPage> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.email != null) {
+      emailController.text = widget.email!;
+    }
+    if (widget.password != null) {
+      passwordController.text = widget.password!;
+    }
+  }
 
   bool isPasswordVisible = false;
 
@@ -57,10 +73,8 @@ class _LogInPageState extends State<LoginPage> {
     }
   }
 
-  void logUserIn(BuildContext context) async {
-    String email = emailController.text.trim();
-    String password = passwordController.text.trim();
-
+  void logUserIn(BuildContext context, String email, String password ) async {
+   
     try {
       // Attempt to sign in the user
       UserCredential userCredential =
@@ -168,8 +182,8 @@ class _LogInPageState extends State<LoginPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    _socialButton('lib/images/google.png'),
-                    _socialButton('lib/images/apple.png'),
+                    _socialButton('lib/resources/images/google.png'),
+                    _socialButton('lib/resources/images/apple.png'),
                   ],
                 ),
                 const SizedBox(height: 24),
@@ -227,7 +241,9 @@ class _LogInPageState extends State<LoginPage> {
                 ),
                 const SizedBox(height: 24),
                 ElevatedButton(
-                  onPressed: () => logUserIn(context),
+                  onPressed: () => logUserIn(context,emailController.text.trim(),
+                  passwordController.text.trim()),
+
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.deepPurple,
                     minimumSize: Size(double.infinity, 50),

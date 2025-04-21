@@ -2,6 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:teraflow/features/bookScedule/bookschedule_popup.dart';
+import 'package:teraflow/pages/clientpages/home_page.dart';
+import 'package:teraflow/pages/clientpages/splashPage/ProfilePage.dart';
+import 'package:teraflow/pages/clientpages/splashPage/notification_page.dart';
+import 'package:teraflow/pages/clientpages/searchpage.dart';
 
 class TherapistPortfolioPage extends StatelessWidget {
   List<dynamic> _department = [];
@@ -51,6 +55,75 @@ class TherapistPortfolioPage extends StatelessWidget {
   Widget build(BuildContext context) {
     populateuserData();
     return Scaffold(
+      appBar: AppBar(
+              backgroundColor: Colors.white,
+              elevation: 0,
+              automaticallyImplyLeading: false,
+              leading: IconButton(
+                icon: Icon(
+                  Icons.arrow_back,
+                  color: Colors.black,
+                ),
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => HomePage()),
+                    );
+                }
+              ),
+              title: Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                  ),
+                  Expanded(
+                    child: Container(
+                      height: 45,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[100],
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                      child: TextField(
+                        decoration: InputDecoration(
+                          hintText: 'Search by Doctor ',
+                          hintStyle: TextStyle(color: Colors.grey[400]),
+                          prefixIcon:
+                              Icon(Icons.search, color: Colors.grey[400]),
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 15),
+                        ),
+                        onTap: () {
+                          Navigator.of(context).push(
+                              PageRouteBuilder(
+                                opaque: false, // This makes the page transparent
+                                
+                                pageBuilder: (context, animation, secondaryAnimation) => const Searchpage(),
+                                transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                  return FadeTransition(opacity: animation, child: child); // Optional fade-in effect
+                                },
+                              ),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 10),
+                  IconButton(
+                    icon: Icon(Icons.notifications_none_outlined,
+                        color: Colors.black),
+                    onPressed: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            // to navigate to the notfiaciton screen
+                            builder: (context) => NotificationsPage()),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
       backgroundColor: Colors.grey[300],
       body: Padding(
         padding: const EdgeInsets.all(16.0),

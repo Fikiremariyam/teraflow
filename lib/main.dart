@@ -49,6 +49,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   String initialRoute = "none";
   
+
   Future<void> determineInitialRoute() async {
 
     User? user = FirebaseAuth.instance.currentUser;
@@ -67,7 +68,6 @@ class _MyAppState extends State<MyApp> {
         
         if (userData != null && userData.containsKey('role')) {
           String role = userData['role'];
-          print("User Role Retrieved from Firestore: $role");
 
           setState(() {
             if (role == "Customer") {
@@ -93,7 +93,7 @@ class _MyAppState extends State<MyApp> {
         });
       }
     } else {
-    print("==============================================it is null ======================");
+  
       setState(() {
         initialRoute = '/Onboarding';
       });
@@ -106,12 +106,14 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     determineInitialRoute();
   }
+  
   @override
   Widget build(BuildContext context) {
+
       if (initialRoute == "none") {
-      
-      return const Center(child: CircularProgressIndicator());
-    }
+        return const Center(child: CircularProgressIndicator());
+        }
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       initialRoute: initialRoute,
@@ -150,7 +152,7 @@ class _MyAppState extends State<MyApp> {
               },
               child: AdminDashboard(), // Admin dashboard
             ),
-// Admin dashboard
+        // Admin dashboard
       },
       onUnknownRoute: (settings) => MaterialPageRoute(
         builder: (context) => Scaffold(

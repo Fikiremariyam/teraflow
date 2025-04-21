@@ -5,6 +5,7 @@ import 'package:teraflow/resources/components/square_tile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:form_validator/form_validator.dart';
+import 'package:teraflow/features/auth/login_page.dart';
 
 class SignupPage extends StatefulWidget {
   @override
@@ -59,6 +60,8 @@ class _SignupPageState extends State<SignupPage> {
         password: passwordController.text.trim(),
       );
 
+
+      //creating the user on userDb
       if (userCred.user != null) {
         await FirebaseFirestore.instance
             .collection('users')
@@ -74,23 +77,37 @@ class _SignupPageState extends State<SignupPage> {
         });
 
         if (mounted) {
-          Navigator.pushReplacementNamed(context, "/login");
+            Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => LoginPage(
+              email: emailController.text,
+              password: passwordController.text,
+              ),
+            ),
+            );
         }
-      }
+          }
+
     } on FirebaseAuthException catch (error) {
       String errorMessage;
+      print("the err message=============");
+      print(emailController.text.trim());
+      print(passwordController.text.trim());
+      print(error.code);
+
       switch (error.code) {
         case 'weak-password':
           errorMessage = 'Password is too weak.';
           break;
         case 'email-already-in-use':
           errorMessage = 'Email is already in use.';
-          print("+++++++++++++++++++++++++++++++++++++++++=");
           break;
         default:
           errorMessage = 'An unexpected error occurred.';
       }
       showAuthResult(context, errorMessage);
+     
     }
   }
 
@@ -154,9 +171,9 @@ class _SignupPageState extends State<SignupPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    SquareTile(imagePath: 'lib/images/google.png'),
+                    SquareTile(imagePath: 'lib/resources/images/google.png'),
                     const SizedBox(width: 16),
-                    SquareTile(imagePath: 'lib/images/apple.png'),
+                    SquareTile(imagePath: 'lib/resources/images/apple.png'),
                   ],
                 ),
                 const SizedBox(height: 24),
@@ -190,6 +207,7 @@ class _SignupPageState extends State<SignupPage> {
                   hintText: 'Full Name',
                   obscureText: false,
                   prefixIcon: Icon(Icons.person_outline),
+                   
                 ),
                 const SizedBox(height: 16),
                 const Text('Gender', style: TextStyle(color: Colors.grey)),

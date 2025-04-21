@@ -24,6 +24,7 @@ class _TherapistlistState extends State<Therapistlist> {
     }
     
     var items = snapshot.data!.docs; // Assume it's a List
+
     return SizedBox(
       height: 100, // Set a fixed height
       child: ListView.builder(
@@ -43,7 +44,7 @@ class _TherapistlistState extends State<Therapistlist> {
                 },
                 child: TherapistCard(
                             therapistImagePublicId:  "doctorprofile",
-                            rating: current_user['rating'] ?? '  rating',
+                            rating: current_user['rating'] ?? 'rating',
                             therapistName: current_user['fullName'] ?? ' user name not found ',
                             therapistProfession: current_user['title'] ?? ' title ',
                             experience: current_user['expirance'] ??  ' 3 yrs',

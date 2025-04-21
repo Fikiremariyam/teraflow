@@ -307,7 +307,7 @@ class _HomePageState extends State<HomePage> {
                         Expanded(
                           flex: 1,
                           child: Image.asset(
-                            'lib/images/home_page.png', // Add this illustration
+                            'lib/resources/images/home_page.png', // Add this illustration
                             height: 120,
                           ),
                         ),
@@ -371,11 +371,14 @@ class _HomePageState extends State<HomePage> {
                         color: Colors.deepPurple[50],
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: TextField(
-                        decoration: InputDecoration(
-                          prefixIcon: Icon(Icons.search, size: 18),
-                          border: InputBorder.none,
-                          hintText: 'How can we help you?',
+                        child: Center(
+                        child: Text(
+                          'How can we help you?',
+                          style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.grey[600],
+                          
+                        ),
                         ),
                       ),
                     ),
@@ -393,7 +396,7 @@ class _HomePageState extends State<HomePage> {
                         CategoryCard(
                           categoryName: 'Meditation',
                           iconImagePath:
-                              'lib/icons/meditation.png', // Update with new illustration
+                              'lib/resources/icons/meditation.png', // Update with new illustration
                           backgroundColor: Colors.white,
                           borderRadius: 20,
                         ),
@@ -401,7 +404,7 @@ class _HomePageState extends State<HomePage> {
                         CategoryCard(
                           categoryName: 'Community',
                           iconImagePath:
-                              'lib/icons/community.png', // Update with new illustration
+                              'lib/resources/icons/community.png', // Update with new illustration
                           backgroundColor: Colors.white,
                           borderRadius: 20,
                         ),
@@ -409,21 +412,21 @@ class _HomePageState extends State<HomePage> {
                         CategoryCard(
                           categoryName: 'Exercise',
                           iconImagePath:
-                              'lib/icons/exercise.png', // Update with new illustration
+                              'lib/resources/icons/exercise.png', // Update with new illustration
                           backgroundColor: Colors.white,
                           borderRadius: 20,
                         ),
                         SizedBox(width: 15),
                         CategoryCard(
                           categoryName: 'Journaling',
-                          iconImagePath: 'lib/icons/journaling.png',
+                          iconImagePath: 'lib/resources/icons/journaling.png',
                           backgroundColor: Colors.white,
                           borderRadius: 20,
                         ),
                         SizedBox(width: 15),
                         CategoryCard(
                           categoryName: 'Time',
-                          iconImagePath: 'lib/icons/time.png',
+                          iconImagePath: 'lib/resources/icons/time.png',
                           backgroundColor: Colors.white,
                           borderRadius: 20,
                         ),
@@ -447,7 +450,9 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                         InkWell(
-                          onTap: () {},
+                          onTap: () {
+                            //navigate to all the doctors list 
+                          },
                           child: Text(
                             'see all',
                             style: TextStyle(
