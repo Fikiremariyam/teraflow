@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:teraflow/features/bookScedule/bookschedule_popup.dart';
 import 'package:teraflow/pages/clientpages/home_page.dart';
-import 'package:teraflow/pages/clientpages/splashPage/ProfilePage.dart';
+import 'package:teraflow/pages/clientpages/profilePages/ProfilePage.dart';
 import 'package:teraflow/pages/clientpages/splashPage/notification_page.dart';
 import 'package:teraflow/pages/clientpages/searchpage.dart';
 
@@ -36,12 +36,12 @@ class TherapistPortfolioPage extends StatelessWidget {
 
   // List of categories for services
   final List<Map<String, String>> categories = [
-    {"icon": "lib/images/person.png", "name": "Personal Therapy"},
-    {"icon": "lib/images/family.png", "name": "Family Therapy"},
-    {"icon": "lib/images/workers.png", "name": "Workplace Therapy"},
-    {"icon": "lib/images/group.png", "name": "Group Therapy"},
-    {"icon": "lib/images/couples.png", "name": "Couples Therapy"},
-    {"icon": "lib/images/doctors.png", "name": "Specialized Therapy"},
+    {"icon": "lib/resources/images/person.png", "name": "Personal Therapy"},
+    {"icon": "lib/resourcesimages/family.png", "name": "Family Therapy"},
+    {"icon": "lib/resources/images/workers.png", "name": "Workplace Therapy"},
+    {"icon": "lib/resources/images/group.png", "name": "Group Therapy"},
+    {"icon": "lib/resources/images/couples.png", "name": "Couples Therapy"},
+    {"icon": "lib/resources/images/doctors.png", "name": "Specialized Therapy"},
   ];
 
   TherapistPortfolioPage({required this.therapistEmail, Key? key})

@@ -80,6 +80,8 @@ class _TherapistProfileState extends State<TherapistProfile> {
 );
    
    }
+
+
   void populateuserDAta() async {
     userdata = await getuserdata();
     setState(() {
@@ -164,10 +166,11 @@ class _TherapistProfileState extends State<TherapistProfile> {
           'fullName': _nameController.text,
           'title':_titleController.text,
           'phone': _phoneController.text,
-          'gender': "F",
+          'gendear': "F",
           'address': _addressController.text,
           'background':_backgroundController.text,
-          'department': ["Personal Therapy", "Family Therapy", "Workplace Therapy", "Group Therapy", "Couples Therapy", "Specialized Therapy"]
+          'department': ["Personal Therapy", "Family Therapy", "Workplace Therapy", "Group Therapy", "Couples Therapy", "Specialized Therapy"],
+          'check':'check'
         });
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text("Profile updated successfully!")),
@@ -200,18 +203,17 @@ class _TherapistProfileState extends State<TherapistProfile> {
                       children: [
                         //profile pic 
                        CircleAvatar(
-  radius: 50,
-  child: ClipOval( // Ensure the image is clipped to a circle
-    child: CldImageWidget(
-      cloudinary: cloudinary,
-      publicId: "doctorprofile",
-      width: 100,
-      height: 100,
-      fit: BoxFit.cover, // Use cover for better aspect ratio fit
-    ),
-  ),
-),
-
+                        radius: 50,
+                        child: ClipOval( // Ensure the image is clipped to a circle
+                          child: CldImageWidget(
+                            cloudinary: cloudinary,
+                            publicId: "doctorprofile",
+                            width: 100,
+                            height: 100,
+                            fit: BoxFit.cover, // Use cover for better aspect ratio fit
+                          ),
+                        ),
+                      ),
                         // editing profile pic
                         Container(
                           padding: EdgeInsets.all(4),
@@ -294,7 +296,7 @@ class _TherapistProfileState extends State<TherapistProfile> {
                               });
                                   Future.delayed(Duration(milliseconds: 100), () {
                                     _backgroundFocusNode.requestFocus();
-    });
+                        });
                             },
                             child: Icon(Icons.edit,color: const Color.fromARGB(255, 124, 53, 217),),
 
@@ -323,7 +325,6 @@ class _TherapistProfileState extends State<TherapistProfile> {
                         ],
                       ),
                     ),
-                
            SizedBox(height: 20),
            itemTextField(_nameController,"user name"),
             SizedBox(height: 10,),
@@ -332,8 +333,6 @@ class _TherapistProfileState extends State<TherapistProfile> {
             itemTextField(_addressController, "Address"),
             SizedBox(height: 20),
             Text("skills"),
-           
-         
             SizedBox(
               height: 100,
               child: GridView.builder(

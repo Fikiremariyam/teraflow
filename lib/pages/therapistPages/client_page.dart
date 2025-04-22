@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:teraflow/pages/clientpages/splashPage/ProfilePage.dart';
+import 'package:teraflow/pages/clientpages/profilePages/ProfilePage.dart';
 
 class ClientPage extends StatelessWidget {
   @override

@@ -126,7 +126,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             child: ElevatedButton(
               onPressed: () async {
                 await FirebaseAuth.instance.signOut();
-                Navigator.pushNamed(context, '/Onboarding');
+                Navigator.pushNamed(context, '/login');
               },
               child: const Text('Logout'),
               style: ElevatedButton.styleFrom(
@@ -137,26 +137,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
           ),
           const SizedBox(height: 16),
-          /* Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              TextButton(
-                onPressed: () {},
-                child: const Text(
-                  'Deactivate account',
-                  style: TextStyle(color: Colors.red),
-                ),
-              ),
-              const SizedBox(width: 16),
-              TextButton(
-                onPressed: () {},
-                child: const Text(
-                  'Delete account',
-                  style: TextStyle(color: Colors.red),
-                ),
-              ),
-            ],
-          ), */
+        
         ],
       ),
     );

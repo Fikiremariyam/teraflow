@@ -1,7 +1,7 @@
 // web_homepaget.dart
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:teraflow/pages/clientpages/splashPage/ProfilePage.dart';
+import 'package:teraflow/pages/clientpages/profilePages/ProfilePage.dart';
 import 'package:teraflow/features/chats/chatlist_page.dart';
 import 'package:teraflow/pages/therapistPages/blog_page.dart';
 import 'package:teraflow/features/Calander/calendar_therapist.dart';

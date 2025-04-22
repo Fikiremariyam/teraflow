@@ -1,4 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+
+
+import 'package:firebase_auth/firebase_auth.dart';
 
 class AccountInformationScreen extends StatefulWidget {
   const AccountInformationScreen({super.key});
@@ -11,17 +15,64 @@ class AccountInformationScreen extends StatefulWidget {
 class _AccountInformationScreenState extends State<AccountInformationScreen> {
   bool isEditing = false;
   final Map<String, TextEditingController> controllers = {
-    'TeraFlow ID': TextEditingController(text: 'ETPT002376'),
+    'Email': TextEditingController(text: 'Fikerbsu@gmai.com'),
     'Gender': TextEditingController(text: 'Female'),
-    'First Name': TextEditingController(text: 'Meron'),
+    'First Name': TextEditingController(text: 'Meroncvcvcvvc'),
     'Last Name': TextEditingController(text: 'Bahru'),
     'Date of Birth': TextEditingController(text: 'Nov 23, 2000'),
     'Phone Number': TextEditingController(text: '+251984153951'),
-    'Email': TextEditingController(text: '-'),
+    
     'Country': TextEditingController(text: '-'),
     'Address': TextEditingController(text: '-'),
   };
-
+  // to get user data
+  void getusercred() async {
+    var docSnapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.email)
+        .get();
+    var userData= docSnapshot.data();
+    print(userData);
+    
+    setState(() {
+      controllers['Email']!.text=userData?['email'] ??"  email unavalible ";
+      controllers['Gender']!.text=userData?['Gender'] ??" gender unavalible";
+      controllers['First Name']!.text=userData?['First Name'] ??"full name unavalible ";
+      controllers['Last Name']!.text=userData?['Last Name'] ??"Last Name unavalible";
+      controllers['Date of Birth']!.text=userData?['Date of Birth'].toString().split("T")[0] ??" unavalible date of birth ";
+      controllers['Phone Number']!.text=userData?['Phone Number'] ??"phone unavalible ";
+      controllers['Country']!.text=userData?['Country'] ??"country ";
+      controllers['Address']!.text=userData?['Address'] ??"address ";
+    
+    });
+  }
+ // to set user Data 
+ void setUsercred() async{
+    try {
+    await FirebaseFirestore.instance
+            .collection('users')
+            .doc(FirebaseAuth.instance.currentUser!.email)
+            .update({
+          'email': controllers['Email']!.text,
+          'Gender':controllers['Gender']!.text,
+          'First Name': controllers['First Name']!.text,
+          'Last Name': controllers['Last Name']!.text,
+          'Date of Birth': controllers['Date of Birth']!.text,
+          'Phone Number':controllers['Phone Number']!.text,
+          'Country':controllers['Country']!.text,
+          'Address':controllers['Address']!.text
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Profile updated successfully!")),
+    );}catch(e){
+          print(e);
+        }
+          setState(() {
+                        isEditing = !isEditing;
+                                getusercred();
+                      });
+  
+ }
   @override
   void dispose() {
     for (var controller in controllers.values) {
@@ -29,7 +80,11 @@ class _AccountInformationScreenState extends State<AccountInformationScreen> {
     }
     super.dispose();
   }
+@override 
+void initState(){
+  getusercred();
 
+}
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,15 +101,21 @@ class _AccountInformationScreenState extends State<AccountInformationScreen> {
           style: TextStyle(color: Colors.black, fontSize: 20),
         ),
         actions: [
+          isEditing ?  
           IconButton(
-            icon: Icon(isEditing ? Icons.save : Icons.edit,
+            icon: Icon( Icons.save,
                 color: Colors.deepPurple),
-            onPressed: () {
-              setState(() {
-                isEditing = !isEditing;
-              });
+                onPressed: () =>{
+                          setUsercred()
             },
-          ),
+          ):IconButton(
+            icon: Icon( Icons.edit,
+                color: Colors.deepPurple),
+            onPressed: () =>{
+            setState(() {
+                          isEditing = !isEditing;
+                        })
+            },),
         ],
       ),
       body: SingleChildScrollView(
@@ -63,9 +124,8 @@ class _AccountInformationScreenState extends State<AccountInformationScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildSection('Personal Info.', [
-              _buildTwoColumnInfoRow('TeraFlow ID', 'Gender',
-                  isEditable: false),
               _buildTwoColumnInfoRow('First Name', 'Last Name'),
+              _buildTwoColumnInfoRow('Email', 'Gender',),
               _buildTwoColumnInfoRow('Date of Birth', ''),
             ]),
             const SizedBox(height: 24),
@@ -107,10 +167,12 @@ class _AccountInformationScreenState extends State<AccountInformationScreen> {
       {bool isEditable = true}) {
     return Row(
       children: [
-        Expanded(child: _buildInfoRow(label1, isEditable: isEditable)),
-        if (label2.isNotEmpty) const SizedBox(width: 16),
-        if (label2.isNotEmpty)
-          Expanded(child: _buildInfoRow(label2, isEditable: isEditable)),
+        Expanded(
+          child: _buildInfoRow(label1, isEditable: isEditable)),
+              if (label2.isNotEmpty) const SizedBox(width: 16),
+              if (label2.isNotEmpty)
+        Expanded(
+          child: _buildInfoRow(label2, isEditable: isEditable)),
       ],
     );
   }

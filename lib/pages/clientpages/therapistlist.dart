@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:teraflow/pages/therapistPages/therapistprofile_page.dart';
+import 'package:teraflow/pages/clientpages/therapistprofile_page.dart';
 import 'package:teraflow/pages/clientpages/therapist_card.dart';
 
 class Therapistlist extends StatefulWidget {

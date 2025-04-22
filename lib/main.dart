@@ -7,7 +7,7 @@ import 'package:teraflow/pages/adminPages/admindashboard.dart';
 import 'package:teraflow/pages/clientpages/home_page.dart';
 import 'package:teraflow/features/auth/login_page.dart';
 import 'package:teraflow/features/auth/signup_page.dart';
-import 'package:teraflow/pages/clientpages/splashPage/OnboardingScreen.dart';
+import 'package:teraflow/pages/clientpages/OnboardingScreen.dart';
 import 'package:teraflow/pages/clientpages/splashPage/WellcomeScreen.dart';
 import 'package:teraflow/provider/provider.dart';
 import 'package:teraflow/pages/therapistPages/home_therapist.dart';

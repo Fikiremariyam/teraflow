@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloudinary_flutter/image/cld_image.dart';
 import 'package:cloudinary_url_gen/cloudinary.dart';
 import 'package:flutter/material.dart';
-import 'package:teraflow/pages/therapistPages/therapistprofile_page.dart';
+import 'package:teraflow/pages/clientpages/therapistprofile_page.dart';
 
 class CategoryDetailPage extends StatefulWidget {
   final String categoryName;

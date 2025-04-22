@@ -11,7 +11,7 @@ import 'package:teraflow/features/chatbot/chatbot_screen.dart';
 import 'package:teraflow/features/SELFHELP/breathing_exercise.dart';
 //import 'package:teraflow/pages/SELFHELP/meditation_list.dart';
 import 'package:teraflow/pages/clientpages/searchpage.dart';
-import 'package:teraflow/pages/clientpages/splashPage/ProfilePage.dart';
+import 'package:teraflow/pages/clientpages/profilePages/ProfilePage.dart';
 import 'package:teraflow/pages/clientpages/splashPage/calendar_page.dart';
 import 'package:teraflow/pages/clientpages/category_card.dart';
 import 'package:teraflow/pages/clientpages/therapist_card.dart';

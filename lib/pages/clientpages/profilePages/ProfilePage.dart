@@ -5,8 +5,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:teraflow/pages/clientpages/home_page.dart';
 import 'package:teraflow/features/payment/payment_and_orders.dart';
-import 'package:teraflow/pages/clientpages/splashPage/CustomerPaymetn_Page.dart';
-import 'package:teraflow/pages/clientpages/splashPage/SettingPage.dart';
+import 'package:teraflow/pages/clientpages/profilePages/CustomerPaymetn_Page.dart';
+import 'package:teraflow/pages/clientpages/profilePages/SettingPage.dart';
 import 'AccountPage.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -19,6 +19,13 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   var username = TextEditingController();
   var phonenumber = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _genderController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _dateOfBirthController = TextEditingController();
+  final TextEditingController _countryController = TextEditingController();
+  final TextEditingController _addressController = TextEditingController();
+
 
   // getting profile pic
   Widget _profilePic() {
@@ -26,24 +33,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
    return ClipOval(
   child: Image.asset(
-    "assets/profile.jpg",
-    fit: BoxFit.cover, // Optional: Adjusts how the image fits inside the oval
-    width: 50,  // Optional: Set width
-    height: 50, // Optional: Set height
+    "assets/profile.jpg", // replace this with actual data from back end 
+    fit: BoxFit.cover, 
+    width: 50,  
+    height: 50, 
   ),
 );
 
   }
 
+  void setUsercred() async {
+
+
+  }
   // to get user data
   void getusercred() async {
     var docSnapshot = await FirebaseFirestore.instance
         .collection('users')
         .doc(FirebaseAuth.instance.currentUser!.email)
         .get();
+
     String usernameholder = docSnapshot.data()?['username'] ?? FirebaseAuth.instance.currentUser!.email!;
-    String phoneno =
-        docSnapshot.data()?['phonenumber'] ?? 'enter your  phone  no';
+    String phoneno = docSnapshot.data()?['phonenumber'] ?? 'enter your  phone  no';
+    
     setState(() {
       username.text = usernameholder;
       phonenumber.text = phoneno;
@@ -134,12 +146,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     builder: (context) => const AccountInformationScreen()),
               ),
             ),
-            /*     _buildMenuItem(
-              icon: Icons.favorite_outline,
-              iconColor: Colors.orange,
-              title: 'My Medical Records',
-              subtitle: 'History about your medical records',
-            ),*/
             _buildMenuItem(
               icon: Icons.bookmark_outline,
               iconColor: Colors.red,
