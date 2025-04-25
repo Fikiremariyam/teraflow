@@ -45,14 +45,14 @@ class _FinancePageState extends State<FinancePage> {
 
   @override
   void initState() {
-    // TODO: implement initState
+    
     super.initState();
     fetchUsers();
     print(paymentrequests);
   }
   @override
   Widget build(BuildContext context) {
-    
+    print(paymentrequests);
     return Scaffold(
       body: Column(
         children: [
@@ -73,10 +73,8 @@ class _FinancePageState extends State<FinancePage> {
 
     return ListView.builder(
       padding: const EdgeInsets.all(16),
-      itemCount: paymentrequests.length , // Replace with actual data length
+      itemCount: paymentrequests.length , 
       itemBuilder: (context, index) {
-        // This is mock data. Replace with your actual data source
-        
 
         final payment = paymentrequests[index];
 
@@ -94,34 +92,16 @@ class _FinancePageState extends State<FinancePage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          payment['doctoremail'] ?? "payment" ,
+                          payment['client'] ?? "Name not found " ,
                           style: Theme.of(context).textTheme.titleMedium,
                         ),
-                        Text(
-                          payment['client:'] ?? "username",
-                          style: Theme.of(context).textTheme.bodySmall,
-                        ),
                       ],
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.grey[200],
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Text(
-                        "id",
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 16),
                 _buildInfoRow('Sessions', payment['sessions'].length.toString() ?? "sessions"),
-                _buildInfoRow('Schedule', payment['sessions'][0].toString() ?? "scedule" ),
+                _buildInfoRowContainer ('Schedule', payment['sessions'] ?? [] ),
                 _buildInfoRow('Amount', payment['amount'] ?? "scedule "),
                 const SizedBox(height: 16),
                 Row(
@@ -144,13 +124,7 @@ class _FinancePageState extends State<FinancePage> {
                         ),
                       ),
                     ),
-                    //if (payment['status'] == 'pending')
-                    //  ElevatedButton(
-                    //// onPressed: () {
-                    // Handle payment
-                    // },
-                    // child: const Text('Pay Now'),
-                    //  ),
+          
                   ],
                 ),
               ],
@@ -182,6 +156,71 @@ class _FinancePageState extends State<FinancePage> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildInfoRowContainer(String label, List  sessions) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Column(
+        children: [
+            Container(
+              //color: const Color.fromARGB(111, 117, 113, 113), // Set the background color here
+              padding: const EdgeInsets.all(8), // Optional: Add padding
+              alignment: Alignment.center, // Center the child text
+              width: double.infinity, // Take the available width
+              child: Text(
+                      label,
+                      style: TextStyle(
+                      color: Colors.grey[600],
+                      fontSize: 14,
+                      ),
+              ),
+            ),
+            SizedBox(
+            height: 120,
+            child: ListView.builder(
+            padding: EdgeInsets.all(5),
+            scrollDirection: Axis.horizontal,
+            itemCount: sessions.length,
+            itemBuilder: (context, index) {
+                return DecoratedBox(
+                        decoration: BoxDecoration(
+                        color: Colors.blue[50], // Background color
+                        borderRadius: BorderRadius.circular(12), // Rounded corners
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 2,
+                            blurRadius: 5,
+                            offset: Offset(0, 3),
+                          ),
+                        ],
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                sessions[index]['date'],
+                                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(height: 8),
+                              Text(
+                                sessions[index]['time'],
+                                style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                },
+            ),
+          )
+
+       ],
       ),
     );
   }
