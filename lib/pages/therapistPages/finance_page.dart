@@ -50,8 +50,10 @@ class _FinancePageState extends State<FinancePage> {
     fetchUsers();
     print(paymentrequests);
   }
+  
   @override
   Widget build(BuildContext context) {
+    
     print(paymentrequests);
     return Scaffold(
       body: Column(
@@ -77,7 +79,11 @@ class _FinancePageState extends State<FinancePage> {
       itemBuilder: (context, index) {
 
         final payment = paymentrequests[index];
-
+        if (payment['status'] == 'completed') {
+           return Center( 
+            child: Text(" ")
+            );
+        }
         return Card(
           margin: const EdgeInsets.only(bottom: 16),
           child: Padding(

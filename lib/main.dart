@@ -17,6 +17,7 @@ import 'package:cloudinary_flutter/cloudinary_context.dart';
 import 'package:cloudinary_url_gen/cloudinary.dart';
 import 'package:teraflow/responsive_widget.dart';
 import 'firebase_options.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -53,6 +54,10 @@ class _MyAppState extends State<MyApp> {
   Future<void> determineInitialRoute() async {
 
     User? user = FirebaseAuth.instance.currentUser;
+    if (kIsWeb ) {
+              initialRoute = '/AdminDashboard';
+              return;
+      }
 
     if (user != null) {
       String userEmail = user.email!;
@@ -61,7 +66,7 @@ class _MyAppState extends State<MyApp> {
           .collection('users')
           .doc(userEmail)
           .get();
-
+       
       if (userDoc.exists) {
         
         Map<String, dynamic>? userData = userDoc.data() as Map<String, dynamic>?;

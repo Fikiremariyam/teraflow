@@ -32,7 +32,6 @@ class _CustomerPaymentPageState extends State<CustomerPaymentPage> {
           setState(() {
             paymentrequests = paumentrequestlist;
           });
-          print(paumentrequestlist);
   }
  
   @override
@@ -40,8 +39,6 @@ class _CustomerPaymentPageState extends State<CustomerPaymentPage> {
     // TODO: implement initState
     super.initState();
     fetchUsers();
-    print(paymentrequests.length);
-    print(paymentrequests);
   }
   
 
@@ -86,7 +83,7 @@ class _CustomerPaymentPageState extends State<CustomerPaymentPage> {
       padding: const EdgeInsets.all(16),
       itemCount: paymentrequests.length,
       itemBuilder: (context, index) {
-          final payment = paymentrequests[index];
+        final payment = paymentrequests[index];
 
         return Card(
           margin: const EdgeInsets.only(bottom: 16),
@@ -133,9 +130,9 @@ class _CustomerPaymentPageState extends State<CustomerPaymentPage> {
                 ),
                 const SizedBox(height: 16),
                 _buildInfoRow('ID', payment['id'] ?? "id"),
-                _buildInfoRow('Sessions', payment['sessions'].length.toString() ?? "sitejennan"),
-                _buildInfoRow('Schedule', payment['sessions'].toString() ?? "dscsdcsdvvs"),
-                 _buildInfoRow('Amount', payment['amount'] ?? "asdvfsdvd"),
+                _buildInfoRow('Sessions', payment['sessions'].length.toString() ?? "0"),
+                 _buildInfoRowContainer ('Schedule', payment['sessions'] ?? [] ),
+                 _buildInfoRow('Amount', payment['amount'] ?? "amount"),
                 const SizedBox(height: 8),
                 Text(
                   'Description:',
@@ -364,4 +361,69 @@ void _submitandstore(payment) async {
       },
     );
   }
+    Widget _buildInfoRowContainer(String label, List  sessions) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Column(
+        children: [
+            Container(
+              //color: const Color.fromARGB(111, 117, 113, 113), // Set the background color here
+              padding: const EdgeInsets.all(8), // Optional: Add padding
+              alignment: Alignment.center, // Center the child text
+              width: double.infinity, // Take the available width
+              child: Text(
+                      label,
+                      style: TextStyle(
+                      color: Colors.grey[600],
+                      fontSize: 14,
+                      ),
+              ),
+            ),
+            SizedBox(
+            height: 120,
+            child: ListView.builder(
+            padding: EdgeInsets.all(5),
+            scrollDirection: Axis.horizontal,
+            itemCount: sessions.length,
+            itemBuilder: (context, index) {
+                return DecoratedBox(
+                        decoration: BoxDecoration(
+                        color: Colors.blue[50], // Background color
+                        borderRadius: BorderRadius.circular(12), // Rounded corners
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 2,
+                            blurRadius: 5,
+                            offset: Offset(0, 3),
+                          ),
+                        ],
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                sessions[index]['date'],
+                                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(height: 8),
+                              Text(
+                                sessions[index]['time'],
+                                style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                },
+            ),
+          )
+
+       ],
+      ),
+    );
+  }
+
 }
