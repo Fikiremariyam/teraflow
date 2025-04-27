@@ -28,10 +28,11 @@ class _CustomerPaymentPageState extends State<CustomerPaymentPage> {
               .map((doc) => doc.data() as Map<String, dynamic>)
               .toList();
 
-
+//
           setState(() {
             paymentrequests = paumentrequestlist;
           });
+          const abebe = 0;
   }
  
   @override
