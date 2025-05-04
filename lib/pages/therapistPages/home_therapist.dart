@@ -70,7 +70,7 @@ class _HomePagetState extends State<HomePaget> {
       ChatPage(),
       BlogPage(),
       FinancePage(),
-      //ProfileScreen()
+      ProfileScreen()
     ];
 
     return Scaffold(

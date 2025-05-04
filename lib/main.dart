@@ -3,6 +3,7 @@ import 'package:cloudinary_flutter/cloudinary_object.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:teraflow/pages/adminPages/admindashboard.dart';
 import 'package:teraflow/pages/clientpages/home_page.dart';
 import 'package:teraflow/features/auth/login_page.dart';
@@ -11,15 +12,26 @@ import 'package:teraflow/pages/clientpages/OnboardingScreen.dart';
 import 'package:teraflow/pages/clientpages/splashPage/WellcomeScreen.dart';
 import 'package:teraflow/provider/provider.dart';
 import 'package:teraflow/pages/therapistPages/home_therapist.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloudinary_flutter/cloudinary_context.dart';
 import 'package:cloudinary_url_gen/cloudinary.dart';
 import 'package:teraflow/responsive_widget.dart';
 import 'firebase_options.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:supabase/supabase.dart';
+
 
 void main() async {
+
+  
+// intializing supabase
+  await Supabase.initialize(
+    url: "https://elkpeemuxtpxfwubiphv.supabase.co",
+    anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsa3BlZW11eHRweGZ3dWJpcGh2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYzNjgzMTQsImV4cCI6MjA2MTk0NDMxNH0.gjEFIj-fs3hv8-jpByu6UwJoIf5s4XDneQB03sXleHQ",
+
+  );
+// intialzing flutter widget 
   WidgetsFlutterBinding.ensureInitialized();
 
   try {
@@ -28,17 +40,18 @@ void main() async {
   } catch (e) {
     print("Error loading .env: $e");
   }
-
+// intilazing fire base 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-
-  CloudinaryContext.cloudinary = Cloudinary.fromCloudName(cloudName: "dd8qfpth2");
-  final cloudinary = CloudinaryObject.fromCloudName(cloudName: "dd8qfpth2");
+  
 
   runApp(ChangeNotifierProvider(
     create: (context) => MessageProvider(),
     child: const MyApp(),
   ));
 }
+
+
+
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
@@ -53,7 +66,7 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> determineInitialRoute() async {
 
-    User? user = FirebaseAuth.instance.currentUser;
+    firebase_auth.User? user = firebase_auth.FirebaseAuth.instance.currentUser;
     if (kIsWeb ) {
               initialRoute = '/AdminDashboard';
               return;

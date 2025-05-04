@@ -57,7 +57,7 @@ class _ResourceListPageState extends State<ResourceListPage> {
                     print(
                         'Error: Missing image for ${resource['title']}'); // Debugging
                     imageUrl =
-                        'lib/images/default.png'; // Use a placeholder image
+                        'lib/resources/images/default.png'; // Use a placeholder image
                   }
 
                   return InkWell(

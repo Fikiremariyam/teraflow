@@ -4,49 +4,49 @@
       "type": "article",
       "title": "The Link Between Sleep and Mental Well-being",
       "description": "Discover how poor sleep affects mental health and how to improve your sleep quality.",
-      "imageUrl": "lib/images/anger_control.png",
+      "imageUrl": "lib/resources/images/anger_control.png",
       "content": "**Why Sleep Matters for Mental Health**\n\nSleep is **fundamental** to our mental and emotional well-being. A lack of sleep can lead to:\n\n- **Increased stress and anxiety**\n- **Reduced focus and concentration**\n- **Higher risk of depression**\n\n**Tips for Better Sleep:**\n\n1. **Follow a regular sleep schedule**\n2. **Reduce screen time before bed**\n3. **Avoid caffeine and heavy meals at night**\n4. **Keep your bedroom dark and cool**\n5. **Try relaxation techniques like deep breathing**"
     },
     {
       "type": "article",
       "title": "5 Tips for Better Breathing",
       "description": "Improve your breathing to reduce stress and boost your energy.",
-      "imageUrl": "lib/images/couples.png",
+      "imageUrl": "lib/resources/images/couples.png",
       "content": "**Why Proper Breathing Matters**\n\nBreathing is something we do without thinking, but **conscious breathing** can help reduce stress, increase focus, and improve overall health.\n\n**Top 5 Breathing Techniques:**\n\n1. **Diaphragmatic Breathing** (Belly Breathing)\n2. **Box Breathing**\n3. **4-7-8 Breathing**\n4. **Alternate Nostril Breathing**\n5. **Pursed-Lip Breathing**"
     },
     {
       "type": "video",
       "title": "Guided Meditation for Stress Relief",
       "description": "A short meditation session to help calm your mind and relax your body.",
-      "thumbnailUrl": "lib/images/midnfullcatagory.png",
+      "thumbnailUrl": "lib/resources/images/midnfullcatagory.png",
       "videoUrl": "assets/videos/video-2.mp4"
     },
     {
       "type": "video",
       "title": "Breathing Exercise: Box Breathing",
       "description": "Learn and practice the box breathing technique for anxiety relief.",
-      "thumbnailUrl": "lib/images/undraw_workout_wqgp.png",
+      "thumbnailUrl": "lib/resources/images/undraw_workout_wqgp.png",
       "videoUrl": "assets/video-1.mp4"
     },
     {
       "type": "interactive",
       "title": "Daily Gratitude Journal",
       "description": "Write down three things you are grateful for each day to improve mental well-being.",
-      "imageUrl": "lib/images/midnfullcatagory.png",
+      "imageUrl": "lib/resources/images/midnfullcatagory.png",
       "instructions": "**How to Use the Gratitude Journal:**\n\n- Write **3 things** you’re grateful for every morning.\n- Reflect on positive moments before bed.\n- Track your mood changes over time."
     },
     {
       "type": "interactive",
       "title": "Mindful Coloring",
       "description": "Reduce stress by engaging in mindful coloring exercises.",
-      "imageUrl": "lib/images/undraw_workout_wqgp.png",
+      "imageUrl": "lib/resources/images/undraw_workout_wqgp.png",
       "instructions": "**How to Practice Mindful Coloring:**\n\n1. **Choose a coloring sheet** from the app.\n2. **Use different colors** based on how you feel.\n3. **Focus on each stroke** and be present in the moment.\n4. **Take deep breaths** as you color."
     },
     {
       "type": "interactive",
       "title": "5-Minute Deep Breathing Challenge",
       "description": "Follow along with the guided breathing animation for five minutes.",
-      "imageUrl": "lib/images/boardingscreen1.png",
+      "imageUrl": "lib/resources/images/boardingscreen1.png",
       "instructions": "**How to Follow the Challenge:**\n\n- Inhale deeply for **4 seconds**.\n- Hold your breath for **4 seconds**.\n- Exhale slowly for **4 seconds**.\n- Repeat for **5 minutes**."
     }
   ]

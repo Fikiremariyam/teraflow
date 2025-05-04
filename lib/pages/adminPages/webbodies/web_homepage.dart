@@ -18,7 +18,7 @@ import 'package:teraflow/pages/clientpages/therapist_card.dart';
 //import 'package:teraflow/pages/calendar_page.dart';
 import 'package:teraflow/features/chats/chatlist_page.dart';
 import 'package:teraflow/features/chats/chatpage_main.dart';
-import 'package:teraflow/features/SELFHELP/selfhelp_page.dart';
+import 'package:teraflow/pages/clientpages/selfhelp_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:path_provider/path_provider.dart';

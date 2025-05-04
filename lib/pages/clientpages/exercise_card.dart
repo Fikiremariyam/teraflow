@@ -31,7 +31,7 @@ class ExerciseCard extends StatelessWidget {
                 ),
               ),
               child: Image.asset(
-                'lib/images/meditation.png', // Replace with the actual path to your image
+                'lib/resources/images/meditation.png', // Replace with the actual path to your image
                 width: 100,
                 height: 100,
                 fit: BoxFit.contain,

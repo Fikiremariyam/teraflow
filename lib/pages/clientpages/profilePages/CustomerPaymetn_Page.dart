@@ -1,10 +1,16 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:teraflow/pages/clientpages/home_page.dart';
+import 'package:teraflow/pages/clientpages/profilePages/ProfilePage.dart';
 
 class CustomerPaymentPage extends StatefulWidget {
   const CustomerPaymentPage({Key? key}) : super(key: key);
@@ -16,58 +22,28 @@ class CustomerPaymentPage extends StatefulWidget {
 class _CustomerPaymentPageState extends State<CustomerPaymentPage> {
 
     List<Map<String, dynamic>> paymentrequests= [];
+    File? attachedImage;
 
-     void fetchUsers() async {
+     void fetchPayment() async {
       
           QuerySnapshot snapshot = await FirebaseFirestore.instance
               .collection('paymentrequest')
               .where('client', isEqualTo: FirebaseAuth.instance.currentUser!.email)
               .get();
 
-          List<Map<String, dynamic>> paumentrequestlist = snapshot.docs
+          List<Map<String, dynamic>> filteredRequests = snapshot.docs
               .map((doc) => doc.data() as Map<String, dynamic>)
+         //     .where((payment) => payment['status'] != "pending")
               .toList();
 
-          setState(() {
-            paymentrequests = paumentrequestlist;
+
+          setState(() { 
+            paymentrequests = filteredRequests;
           });
           const abebe = 0;
   }
- 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    fetchUsers();
-  }
-  
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: const Text(
-          'Payment',
-          style: TextStyle(color: Colors.black, fontSize: 20),
-        ),
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: _buildPaymentsList(context),
-          ),
-        ],
-      ),
-    );
-  }
-
+// the list of payment requests 
   Widget _buildPaymentsList(BuildContext context) {
     // This is mock data. Replace with your actual data source
     if (paymentrequests.length <1){
@@ -152,7 +128,10 @@ class _CustomerPaymentPageState extends State<CustomerPaymentPage> {
                         child: const Text('Pay Now'),
                       ),
                       ElevatedButton(
-                        onPressed: () => _showCompletePaymentDialog(context, payment),
+                        onPressed: () { 
+                          _showCompletePaymentDialog(context, payment);
+                        
+                        },
                         child: const Text('Complete Payment'),
                       ),
                     ],
@@ -223,7 +202,7 @@ void _submitandstore(payment) async {
       String time = payment['scedule'].text.trim();
       String email = payment[''].text.trim();
 
-      User? user = FirebaseAuth.instance.currentUser;
+      firebase_auth.User? user = FirebaseAuth.instance.currentUser;
       if (user == null) {
         throw FormatException("No user is logged in.");
       }
@@ -303,65 +282,104 @@ void _submitandstore(payment) async {
     );
   }
 
+// complete payment pop up dialog
   void _showCompletePaymentDialog(
       BuildContext context, Map<String, dynamic> payment) {
+        print("payment id is ${payment}");
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Colors.grey[100],
-          title: const Text('Complete Payment'),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildInfoRow('ID', payment['id'] ?? "id"),
-                _buildInfoRow('Sessions', payment['sessions'].length.toString() ?? "sitejennan"),
-                _buildInfoRow('Schedule', payment['sessions'].toString() ?? "dscsdcsdvvs"),
-                 _buildInfoRow('Amount', payment['amount'] ?? "asdvfsdvd"),
-                const SizedBox(height: 16),
-                const Text('Please attach a screenshot of your payment:'),
-                const SizedBox(height: 16),
-                ElevatedButton(
-                  onPressed: () async {
-                    final ImagePicker _picker = ImagePicker();
-                    final XFile? image =
-                        await _picker.pickImage(source: ImageSource.gallery);
-                    if (image != null) {
-                      // Handle the selected image
-                      print('Image selected: ${image.path}');
-                      // You can add logic here to display the selected image or prepare it for upload
-                    }
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setDialogState) {
+            return  AlertDialog(
+              backgroundColor: Colors.grey[100],
+              title: const Text('Complete Payment'),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildInfoRow('ID', payment['id'] ?? "id"),
+                    _buildInfoRow('Sessions', payment['sessions'].length.toString() ?? "sitejennan"),
+                    _buildInfoRow('Schedule', payment['sessions'].toString() ?? "dscsdcsdvvs"),
+                     _buildInfoRow('Amount', payment['amount'] ?? "asdvfsdvd"),
+                    const SizedBox(height: 16),
+                    
+                    attachedImage == null  ? 
+                      const Text('Please attach a screenshot of your payment:'):
+                      const Text("file selected successfully ") ,
+                    const SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: () async {
+                        final ImagePicker _picker = ImagePicker();
+                        final XFile? image =
+                            await _picker.pickImage(source: ImageSource.gallery);
+                        if (image != null) {
+                         
+                          // Handle the selected image
+                          setDialogState(() {
+                            attachedImage = File(image.path);
+                          });
+                          
+                        }
+                      },
+                      child: const Text('Attach Screenshot'),
+                    ),
+                  ],
+                ),
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text('Cancel'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
                   },
-                  child: const Text('Attach Screenshot'),
+                ),
+                TextButton(
+                  child: const Text('Submit'),
+                  onPressed: () async{
+                    if (attachedImage == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            content: Text('Please attach a screenshot')),
+                      );
+                      return;
+                    }
+                    // create an attachment picture link to the payment request INSTANCE 
+                    await Supabase.instance.client.storage
+                        .from('teraflowrecipts')
+                        .upload(payment['paymentLink'] ?? "id" , attachedImage!).then((onValue) async {
+                    
+                     QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+                      .collection('paymentrequest')
+                      .where('paymentLink', isEqualTo: payment['paymentLink'])
+                      .limit(1) // Limit to one document
+                      .get();
+
+                     if (querySnapshot.docs.isNotEmpty) {
+                     await querySnapshot.docs.first.reference.update({
+                       'status': 'pending',
+                     });
+                     }
+
+                        });
+                    // and update the payment request status to 'PENDING '
+                    
+                    Navigator.of(context).pop();
+                    Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const ProfileScreen()),
+                        );
+                  },
                 ),
               ],
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Cancel'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: const Text('Submit'),
-              onPressed: () {
-                // Implement submit functionality here
-                
-                //_submitandstore(payment);
-                Navigator.pushReplacementNamed(context, "/login");
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
+            );
+          },
         );
       },
     );
   }
-    Widget _buildInfoRowContainer(String label, List  sessions) {
+  Widget _buildInfoRowContainer(String label, List  sessions) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: Column(
@@ -426,4 +444,37 @@ void _submitandstore(payment) async {
     );
   }
 
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fetchPayment();
+  }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: const Text(
+          'Payment',
+          style: TextStyle(color: Colors.black, fontSize: 20),
+        ),
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: _buildPaymentsList(context),
+          ),
+        ],
+      ),
+    );
+  }
 }
