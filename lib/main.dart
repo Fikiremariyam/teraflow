@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cloudinary_flutter/cloudinary_object.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
@@ -14,8 +13,6 @@ import 'package:teraflow/provider/provider.dart';
 import 'package:teraflow/pages/therapistPages/home_therapist.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:firebase_core/firebase_core.dart';
-import 'package:cloudinary_flutter/cloudinary_context.dart';
-import 'package:cloudinary_url_gen/cloudinary.dart';
 import 'package:teraflow/responsive_widget.dart';
 import 'firebase_options.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
