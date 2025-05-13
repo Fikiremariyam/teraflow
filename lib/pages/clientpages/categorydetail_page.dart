@@ -1,6 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cloudinary_flutter/image/cld_image.dart';
-import 'package:cloudinary_url_gen/cloudinary.dart';
 import 'package:flutter/material.dart';
 import 'package:teraflow/pages/clientpages/therapistprofile_page.dart';
 
@@ -45,20 +43,6 @@ class _CategoryDetailPageState extends State<CategoryDetailPage> {
       users = usersData;
     });
   }
- 
-  Widget _profilePic() {
-    final cloudinary = Cloudinary.fromCloudName(cloudName: "dd8qfpth2");
-
-    return ClipOval(
-      child: CldImageWidget(
-        cloudinary: cloudinary,
-        publicId: "cld-sample-4",
-        width: 60,
-        height: 60,
-        fit: BoxFit.cover,
-      ),
-    );
-  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -102,7 +86,12 @@ class _CategoryDetailPageState extends State<CategoryDetailPage> {
                       return Card(
                         margin: EdgeInsets.symmetric(vertical: 8.0),
                         child: ListTile(
-                          leading:_profilePic(),
+                            leading: Image.asset(
+                            "lib/resources/imge.png",
+                            width: 60,
+                            height: 60,
+                            fit: BoxFit.cover,
+                            ),
 
                           title: Text(
                             therapist['fullName'] ?? 'name ',

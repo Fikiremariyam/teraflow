@@ -1,5 +1,4 @@
-import 'package:cloudinary_flutter/image/cld_image.dart';
-import 'package:cloudinary_url_gen/cloudinary.dart';
+
 import 'package:flutter/material.dart';
 import 'package:teraflow/pages/clientpages/therapistprofile_page.dart';
 
@@ -21,17 +20,6 @@ class TherapistCard extends StatelessWidget {
     required this.onTap,
   }) : super(key: key);
 
-  Widget _profilePic() {
-    final cloudinary = Cloudinary.fromCloudName(cloudName: "dd8qfpth2");
-
-    return CldImageWidget(
-      cloudinary: cloudinary,
-      publicId: therapistImagePublicId,
-      width: 100,
-      height: 150,
-      fit: BoxFit.cover,
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +53,10 @@ class TherapistCard extends StatelessWidget {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-              child: _profilePic(),
+              child: Image.asset('lib/resources/images/doctor1.jpg',
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                  height: 120),
             ),
             Padding(
               padding: const EdgeInsets.all(16),

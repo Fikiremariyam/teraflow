@@ -1,7 +1,5 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cloudinary_flutter/image/cld_image.dart';
-import 'package:cloudinary_url_gen/cloudinary.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -181,9 +179,6 @@ class _TherapistProfileState extends State<TherapistProfile> {
   Widget build(BuildContext context) { 
 
     
-    //print(userdata);
-        final cloudinary = Cloudinary.fromCloudName(cloudName: "dd8qfpth2");
-
 
 
     return Scaffold(
@@ -205,13 +200,14 @@ class _TherapistProfileState extends State<TherapistProfile> {
                        CircleAvatar(
                         radius: 50,
                         child: ClipOval( // Ensure the image is clipped to a circle
-                          child: CldImageWidget(
-                            cloudinary: cloudinary,
-                            publicId: "doctorprofile",
+                          child: Image.file(
+                            _profileImage ?? File(""),
                             width: 100,
                             height: 100,
-                            fit: BoxFit.cover, // Use cover for better aspect ratio fit
-                          ),
+                            fit: BoxFit.cover,
+                          ),	
+                       
+                          
                         ),
                       ),
                         // editing profile pic

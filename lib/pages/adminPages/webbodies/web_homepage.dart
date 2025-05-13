@@ -1,30 +1,20 @@
 import 'dart:io';
-
-import 'package:cloudinary_flutter/cloudinary_object.dart';
-import 'package:cloudinary_flutter/image/cld_image.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:teraflow/features/chatbot/chatbot_screen.dart';
 import 'package:teraflow/features/SELFHELP/breathing_exercise.dart';
-//import 'package:teraflow/pages/SELFHELP/meditation_list.dart';
-import 'package:teraflow/pages/clientpages/searchpage.dart';
 import 'package:teraflow/pages/clientpages/profilePages/ProfilePage.dart';
 import 'package:teraflow/pages/clientpages/splashPage/calendar_page.dart';
 import 'package:teraflow/pages/clientpages/category_card.dart';
 import 'package:teraflow/pages/clientpages/therapist_card.dart';
-//import 'package:teraflow/pages/calendar_page.dart';
 import 'package:teraflow/features/chats/chatlist_page.dart';
-import 'package:teraflow/features/chats/chatpage_main.dart';
 import 'package:teraflow/pages/clientpages/selfhelp_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:path_provider/path_provider.dart';
 
-import 'package:cloudinary_url_gen/cloudinary.dart';
-import 'package:cloudinary_flutter/image/cld_image.dart';
 
 class WebHomePage extends StatefulWidget {
   @override
@@ -72,15 +62,14 @@ class _WebHomePageState extends State<WebHomePage> {
 
   //getting  profule  pic
   Widget _profilePic() {
-    // Initialize Cloudinary properly
-    final cloudinary = Cloudinary.fromCloudName(cloudName: "dd8qfpth2");
+
 
     return CircleAvatar(
       radius: 50,
       backgroundColor: Colors.grey,
-      child: CldImageWidget(
-        cloudinary: cloudinary, // Pass Cloudinary instance
-        publicId: "cld-sample-4",
+      child: Image.asset(
+        'lib/images/profile.png',
+        fit: BoxFit.cover,
       ),
     );
   }

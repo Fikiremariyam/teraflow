@@ -1,6 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cloudinary_flutter/image/cld_image.dart';
-import 'package:cloudinary_url_gen/cloudinary.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:teraflow/pages/clientpages/home_page.dart';
@@ -29,7 +27,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   // getting profile pic
   Widget _profilePic() {
-    final cloudinary = Cloudinary.fromCloudName(cloudName: "dd8qfpth2");
+   
 
    return ClipOval(
   child: Image.asset(

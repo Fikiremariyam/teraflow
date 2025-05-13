@@ -1,7 +1,5 @@
 import 'dart:io';
 
-import 'package:cloudinary_flutter/cloudinary_object.dart';
-import 'package:cloudinary_flutter/image/cld_image.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +7,7 @@ import 'package:flutter/widgets.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:teraflow/features/aichat/aichatpage.dart';
 import 'package:teraflow/features/chatbot/chatbot_screen.dart';
 import 'package:teraflow/features/SELFHELP/breathing_exercise.dart';
 import 'package:teraflow/features/SELFHELP/ResourceListPage.dart';
@@ -26,8 +25,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:path_provider/path_provider.dart';
 
-import 'package:cloudinary_url_gen/cloudinary.dart';
-import 'package:cloudinary_flutter/image/cld_image.dart';
 import 'package:teraflow/pages/clientpages/therapistlist.dart';
 
 class HomePage extends StatefulWidget {
@@ -74,24 +71,7 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  //getting  profule  pic
-  Widget _profilePic() {
-    // Initialize Cloudinary properly
-    final cloudinary = Cloudinary.fromCloudName(cloudName: "dd8qfpth2");
-
-    return CircleAvatar(
-      radius: 50,
-      backgroundColor: Colors.grey,
-      child: 
-      Image.asset(
-          "assets/profile.jpg",
-          width: 200, // Optional: Adjust width
-          height: 200, // Optional: Adjust height
-          fit: BoxFit.cover, // Adjust how image fits
-        ),
-    );
-  }
-
+  
   //getting user name
   void getusercred() async {
     var docSnapshot = await FirebaseFirestore.instance
@@ -386,7 +366,6 @@ class _HomePageState extends State<HomePage> {
                   SizedBox(height: 40),
 
                   // Categories Section
-                  // Update the category cards
                   Container(
                     height: 120,
                     child: ListView(
@@ -477,7 +456,7 @@ class _HomePageState extends State<HomePage> {
             ChatPage(),
             CalendarPage(),
            SelfHelpPage(),
-            ChatbotScreen(),
+           
             BreathingExerciseDetailPage(),
           ],
         ),
@@ -485,7 +464,7 @@ class _HomePageState extends State<HomePage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => const ChatbotScreen()),
+            MaterialPageRoute(builder: (context) => const AICHATPAGE()) , //const ChatbotScreen()),
           );
         },
         backgroundColor: Colors.deepPurple[200],
