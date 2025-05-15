@@ -2,6 +2,7 @@ import 'package:chat_gpt_sdk/chat_gpt_sdk.dart';
 import 'package:dash_chat_2/dash_chat_2.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_gemini/flutter_gemini.dart';
 import 'package:http/http.dart';
 import 'package:teraflow/features/aichat/consts.dart';
 
@@ -26,11 +27,8 @@ class _AICHATPAGEState extends State<AICHATPAGE> {
   
   List<ChatMessage> messages =  <ChatMessage>[];
 
-  final openAi = OpenAI.instance.build(
-    token: AI_secret_Key,
-    baseOption: HttpSetup(receiveTimeout: const Duration(seconds: 5)),
-    enableLog: true
-  );
+  final Gemini teraflow = Gemini.instance;
+
   
   @override
   Widget build(BuildContext context) {
@@ -61,35 +59,33 @@ Future<void> getChatResponse(ChatMessage message) async {
   setState(() {
     messages.insert(0, message);    
   });
-  List<Messages> messagesHistory = messages.reversed.map((m){
-    
-    if (m.user == currentUser){
-      return Messages(role: Role.user, content : m.text);
 
-     
-    }else {
-      return Messages(role: Role.assistant,content: m.text);
-
-    }
-
-
-  }).toList();
   
-  final request = ChatCompleteText(
-    model: Gpt4ChatModel(),
-    messages: messagesHistory.map((m) => m.toJson()).toList(),
-    maxToken: 200
-  );
   try { 
-    final result = await openAi.onChatCompletion(request: request);
-    print(result);
-    for (var element in result!.choices) {
-      if (element.message != null) {
-        setState(() {
-          messages.insert(0, ChatMessage(user: gpt_user, createdAt: DateTime.now(), text: element.message!.content));
-        });
-      }
-    }
+    String question = message.text;
+
+    teraflow.streamGenerateContent(
+      question).listen((event){
+        ChatMessage? lastmessage = messages.firstOrNull;
+        if (lastmessage  != null && lastmessage.user == gpt_user){
+        
+        }else{
+          String response = event.content?.parts?.fold("",(previous,current) => "$previous $current") ?? "";
+       
+          ChatMessage new_message =  ChatMessage(
+            user: gpt_user, 
+            createdAt: DateTime.now(),
+            text: response);
+
+          setState(() {
+            messages.insert(0, new_message);
+          });
+        }
+
+      });
+    
+
+    
   } catch (e) {
     setState(() {
       messages.insert(

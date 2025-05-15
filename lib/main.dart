@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_gemini/flutter_gemini.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:teraflow/pages/adminPages/admindashboard.dart';
@@ -16,9 +17,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:teraflow/responsive_widget.dart';
 import 'firebase_options.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:supabase/supabase.dart';
-
-
+import 'package:teraflow/features/aichat/consts.dart';
+import '';
 void main() async {
 
   
@@ -39,7 +39,10 @@ void main() async {
   }
 // intilazing fire base 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  
+ 
+ // intiliazing AI
+ Gemini.init(apiKey:aigpikey );
+
 
   runApp(ChangeNotifierProvider(
     create: (context) => MessageProvider(),
