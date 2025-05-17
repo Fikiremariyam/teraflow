@@ -17,6 +17,7 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   var username = TextEditingController();
   var phonenumber = TextEditingController();
+  final name = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _genderController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
@@ -25,40 +26,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final TextEditingController _addressController = TextEditingController();
 
 
-  // getting profile pic
-  Widget _profilePic() {
-   
-
-   return ClipOval(
-  child: Image.asset(
-    "assets/profile.jpg", // replace this with actual data from back end 
-    fit: BoxFit.cover, 
-    width: 50,  
-    height: 50, 
-  ),
-);
-
-  }
-
-  void setUsercred() async {
-
-
-  }
-  // to get user data
-  void getusercred() async {
-    var docSnapshot = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(FirebaseAuth.instance.currentUser!.email)
-        .get();
-
-    String usernameholder = docSnapshot.data()?['username'] ?? FirebaseAuth.instance.currentUser!.email!;
-    String phoneno = docSnapshot.data()?['phonenumber'] ?? 'enter your  phone  no';
-    
-    setState(() {
-      username.text = usernameholder;
-      phonenumber.text = phoneno;
-    });
-  }
 
   @override
   void initState() {
@@ -105,18 +72,38 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 children: [
                   CircleAvatar(
                     radius: 30,
-                    backgroundColor: Colors.white,
+                    backgroundColor: const Color.fromARGB(255, 197, 184, 214),
                     child: _profilePic() ??
                         Icon(Icons.person_outline,
-                            color: Colors.grey, size: 40),
+                            color: const Color.fromARGB(255, 109, 58, 58), size: 40),
                   ),
                   const SizedBox(width: 16),
-                  Text(
-                    username.text,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w500,
+                  Container(
+                    child: Column(
+                      children: [
+                        
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            name.text,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          Text(
+                            username.text,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      )
+                      ],
                     ),
                   ),
                 ],
@@ -174,6 +161,42 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
       ),
     );
+  }
+
+  // getting profile pic
+  Widget _profilePic() {
+   
+
+   return ClipOval(
+  child: Image.asset(
+    "assets/profile.jpg", // replace this with actual data from back end 
+    fit: BoxFit.cover, 
+    width: 55,  
+    height: 55, 
+  ),
+);
+
+  }
+
+  void setUsercred() async {
+
+
+  }
+  // to get user data
+  void getusercred() async {
+    var docSnapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.email)
+        .get();
+
+    String usernameholder = docSnapshot.data()?['username'] ?? FirebaseAuth.instance.currentUser!.email!;
+    String phoneno = docSnapshot.data()?['phonenumber'] ?? 'enter your  phone  no';
+    String nameholder = docSnapshot.data()?['fullName'] ?? 'enter your name';
+    setState(() {
+      username.text = usernameholder;
+      name.text = nameholder;
+      phonenumber.text = phoneno;
+    });
   }
 
   Widget _buildMenuItem({
